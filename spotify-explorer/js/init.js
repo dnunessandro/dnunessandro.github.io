@@ -24,7 +24,7 @@ const displayMetricsList = [
     'duration']
 
 const metricsDomains = {
-    'danceability' : [0.1, 0.9],
+    'danceability' : [0.2, 0.9],
     'energy' : [0.1, 0.9],
     'loudness' : [-30,-6],
     'speechiness' : [0.1, 0.9],
@@ -73,7 +73,7 @@ const metricsExplanations = {
     'speechiness' : 'Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the higher the attribute value.',
     'acousticness': 'Acousticness corresponds to a confidence measure on whether a track is acoustic.',
     'instrumentalness' : 'Predicts whether a track contains no vocals. “Ooh” and “aah” sounds are treated as instrumental in this context. Rap or spoken word tracks are clearly “vocal”.',
-    'liveness' : 'Predicts whether a track contains no vocals. “Ooh” and “aah” sounds are treated as instrumental in this context. Rap or spoken word tracks are clearly “vocal”.',
+    'liveness' : 'Detects the presence of an audience in the recording. Higher liveness values represent an increased probability that the track was performed live.',
     'valence' : 'Valence describes the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).',
     'tempo' : 'The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.',
     'duration' : 'Duration of the track.'
