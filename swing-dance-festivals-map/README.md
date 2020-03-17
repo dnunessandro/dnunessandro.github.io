@@ -11,8 +11,8 @@ Geo Location data provided by [GeoCage Geocoder](https://opencagedata.com/api).
 This scraping service accesses the [Swing Plan It](https://www.swingplanit.com/) website and the scrapes the relevant 
 data to build the map visuals. In order to get the geo location coordinates that allow the festivals locations to be 
 plotted on the map, the script calls the [GeoCage Geocoder API](https://opencagedata.com/api) for each festival 
-location. Thus, you need to register and get an API key before running the service. Obtaining and API key should take
-you 2 minutes and it's free (limited to 2000 API calls per month).
+location. Thus, you need to register and get an API key before running the service. Obtaining the API key should take
+you less than 2 minutes and it's free (limited to 2000 API calls per month).
 ### Running the service
 
 1. Navigate to the scraping service directory:
