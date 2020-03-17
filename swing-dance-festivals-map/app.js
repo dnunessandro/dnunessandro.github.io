@@ -1,5 +1,5 @@
-const windowWidth = $( window ).width();
-const windowHeight = $( window ).height();
+const windowWidth = $( document ).width();
+const windowHeight = $( document ).height();
 
 $('iframe')
     .attr('width', windowWidth)
