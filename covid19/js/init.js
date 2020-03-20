@@ -44,8 +44,8 @@ const sexColorsDict = {
 const boxColor = '#f3f3f3'
 
 // Dimensions Variables
-const chartWidth = $(window).width()
-const chartHeight = $(document).height()
+const chartWidth = parseInt($(window).width()*0.95)
+const chartHeight = parseInt($(window).height()*0.8)
 const chartWidthFracPad = 0.2
 const minRadiusWidthFrac = 0
 const maxRadiusWidthFrac = 0.17
@@ -53,12 +53,13 @@ const minRadiusLabel = 20
 const breakdownShapePad = 5
 const breakdownShapeRx = 8
 const maxRadiusThreshFrac = 0.5
+const greyedOutRadiusFrac = 0.05
 
 // Create SVG Element
 const svg = d3.select('#chart')
     .append('svg')
-    .attr('width', chartWidth)
-    .attr('height', chartHeight)
+    .attr('width', chartWidth*0.9)
+    .attr('height', chartHeight*0.9)
 
 // Create Pie Element
 const pie = d3.pie()

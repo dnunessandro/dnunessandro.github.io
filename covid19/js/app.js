@@ -38,8 +38,6 @@ d3.json(dataPath).then(function(data){
     // Create New Cases Animation
     bindAnimations(globalDataAllArray, globalDataPreviousArray, rScale, rScales)
 
-    $('body').append('<h1>' +mobileFlag +'</h1>')
-
     // // Break by M/F
     // const pie = d3.pie()
     // pieColors = [sexColorsDict['m'], sexColorsDict['f']]

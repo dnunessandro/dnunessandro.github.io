@@ -80,9 +80,9 @@ function createValueLabels(circleGroups, rScale){
 
 function bindAnimations(globalDataAllArray, globalDataPreviousArray, rScale, rScales){
 
-    mobileFlag ? 
-    d3.selectAll('.circle-group').on('touchcancel', 
-        (_,i)=>showNewCases(i, globalDataAllArray[i], globalDataPreviousArray[i], rScale, rScales)) :
+    //mobileFlag ? 
+    //d3.selectAll('.circle-group').on('touchcancel', 
+    //    (_,i)=>showNewCases(i, globalDataAllArray[i], globalDataPreviousArray[i], rScale, rScales)) :
     d3.selectAll('.circle-group').on('mouseenter', 
         (_,i)=>showNewCases(i, globalDataAllArray[i], globalDataPreviousArray[i], rScale, rScales))
 

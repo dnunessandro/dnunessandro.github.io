@@ -17,8 +17,6 @@ function showNewCases(i, varAll, varPrevious, rScale, rScales){
         .attr('r', rScales[allVars[i]](varAll))
         .style('opacity', 1)
 
-    console.log(d3.select('.circle-value.' + allVars[i]))
-
     // Fade Out Circle Value
     d3.select('.circle-value.' + allVars[i])
         .transition()
@@ -108,8 +106,16 @@ function showNewCases(i, varAll, varPrevious, rScale, rScales){
         .ease(d3.easePoly)
         .style('fill', boxColor)
         .filter(d=>rScale(d) > maxRadiusWidthFrac*maxRadiusThreshFrac*chartWidth)
-        .attr('r', maxRadiusWidthFrac*maxRadiusThreshFrac*chartWidth)
-
+        .attr('r', greyedOutRadiusFrac*chartWidth)
+    
+    d3.selectAll('.circle-shape.previous')
+        .filter((_,e)=>e!=i)
+        .transition('c')
+        .duration(200)
+        .ease(d3.easePoly)
+        .filter(d=>rScale(d) > maxRadiusWidthFrac*maxRadiusThreshFrac*chartWidth)
+        .attr('r', greyedOutRadiusFrac*chartWidth)
+    
     // Hide Remaining Circles Values
     d3.selectAll('.circle-value')
         .filter((_,e)=>e!=i)
@@ -123,7 +129,7 @@ function showNewCases(i, varAll, varPrevious, rScale, rScales){
 function hideNewCases(i, rScale){
 
     d3.select('.circle-shape.all.' + allVars[i])
-        .transition()
+        .transition('a')
         .duration(200)
         .ease(d3.easePoly)
         .style('fill', varsColorsDict[allVars[i]])
@@ -149,19 +155,39 @@ function hideNewCases(i, rScale){
         .style('opacity', 1)
 
     // Resize Circles
+    let remainingVars = []
+    allVars.forEach(d=>d!=allVars[i] ? remainingVars.push(d) : null)
     d3.selectAll('.circle-shape.all')
+        .filter((_,e)=>e!=i)
         .transition()
         .duration(200)
         .ease(d3.easePoly)
-        .style('fill', (_,e)=>varsColorsDict[allVars[e]])
+        .style('fill', (_,e)=>varsColorsDict[remainingVars[e]])
+        .attr('r', d=>rScale(d))
+    d3.selectAll('.circle-shape.previous')
+        .filter((_,e)=>e!=i)
+        .transition()
+        .duration(200)
+        .ease(d3.easePoly)
+        .style('fill', (_,e)=>varsColorsDict[remainingVars[e]])
         .attr('r', d=>rScale(d))
 
     // Show Labels
     d3.selectAll('.circle-value')
+        .filter((_,e)=>e!=i)
         .transition()
         .duration(200)
         .ease(d3.easePoly)
         .style('opacity', 1)
+
+    // // Re-enable pointer events
+    // d3.select('.circle-group.' + allVars[i])
+    //     .style('pointer-events', 'none')
+    //  d3.selectAll('.circle-group')
+    //      .filter((_,e)=>e!=i)
+    //      .style('pointer-events', 'auto')
+
+    
 
 
 }
