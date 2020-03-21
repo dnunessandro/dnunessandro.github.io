@@ -16,9 +16,6 @@ function getRadiusScale(rangeMin, rangeMax, ...arrays){
     arraysMin = d3.min(concatArrays)
     arraysMax = d3.max(concatArrays)
 
-    console.log(arraysMin)
-    console.log(arraysMax)
-
     const scale = d3.scaleSqrt()
         .domain([0, arraysMax])
         .range([rangeMin, rangeMax])
@@ -34,7 +31,7 @@ function createScales(globalDataAllArray, globalDataPreviousArray){
         Math.round(chartWidth*chartWidthFracPad), 
         Math.round(chartWidth-chartWidth*chartWidthFracPad))
 
-    const rScale = getRadiusScale(0, maxRadiusWidthFrac*chartWidth, globalDataAllArray, globalDataPreviousArray)
+    const rScale = getRadiusScale(minRadiusWidthFrac*chartWidth, maxRadiusWidthFrac*chartWidth, globalDataAllArray, globalDataPreviousArray)
 
     rScales = {}
     allVars.forEach(function(d, i){

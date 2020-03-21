@@ -3,7 +3,13 @@ const dataPath = 'data/data.json'
 
 // Variables Dicts
 const allVars = ['confirmados', 'recuperados', 'obitos']
-const ageBrackets = ['0_9', '10_19', '20_29', '30_39', '40_49', '50_59', '60_69', '70_79', '80_plus']
+const breakdownCategories = ['sex', 'age', 'region']
+const ageBrackets = ['0_19', '20_29', '30_39', '40_49', '50_59', '60_69', '70_plus']
+const newAgeBracketsDict = {
+    '0_19': ['0_9', '10_19'],
+    '70_plus': ['70_79', '80_plus'] 
+}
+const regions = ['arsnorte', 'arscentro', 'arslvt', 'arsalentejo', 'arsalgarve', 'acores', 'madeira', 'estrangeiro']
 
 const globalVarsDict = {
     'confirmados': 'confirmados',
@@ -25,11 +31,12 @@ const varsTitlesDict = {
     'obitos': 'Óbitos'
 }
 
+// Colors
 const varsColorsDict = {
-    'confirmados': '#f6ce6e',
+    'confirmados': '#d7b354',
     'recuperados': '#6ab96b',
     'obitos': '#f97b7c',
-    'confirmados_novos': '#d7b354',
+    'confirmados_novos': '#f6ce6e',
     'recuperados_novos': '#86d182',
     'obitos_novos': '#ff9c9c'
 }
@@ -41,13 +48,19 @@ const sexColorsDict = {
     'f_anterior': '#7cb3ad'
 }
 
+const breakdownColorsDict = {
+    'sex': ['#cbd5e8', '#f4cae4'],
+    'age': ["#b3e2cd", "#fdcdac", "#cbd5e8", "#f4cae4", "#e6f5c9", "#fff2ae", "#f1e2cc", "#cccccc"],
+    'region': ["#b3e2cd", "#fdcdac", "#cbd5e8", "#f4cae4", "#e6f5c9", "#fff2ae", "#f1e2cc", "#cccccc"]
+}
+
 const boxColor = '#f3f3f3'
 
 // Dimensions Variables
 const chartWidth = parseInt($(window).width()*0.95)
 const chartHeight = parseInt($(window).height()*0.8)
 const chartWidthFracPad = 0.2
-const minRadiusWidthFrac = 0
+const minRadiusWidthFrac = 0.01
 const maxRadiusWidthFrac = 0.17
 const minRadiusLabel = 20
 const breakdownShapePad = 5
@@ -58,11 +71,28 @@ const greyedOutRadiusFrac = 0.05
 // Create SVG Element
 const svg = d3.select('#chart')
     .append('svg')
-    .attr('width', chartWidth*0.9)
-    .attr('height', chartHeight*0.9)
+    .attr('width', chartWidth)
+    .attr('height', chartHeight)
 
 // Create Pie Element
-const pie = d3.pie()
+const pie = d3.pie().sort(null)
 
 // Mobile Flag
 const mobileFlag = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+
+// Generate Infinite Breakdown Vector
+let breakdownIndexArray = []
+for (let index = 0; index < 100; index++) {
+    auxArray = [...Array(breakdownCategories.length).keys()]
+    auxArray.forEach(d=>breakdownIndexArray.push(d)) 
+}
+let breakdownIndex = 0
+let showbreakDownFlag = false
+
+// Dealing with Unavailable Data
+const unavailableDict = {
+    'confirmados': [],
+    'recuperados': [0.6, 0.4],
+    'obitos': [0.6, 0.4]
+}
+const unavailableColors = ['#AEB5BF', '#D9D9D9']

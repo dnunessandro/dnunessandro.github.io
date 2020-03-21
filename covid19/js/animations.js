@@ -1,6 +1,6 @@
-function showNewCases(i, varAll, varPrevious, rScale, rScales){
+function showNewCasesBreakdown(i, varAll, varPrevious, rScales){
 
-    // Fade In Inner Circle and 
+    // Fade In Inner Circle and Change Shape
     d3.select('.circle-shape.previous.' + allVars[i])
         .style('opacity', 1)
         .transition()
@@ -98,6 +98,10 @@ function showNewCases(i, varAll, varPrevious, rScale, rScales){
         .ease(d3.easePoly)
         .style('opacity', 1)  
 
+}
+
+function resizeRemainingCircles(i, rScale){
+
     // Resize and Recolor Remaining Circles
     d3.selectAll('.circle-shape.all')
         .filter((_,e)=>e!=i)
@@ -126,8 +130,10 @@ function showNewCases(i, varAll, varPrevious, rScale, rScales){
 
 }
 
+
 function hideNewCases(i, rScale){
 
+    // Resize Current Circle to Relative Size
     d3.select('.circle-shape.all.' + allVars[i])
         .transition('a')
         .duration(200)
@@ -135,26 +141,29 @@ function hideNewCases(i, rScale){
         .style('fill', varsColorsDict[allVars[i]])
         .attr('r', d=>rScale(d))
 
+    // Hide Current Circle Inner Circle
     d3.select('.circle-shape.previous.' + allVars[i])
         .transition()
         .duration(200)
         .ease(d3.easePoly)
         .attr('r', d=>rScale(d))
         .style('opacity', 0)
+        
 
+    // Remove Breakdown Group
     d3.select('.breakdown-group.' + allVars[i]).selectAll('*')
         .remove()
-
     d3.select('.breakdown-group.' + allVars[i])
         .remove()
 
+    // Show Current Circle All Cases Labels
     d3.select('.circle-value.' + allVars[i])
         .transition()
         .duration(200)
         .ease(d3.easePoly)
         .style('opacity', 1)
 
-    // Resize Circles
+    // Resize Remaining Circles
     let remainingVars = []
     allVars.forEach(d=>d!=allVars[i] ? remainingVars.push(d) : null)
     d3.selectAll('.circle-shape.all')
@@ -180,14 +189,9 @@ function hideNewCases(i, rScale){
         .ease(d3.easePoly)
         .style('opacity', 1)
 
-    // // Re-enable pointer events
-    // d3.select('.circle-group.' + allVars[i])
-    //     .style('pointer-events', 'none')
-    //  d3.selectAll('.circle-group')
-    //      .filter((_,e)=>e!=i)
-    //      .style('pointer-events', 'auto')
-
-    
-
 
 }
+
+
+
+

@@ -78,14 +78,32 @@ function createValueLabels(circleGroups, rScale){
     return circleLabels
 }
 
-function bindAnimations(globalDataAllArray, globalDataPreviousArray, rScale, rScales){
+function bindAnimations(globalDataAllArray, globalDataPreviousArray, rScale, rScales, breakdownDataAll, breakdownDataPrevious, colors){
 
     //mobileFlag ? 
     //d3.selectAll('.circle-group').on('touchcancel', 
     //    (_,i)=>showNewCases(i, globalDataAllArray[i], globalDataPreviousArray[i], rScale, rScales)) :
-    d3.selectAll('.circle-group').on('mouseenter', 
-        (_,i)=>showNewCases(i, globalDataAllArray[i], globalDataPreviousArray[i], rScale, rScales))
+    d3.selectAll('.circle-group').on('click', function(_,i){
 
-    d3.selectAll('.circle-group').on('mouseleave', 
-    (_,i)=>hideNewCases(i, rScale))
+        
+        if(showbreakDownFlag){
+            createBreakdownPie(allVars[i], breakdownDataAll[breakdownIndexArray[breakdownIndex]][i], breakdownDataPrevious[breakdownIndexArray[breakdownIndex]][i], breakdownColorsDict[breakdownCategories[breakdownIndexArray[breakdownIndex]]], rScale)
+            //hideNewCases(i, rScale)
+            breakdownIndex++
+        }else{
+            //showNewCases(i, globalDataAllArray[i], globalDataPreviousArray[i], rScale, rScales, breakdownDataAll, breakdownDataPrevious)
+            showNewCasesBreakdown(i, globalDataAllArray[i], globalDataPreviousArray[i], rScales)
+            resizeRemainingCircles(i, rScale)
+            removeBreakdownPie(rScale, breakdownDataAll[breakdownIndexArray[breakdownIndex]][i], breakdownDataPrevious[breakdownIndexArray[breakdownIndex]][i])
+            showbreakDownFlag = true
+        }
+
+    }) 
+
+    d3.selectAll('.circle-group').on('mouseleave', function(_,i){
+        hideNewCases(i, rScale)
+        removeBreakdownPie(rScale, breakdownDataAll[breakdownIndexArray[breakdownIndex]][i], breakdownDataPrevious[breakdownIndexArray[breakdownIndex]][i])
+        showbreakDownFlag = false
+        breakdownIndex=0
+    })
 }
