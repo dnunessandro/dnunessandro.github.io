@@ -52,11 +52,11 @@ function createTitles(circleGroups, globalDataAllArray, rScale){
         .classed('circle-title', true)
         .attr('x', 0)
         .attr('y', (d,i)=> -rScale(Math.max(...globalDataAllArray))-20)
-        .attr('opacity', 0)
+        .style('opacity', 0)
         .transition()
         .duration(1000)
         .ease(d3.easePoly)
-        .attr('opacity', 1)
+        .style('opacity', 1)
 
     return circleTitles
 }
@@ -69,41 +69,87 @@ function createValueLabels(circleGroups, rScale){
         .classed('circle-value', true)
         .attr('x', 0)
         .attr('y', (d,i) => rScale(d) < minRadiusLabel ? rScale(d) + 15 : 0)
-        .attr('opacity', 0)
+        .style('opacity', 0)
         .transition()
         .duration(1000)
         .ease(d3.easePoly)
-        .attr('opacity', 1)
+        .style('opacity', 1)
 
     return circleLabels
 }
 
-function bindAnimations(globalDataAllArray, globalDataPreviousArray, rScale, rScales, breakdownDataAll, breakdownDataPrevious, colors){
+function createCircleNewCasesBreakdown(variable, previousValue, currentValue, variableRScale){
 
-    //mobileFlag ? 
-    //d3.selectAll('.circle-group').on('touchcancel', 
-    //    (_,i)=>showNewCases(i, globalDataAllArray[i], globalDataPreviousArray[i], rScale, rScales)) :
-    d3.selectAll('.circle-group').on('click', function(_,i){
+    // Create Group for Breakdown Values
+    const circleBreadkdownValuesGroup = d3.select('.circle-group.' + variable)
+        .append('g')
+        .attr('class', variable)
+        .classed('new-cases-labels', true)
+        .style('opacity', 0)
 
+    // Create Previous Value Label Background Shape
+    circleBreadkdownValuesGroup
+        .append('rect')
+        .attr('class', variable)
+        .classed('new-cases-shape', true)
+        .classed('previous', true)
+
+    // Create Current Value Label Background Shape
+    circleBreadkdownValuesGroup
+        .append('rect')
+        .attr('class', variable)
+        .classed('new-cases-shape', true)
+        .classed('all', true)
+
+    // Create Previous Value Label
+    circleBreadkdownValuesGroup
+        .append('text')
+        .attr('class', variable)
+        .classed('new-cases-value', true)
+        .classed('previous', true)
+        .text(previousValue)
+        .style('fill', varsColorsDict[variable])
+
+    // Create Current Value Label
+    circleBreadkdownValuesGroup
+        .append('text')
+        .attr('class', variable)
+        .classed('new-cases-value', true)
+        .classed('all', true)
+        .text(currentValue - previousValue)
+        .attr('x', variableRScale(currentValue)*0.95)
+        .attr('y', -variableRScale(currentValue)*0.95)
+        .style('fill', varsColorsDict[variable+'_novos'])
+
+    // Modify Breakdown Background Shapes Width and Height
+    let textBBox = d3.select('.new-cases-value.' + variable).node().getBBox()
+    let textWidth = textBBox.width
+    let textHeight = textBBox.height
+
+    d3.select('.new-cases-shape.previous.' + variable)
+        .attr('width', textWidth+breakdownShapePad)
+        .attr('height', textHeight+breakdownShapePad)
+        .attr('x', -(textWidth+breakdownShapePad)/2)
+        .attr('y', -(textHeight+breakdownShapePad+2)/2)
+        .attr('rx', breakdownShapeRx)
+        .style('fill', boxColor)
         
-        if(showbreakDownFlag){
-            createBreakdownPie(allVars[i], breakdownDataAll[breakdownIndexArray[breakdownIndex]][i], breakdownDataPrevious[breakdownIndexArray[breakdownIndex]][i], breakdownColorsDict[breakdownCategories[breakdownIndexArray[breakdownIndex]]], rScale)
-            //hideNewCases(i, rScale)
-            breakdownIndex++
-        }else{
-            //showNewCases(i, globalDataAllArray[i], globalDataPreviousArray[i], rScale, rScales, breakdownDataAll, breakdownDataPrevious)
-            showNewCasesBreakdown(i, globalDataAllArray[i], globalDataPreviousArray[i], rScales)
-            resizeRemainingCircles(i, rScale)
-            removeBreakdownPie(rScale, breakdownDataAll[breakdownIndexArray[breakdownIndex]][i], breakdownDataPrevious[breakdownIndexArray[breakdownIndex]][i])
-            showbreakDownFlag = true
-        }
 
-    }) 
+    textBBox = d3.select('.new-cases-value.' + variable).node().getBBox()
+    textWidth = textBBox.width
+    textHeight = textBBox.height
 
-    d3.selectAll('.circle-group').on('mouseleave', function(_,i){
-        hideNewCases(i, rScale)
-        removeBreakdownPie(rScale, breakdownDataAll[breakdownIndexArray[breakdownIndex]][i], breakdownDataPrevious[breakdownIndexArray[breakdownIndex]][i])
-        showbreakDownFlag = false
-        breakdownIndex=0
-    })
+    d3.select('.new-cases-shape.all.' + variable)
+        .attr('x', variableRScale(currentValue)*0.95-(textWidth+breakdownShapePad)/2)
+        .attr('y', -variableRScale(currentValue)*0.95-(textHeight+breakdownShapePad+2)/2)
+        .attr('width', textWidth+breakdownShapePad)
+        .attr('height', textHeight+breakdownShapePad)
+        .attr('rx', breakdownShapeRx)
+        .style('fill', boxColor)
+
 }
+
+function createAllCirclesNewsCasesBreakdown(allVars, globalDataPreviousArray, globalDataAllArray, rScales){
+    allVars.forEach((v,i)=>createCircleNewCasesBreakdown(v, globalDataPreviousArray[i], globalDataAllArray[i], rScales[v]))
+}
+

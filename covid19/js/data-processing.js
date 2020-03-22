@@ -1,7 +1,9 @@
-function getGlobalData(data, globalVarsDict){
+function getGlobalData(data, globalVarsDict, smallCategoryValuesDict){
     let globalData = {}
     const lastDayData = data.slice(-1)[0]
     const secondLastDayData = data.slice(-2)[0]
+
+
 
     globalData['confirmados'] = lastDayData[globalVarsDict['confirmados']]
     globalData['recuperados'] = lastDayData[globalVarsDict['recuperados']]
@@ -14,7 +16,7 @@ function getGlobalData(data, globalVarsDict){
     globalData['obitos_anterior'] = secondLastDayData[globalVarsDict['obitos']]
     globalData = getGlobalSexData(globalData, lastDayData, secondLastDayData, allVars)
     globalData = getGlobalAgeData(globalData, lastDayData, secondLastDayData, allVars, ageBrackets)
-    globalData = getGlobalRegionData(globalData, lastDayData, secondLastDayData, allVars, regions)
+    globalData = getGlobalRegionData(globalData, lastDayData, secondLastDayData, allVars, regions, smallCategoryValuesDict)
     return globalData
 }
 
@@ -77,10 +79,16 @@ function getGlobalAgeData(globalData, lastDayData, secondLastDayData, allVars, a
     
 }
 
-function getGlobalRegionData(globalData, lastDayData, secondLastDayData, allVars, regions){
+function getGlobalRegionData(globalData, lastDayData, secondLastDayData, allVars, regions, smallCategoryValuesDict){
 
     allVars.forEach(function(v){
-        regions.forEach(function(b){
+        
+        let regionsCopy = [...regions]
+        if (smallCategoryValuesDict[v].length > 1){
+            regionsCopy.push('region_other')
+        }
+
+        regionsCopy.forEach(function(b){
             globalData[v + '_' + b] = lastDayData[v + '_' + b]
             globalData[v + '_' + b + '_anterior'] = secondLastDayData[v + '_' + b]
         })
@@ -90,19 +98,76 @@ function getGlobalRegionData(globalData, lastDayData, secondLastDayData, allVars
     
 }
 
+function updateSmallCategoryValues(category, variable, categories, smallCategoryValuesDict){
+    if (smallCategoryValuesDict[variable].length>1){
+        return removeSmallCategoryValues(categories, smallCategoryValuesDict[variable], category, variable)
+    }else{
+        return categories
+    }
+}
+
+function removeSmallCategoryValues(categories, categoriesToRemove, category, variable){
+
+    let categoriesCopy = [...categories]
+    categoriesToRemove.forEach(function(c){
+        let index = categoriesCopy.indexOf(c)
+        categoriesCopy.splice(index, 1)
+    })
+
+    categoriesCopy.push(category + '_other')
+    return categoriesCopy
+}
+
+function getSmallCategoryValuesDict(lastDayData, categoryValues, smallValuesFracTresh){
+
+    let smallCategoryValuesDict = {}
+
+    allVars.forEach(function(v){
+
+        smallCategoryValuesDict[v] = []
+
+        let varTotal = lastDayData[v]
+
+        categoryValues.forEach(function(c){
+
+            lastDayData[v + '_' + c] < smallValuesFracTresh * varTotal ? smallCategoryValuesDict[v].push(c) : undefined
+    
+        })
+
+    })
+
+    return smallCategoryValuesDict
+
+}
+
+function computeOtherCategory(data, category, smallCategoryValuesDict){
+
+    data.forEach(function(d, i){
+        allVars.forEach(function(v){
+            if (smallCategoryValuesDict[v].length > 1){
+                data[i][v + '_' + category + '_other'] = sumArray(smallCategoryValuesDict[v].map(s=>data[i][v + '_' + s]))
+            }
+        })
+
+    })
+
+    return data
+
+}
+
 function getSexNumbers(globalData, allVars){    
 
     return allVars.map(d=>[globalData[d + '_f'], globalData[d + '_m']])
 
 }
 
-function getBreakdownData(globalData, breakdownCategories, allVars, ageBrackets, regions){
+function getBreakdownData(globalData, breakdownCategories, allVars, ageBrackets, regions, smallCategoryValuesDict){
 
     let breakdownDataAll = []
     let breakdownDataPrevious = []
 
     breakdownCategories.forEach(function(c){
-        categoryBreakDownData = getBreakdownDataArrays(globalData, c, allVars, ageBrackets, regions)
+        categoryBreakDownData = getBreakdownDataArrays(globalData, c, allVars, ageBrackets, regions, smallCategoryValuesDict)
         categoryBreakDownDataAll = categoryBreakDownData[0]
         categoryBreakDownDataPrevious = categoryBreakDownData[1]
         breakdownDataAll.push(categoryBreakDownDataAll)
@@ -111,7 +176,7 @@ function getBreakdownData(globalData, breakdownCategories, allVars, ageBrackets,
     return [breakdownDataAll, breakdownDataPrevious]
 }
 
-function getBreakdownDataArrays(globalData, category, allVars, ageBrackets, regions){
+function getBreakdownDataArrays(globalData, category, allVars, ageBrackets, regions, smallCategoryValuesDict){
 
     if(category == 'sex'){
         const dataAllArray = allVars.map(d=>[globalData[d + '_f'], globalData[d + '_m']])
@@ -122,8 +187,8 @@ function getBreakdownDataArrays(globalData, category, allVars, ageBrackets, regi
         const dataPreviousArray = allVars.map(v=>ageBrackets.map(b=>globalData[v + '_' + b + '_anterior']))
         return [dataAllArray, dataPreviousArray]
     }else if(category == 'region'){
-        const dataAllArray = allVars.map(v=>regions.map(b=>globalData[v + '_' + b]))
-        const dataPreviousArray = allVars.map(v=>regions.map(b=>globalData[v + '_' + b + '_anterior']))
+        const dataAllArray = allVars.map(v=>updateSmallCategoryValues('region', v, regions, smallCategoryValuesDict).map(b=>globalData[v + '_' + b]))
+        const dataPreviousArray = allVars.map(v=>updateSmallCategoryValues('region', v, regions, smallCategoryValuesDict).map(b=>globalData[v + '_' + b + '_anterior']))
         return [dataAllArray, dataPreviousArray]
     }
 
@@ -139,4 +204,43 @@ function sumArray(dataArray){
 
 function numOr0(n){
     return isNaN(n) ? 0 : n
+}
+
+function fixUnavailableBreakdownData(breakdownDataPrevious, breakdownDataAll, globalDataPreviousArray, globalDataAllArray, unavailableDict){
+
+    allVars.forEach(function(v, i){
+        if (unavailableDict[v].length != 0){
+            breakdownDataPrevious.forEach(function(_,ci){
+                breakdownDataPrevious[ci][i] = unavailableDict[v].map(o=>Math.round(o*globalDataPreviousArray[i]))
+                breakdownDataAll[ci][i] = [...unavailableDict[v]].reverse().map(o=>Math.round(o*globalDataAllArray[i]))
+            })
+        }
+    })
+    return [breakdownDataPrevious, breakdownDataAll]
+}
+
+function getOtherBreakdownData(globalData, smallCategoryValuesDict){
+    let otherBreakdownAllData = []
+    let otherBreakdownPreviousData = []
+    allVars.forEach(function(v){
+        let breakdownData = getOtherBreakdownArrays(globalData, v, smallCategoryValuesDict[v])
+        otherBreakdownPreviousData.push(breakdownData[0])
+        otherBreakdownAllData.push(breakdownData[1])
+    })
+
+    return [otherBreakdownPreviousData, otherBreakdownAllData]
+}
+
+function getOtherBreakdownArrays(globalData, variable, categories){
+
+    let breakdownDataPreviousArray = []
+    let breakdownDataAllArray = []
+
+    categories.forEach(function(c){
+        breakdownDataPreviousArray.push(globalData[variable + '_' + c + '_anterior'])
+        breakdownDataAllArray.push(globalData[variable + '_' + c])
+    })
+
+    return [breakdownDataPreviousArray, breakdownDataAllArray]
+
 }

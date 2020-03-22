@@ -1,27 +1,32 @@
 d3.json(dataPath).then(function(data){
-    
+
 
     // Compute Additional Daily Numbers
     data = getAdditionalAgeBrackets(data, newAgeBracketsDict, allVars)
     data = getDailySexData(data, allVars, ageBrackets)
+    const smallCategoryValuesDict = getSmallCategoryValuesDict(data.slice(-1)[0], regions, smallValuesFracTresh)
+    data = computeOtherCategory(data, 'region', smallCategoryValuesDict)
     
-
-    console.log(data);
-
+    
     // Get Global Data
-    const globalData = getGlobalData(data, globalVarsDict)
+    const globalData = getGlobalData(data, globalVarsDict, smallCategoryValuesDict)
     const globalDataAllArray = allVars.map(d=>globalData[d])
     const globalDataPreviousArray = allVars.map(d=> d + '_anterior').map(d=>globalData[d])
-    
-    console.log(globalData)
 
     // Get Breakdown Data
-    breakdownData = getBreakdownData(globalData, breakdownCategories, allVars, ageBrackets, regions)
-    const breakdownDataAll = breakdownData[0]
-    const breakdownDataPrevious = breakdownData[1]
+    breakdownData = getBreakdownData(globalData, breakdownCategories, allVars, ageBrackets, regions, smallCategoryValuesDict)
+    let breakdownDataAll = breakdownData[0]
+    let breakdownDataPrevious = breakdownData[1]
 
-    console.log(breakdownDataAll)
-    console.log(breakdownDataPrevious)
+    // Get Other Breakdown Data
+    breakdownData = getOtherBreakdownData(globalData, smallCategoryValuesDict)
+    const otherBreakdownPreviousData = breakdownData[0]
+    const otherBreakdownAllData = breakdownData[1]
+
+    // Fix Unavailable Data
+    const fixedBreakdownDataAll =  fixUnavailableBreakdownData(breakdownDataPrevious, breakdownDataAll, globalDataPreviousArray, globalDataAllArray, unavailableDict)
+    breakdownDataPrevious = fixedBreakdownDataAll[0]
+    breakdownDataAll = fixedBreakdownDataAll[1]
     
     // Create Scales
     const scales = createScales(globalDataAllArray, globalDataPreviousArray)
@@ -43,9 +48,11 @@ d3.json(dataPath).then(function(data){
     // Create Value Labels
     const circleLabels = createValueLabels(circleGroups, rScale)
 
-    // Create New Cases Animation
-    bindAnimations(globalDataAllArray, globalDataPreviousArray, rScale, rScales, breakdownDataAll, breakdownDataPrevious, breakdownColorsDict)
+    // Create New Cases Breakdown
+    createAllCirclesNewsCasesBreakdown(allVars, globalDataPreviousArray, globalDataAllArray, rScales)
 
-    // Create Breakdown Animation
-    //createBreakdownAnimations(breakdownCategories, allVars, breakdownDataAll, breakdownDataPrevious, breakdownColorsDict, rScale)
+
+    // Bind Animations
+    bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDataPrevious, breakdownDataAll, rScale, rScales, otherBreakdownPreviousData, otherBreakdownAllData)
+
 })

@@ -43,3 +43,4 @@ function createScales(globalDataAllArray, globalDataPreviousArray){
     return [cxScale, rScale, rScales]
 
 }
+

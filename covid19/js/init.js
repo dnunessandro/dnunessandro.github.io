@@ -54,6 +54,8 @@ const breakdownColorsDict = {
     'region': ["#b3e2cd", "#fdcdac", "#cbd5e8", "#f4cae4", "#e6f5c9", "#fff2ae", "#f1e2cc", "#cccccc"]
 }
 
+const smallValuesColors = d3.schemePastel1
+
 const boxColor = '#f3f3f3'
 
 // Dimensions Variables
@@ -74,6 +76,14 @@ const svg = d3.select('#chart')
     .attr('width', chartWidth)
     .attr('height', chartHeight)
 
+// Create Dummy SVG Rect Element
+const dummyRect = svg
+    .append('rect')
+    .attr('id', 'callback-rect')
+    .attr('width', chartWidth)
+    .attr('height', chartHeight)
+    .style('opacity', 0)
+
 // Create Pie Element
 const pie = d3.pie().sort(null)
 
@@ -87,7 +97,11 @@ for (let index = 0; index < 100; index++) {
     auxArray.forEach(d=>breakdownIndexArray.push(d)) 
 }
 let breakdownIndex = 0
-let showbreakDownFlag = false
+let showbreakDownFlagDict = {
+    'confirmados': false,
+    'recuperados': false,
+    'obitos': false
+}
 
 // Dealing with Unavailable Data
 const unavailableDict = {
@@ -96,3 +110,8 @@ const unavailableDict = {
     'obitos': [0.6, 0.4]
 }
 const unavailableColors = ['#AEB5BF', '#D9D9D9']
+
+// Dealing with Small Category Values
+const smallValuesFracTresh = 0.02
+const smallValuesMinRadiusWidthFrac = 0.01
+const smallValuesMaxRadiusWidthFrac = 0.1

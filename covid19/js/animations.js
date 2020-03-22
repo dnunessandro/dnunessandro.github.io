@@ -1,197 +1,230 @@
-function showNewCasesBreakdown(i, varAll, varPrevious, rScales){
+function showCircleNewCases(variable, previousValue, currentValue, variableRScale){
 
-    // Fade In Inner Circle and Change Shape
-    d3.select('.circle-shape.previous.' + allVars[i])
-        .style('opacity', 1)
-        .transition()
-        .duration(200)
-        .ease(d3.easePoly)
-        .attr('r', rScales[allVars[i]](varPrevious))
-
-    // Color Outer Circle and Change Shape
-    d3.select('.circle-shape.all.' + allVars[i])
-        .transition()
-        .duration(200)
-        .ease(d3.easePoly)
-        .style('fill', varsColorsDict[allVars[i] + '_novos'])
-        .attr('r', rScales[allVars[i]](varAll))
-        .style('opacity', 1)
-
-    // Fade Out Circle Value
-    d3.select('.circle-value.' + allVars[i])
-        .transition()
-        .duration(200)
-        .ease(d3.easePoly)
-        .style('opacity', 0)
-
-    // Create Group for Breakdown Values
-    const circleBreadkdownValuesGroup = d3.select('.circle-group.' + allVars[i])
-        .append('g')
-        .attr('class', allVars[i])
-        .classed('breakdown-group', true)
-
-    // Create Breakdown Values Background Shapes
-    circleBreadkdownValuesGroup
-        .append('rect')
-        .attr('class', allVars[i])
-        .classed('breakdown-shape', true)
-        .classed('previous', true)
-
-    circleBreadkdownValuesGroup
-        .append('rect')
-        .attr('class', allVars[i])
-        .classed('breakdown-shape', true)
-        .classed('new', true)
-
-    // Create Breakdown Values Labels
-    circleBreadkdownValuesGroup
-        .append('text')
-        .attr('class', allVars[i])
-        .classed('breakdown-value', true)
-        .classed('previous', true)
-        .text(varPrevious)
-        .style('fill', varsColorsDict[allVars[i]])
-
-    circleBreadkdownValuesGroup
-        .append('text')
-        .attr('class', allVars[i])
-        .classed('breakdown-value', true)
-        .classed('new', true)
-        .text(varAll - varPrevious)
-        .attr('x', rScales[allVars[i]](varAll)*0.95)
-        .attr('y', -rScales[allVars[i]](varAll)*0.95)
-        .style('fill', varsColorsDict[allVars[i]+'_novos'])
-
-    // Modify Breakdown Background Shapes Width and Height
-    let textBBox = d3.select('.breakdown-value.' + allVars[i]).node().getBBox()
-    let textWidth = textBBox.width
-    let textHeight = textBBox.height
-
-    d3.select('.breakdown-shape.previous.' + allVars[i])
-        .attr('width', textWidth+breakdownShapePad)
-        .attr('height', textHeight+breakdownShapePad)
-        .attr('x', -(textWidth+breakdownShapePad)/2)
-        .attr('y', -(textHeight+breakdownShapePad+2)/2)
-        .attr('rx', breakdownShapeRx)
-        .style('fill', boxColor)
-        .style('opacity', 0)
-        .transition()
-        .duration(200)
-        .ease(d3.easePoly)
-        .style('opacity', 1)
-        
-
-    textBBox = d3.select('.breakdown-value.' + allVars[i]).node().getBBox()
-    textWidth = textBBox.width
-    textHeight = textBBox.height
-
-    d3.select('.breakdown-shape.new.' + allVars[i])
-        .attr('x', rScales[allVars[i]](varAll)*0.95-(textWidth+breakdownShapePad)/2)
-        .attr('y', -rScales[allVars[i]](varAll)*0.95-(textHeight+breakdownShapePad+2)/2)
-        .attr('width', textWidth+breakdownShapePad)
-        .attr('height', textHeight+breakdownShapePad)
-        .attr('rx', breakdownShapeRx)
-        .style('fill', boxColor)
-        .style('opacity', 0)
-        .transition()
-        .duration(200)
-        .ease(d3.easePoly)
-        .style('opacity', 1)  
-
+    showInnerCircle(variable, previousValue, variableRScale)
+    showOuterCircle(variable, currentValue, variableRScale)
+    hideGlobalCircleValue(variable)
+    showCircleNewCasesLabels(variable)
 }
 
-function resizeRemainingCircles(i, rScale){
+function showInnerCircle(variable, previousValue, variableRScale){
 
-    // Resize and Recolor Remaining Circles
-    d3.selectAll('.circle-shape.all')
-        .filter((_,e)=>e!=i)
+    d3.select('.circle-shape.previous.' + variable)
         .transition()
         .duration(200)
         .ease(d3.easePoly)
-        .style('fill', boxColor)
-        .filter(d=>rScale(d) > maxRadiusWidthFrac*maxRadiusThreshFrac*chartWidth)
-        .attr('r', greyedOutRadiusFrac*chartWidth)
-    
-    d3.selectAll('.circle-shape.previous')
-        .filter((_,e)=>e!=i)
-        .transition('c')
+        .style('opacity', 1)
+        .style('fill', varsColorsDict[variable])
+        .attr('r', variableRScale(previousValue))
+}
+
+function showOuterCircle(variable, currentValue, variableRScale){
+
+    d3.select('.circle-shape.all.' + variable)
+        .transition()
         .duration(200)
         .ease(d3.easePoly)
-        .filter(d=>rScale(d) > maxRadiusWidthFrac*maxRadiusThreshFrac*chartWidth)
-        .attr('r', greyedOutRadiusFrac*chartWidth)
-    
-    // Hide Remaining Circles Values
-    d3.selectAll('.circle-value')
-        .filter((_,e)=>e!=i)
+        .style('opacity', 1)
+        .style('fill', varsColorsDict[variable + '_novos'])
+        .attr('r', variableRScale(currentValue))
+}
+
+function hideGlobalCircleValue(variable){
+
+    d3.select('.circle-value.' + variable)
         .transition()
         .duration(200)
         .ease(d3.easePoly)
         .style('opacity', 0)
+}
 
+function showCircleNewCasesLabels(variable){
+
+    d3.select('.new-cases-labels.' + variable)
+        .transition()
+        .duration(200)
+        .ease(d3.easePoly)
+        .style('opacity', 1)
 }
 
 
-function hideNewCases(i, rScale){
 
-    // Resize Current Circle to Relative Size
-    d3.select('.circle-shape.all.' + allVars[i])
+
+
+
+
+function greyOutOtherCircles(variable, rScale){
+
+    allVars.filter(v=>v!=variable).forEach(function(v){
+        hideInnerCircle(v, rScale)
+        hideCircleNewCasesLabels(v)
+        greyOutCircle(v, rScale)
+    })
+
+}
+
+function greyOutCircle(variable, rScale){
+    d3.select('.circle-shape.all.' + variable)
+        .transition()
+        .duration(200)
+        .ease(d3.easePoly)
+        .style('fill', boxColor)
+        .attr('r', greyedOutRadiusFrac*chartWidth)
+        .style('opacity', 1)
+
+    d3.selectAll('.circle-value.' + variable)
+        .transition()
+        .duration(200)
+        .ease(d3.easePoly)
+        .style('opacity', 0)
+}
+ 
+
+
+
+
+
+
+function hideCircleNewCases(variable, rScale){
+
+    resizeOuterCircleToOriginal(variable, rScale)
+    hideInnerCircle(variable, rScale)
+    hideCircleNewCasesLabels(variable)
+}
+
+function resizeOuterCircleToOriginal(variable, rScale){
+
+    d3.select('.circle-shape.all.' + variable)
         .transition('a')
         .duration(200)
         .ease(d3.easePoly)
-        .style('fill', varsColorsDict[allVars[i]])
+        .style('fill', varsColorsDict[variable])
         .attr('r', d=>rScale(d))
+        .style('opacity', 1)
+}
 
-    // Hide Current Circle Inner Circle
-    d3.select('.circle-shape.previous.' + allVars[i])
+function hideInnerCircle(variable, rScale){
+
+    d3.select('.circle-shape.previous.' + variable)
         .transition()
         .duration(200)
         .ease(d3.easePoly)
         .attr('r', d=>rScale(d))
         .style('opacity', 0)
-        
+}
 
-    // Remove Breakdown Group
-    d3.select('.breakdown-group.' + allVars[i]).selectAll('*')
-        .remove()
-    d3.select('.breakdown-group.' + allVars[i])
-        .remove()
+function hideCircleNewCasesLabels(variable){
 
-    // Show Current Circle All Cases Labels
-    d3.select('.circle-value.' + allVars[i])
+    d3.select('.new-cases-labels.' + variable)
         .transition()
         .duration(200)
         .ease(d3.easePoly)
-        .style('opacity', 1)
-
-    // Resize Remaining Circles
-    let remainingVars = []
-    allVars.forEach(d=>d!=allVars[i] ? remainingVars.push(d) : null)
-    d3.selectAll('.circle-shape.all')
-        .filter((_,e)=>e!=i)
-        .transition()
-        .duration(200)
-        .ease(d3.easePoly)
-        .style('fill', (_,e)=>varsColorsDict[remainingVars[e]])
-        .attr('r', d=>rScale(d))
-    d3.selectAll('.circle-shape.previous')
-        .filter((_,e)=>e!=i)
-        .transition()
-        .duration(200)
-        .ease(d3.easePoly)
-        .style('fill', (_,e)=>varsColorsDict[remainingVars[e]])
-        .attr('r', d=>rScale(d))
-
-    // Show Labels
-    d3.selectAll('.circle-value')
-        .filter((_,e)=>e!=i)
-        .transition()
-        .duration(200)
-        .ease(d3.easePoly)
-        .style('opacity', 1)
-
-
+        .style('opacity', 0)
 }
 
 
 
 
+
+function resetCircle(variable, rScale){
+    hideInnerCircle(variable, rScale)
+    resizeOuterCircleToOriginal(variable, rScale)
+    hideCircleNewCasesLabels(variable)
+    showGlobalCircleValue(variable)
+}
+
+
+
+
+function showGlobalCircleValue(variable){
+
+    d3.select('.circle-value.' + variable)
+        .transition()
+        .duration(200)
+        .ease(d3.easePoly)
+        .style('opacity', 1)
+}
+
+
+
+
+function hideGlobalCircle(variable){
+
+    d3.select('.all.circle-shape.' + variable)
+        .transition()
+        .duration(200)
+        .ease(d3.easePoly)
+        .style('opacity', 0)
+}
+
+
+
+function updateShowBreakdownFlagDict(variable){
+    const otherVars = allVars.filter(v=>v!=variable)
+    otherVars.forEach(v=>showbreakDownFlagDict[v]=false)
+    showbreakDownFlagDict[variable] = true
+}
+
+function resetShowBreakdownFlagDict(){
+    Object.keys(showbreakDownFlagDict).forEach(k=>showbreakDownFlagDict[k]=false)
+}
+
+
+                       
+function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDataPrevious, breakdownDataAll, rScale, rScales, otherBreakdownPreviousData, otherBreakdownAllData){
+
+        // Show Circles New Cases
+        d3.selectAll('.circle-group').on('click', function(d, i){
+
+            const variable = allVars[i]
+
+            if (showbreakDownFlagDict[variable]){
+                const ci = breakdownIndexArray[breakdownIndex]
+                const c = breakdownCategories[ci]
+                const colors = unavailableDict[variable].length == 0 ? breakdownColorsDict[c] : unavailableColors
+                createBreakdownPie(variable, breakdownDataAll[ci][i], breakdownDataPrevious[ci][i], colors, rScales)
+                hideInnerCircle(variable, rScale)
+                hideCircleNewCasesLabels(variable)
+                hideGlobalCircle(variable)
+                if (otherBreakdownPreviousData[i].length != 0 & c=='region'){
+                    createSmallNumbersBreakdownPie(variable, otherBreakdownPreviousData[i], otherBreakdownAllData[i])
+                }else if(c=='sex' & breakdownIndex != 0) {
+                    removeSmallNumbersBreakdownPie(variable, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
+                }
+                
+                breakdownIndex++
+            } else{
+                showCircleNewCases(variable, globalDataPreviousArray[i], globalDataAllArray[i], rScales[variable])
+                greyOutOtherCircles(variable, rScale)
+                removeOtherBreakdownPies(variable, breakdownDataAll, breakdownDataAll, breakdownIndex)
+                //removeAllSmallNumberBreakdownPies(otherBreakdownPreviousData, otherBreakdownAllData)
+                updateShowBreakdownFlagDict(variable)
+
+                if(!d3.select('.pie-other-group').empty()) {
+
+                    const targetVariable = d3.select('.pie-other-group').attr('class').split(' ').slice(-1)[0]
+                    removeSmallNumbersBreakdownPie(targetVariable, otherBreakdownAllData[allVars.indexOf(targetVariable)], 
+                    otherBreakdownPreviousData[allVars.indexOf(targetVariable)])
+                } 
+            }
+            
+
+        })
+
+        d3.select('#callback-rect').on('click', function(){
+            
+            allVars.forEach(function(v,i){
+                const ci = breakdownIndex > 0 ? breakdownIndexArray[breakdownIndex-1] : 0
+
+                removeBreakdownPie(v, rScales, breakdownDataAll[ci][i], breakdownDataPrevious[ci][i])
+                if(!d3.select('.pie-other-group.' + v).empty()) {  
+                    removeSmallNumbersBreakdownPie(v, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
+                } 
+                resetCircle(v, rScale)
+
+                breakdownIndex = 0
+                resetShowBreakdownFlagDict()
+            })
+
+        })
+
+}
