@@ -68,7 +68,7 @@ function greyOutCircle(variable, rScale){
         .duration(200)
         .ease(d3.easePoly)
         .style('fill', boxColor)
-        .attr('r', greyedOutRadiusFrac*chartWidth)
+        .attr('r', greyedOutRadiusFrac*globalChartWidth)
         .style('opacity', 1)
 
     d3.selectAll('.circle-value.' + variable)
@@ -157,7 +157,6 @@ function hideGlobalCircle(variable){
 }
 
 
-
 function updateShowBreakdownFlagDict(variable){
     const otherVars = allVars.filter(v=>v!=variable)
     otherVars.forEach(v=>showbreakDownFlagDict[v]=false)
@@ -168,16 +167,33 @@ function resetShowBreakdownFlagDict(){
     Object.keys(showbreakDownFlagDict).forEach(k=>showbreakDownFlagDict[k]=false)
 }
 
+function updateScaleSwitch(linearScaleFlag){
+    $('#radio-a').prop('checked', linearScaleFlag)
+    $('#radio-b').prop('checked', !linearScaleFlag)
+}
+
+function changeScale(data, configKeysDict, configColorsDict, configUnavailableDict){
+    const linearScaleFlag = $('#radio-a').prop('checked')
+    createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig], configUnavailableDict[currentConfig] )
+
+}
 
                        
-function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDataPrevious, breakdownDataAll, rScale, rScales, otherBreakdownPreviousData, otherBreakdownAllData){
+function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDataPrevious, breakdownDataAll, 
+    rScale, rScales, otherBreakdownPreviousData, otherBreakdownAllData, 
+    data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict){
 
-        // Show Circles New Cases
+        $('.switch').on('click', function(){
+            changeScale(data, configKeysDict, configColorsDict, configUnavailableDict)
+        } )
+
+
         d3.selectAll('.circle-group').on('click', function(d, i){
 
             const variable = allVars[i]
 
             if (showbreakDownFlagDict[variable]){
+
                 const ci = breakdownIndexArray[breakdownIndex]
                 const c = breakdownCategories[ci]
                 const colors = unavailableDict[variable].length == 0 ? breakdownColorsDict[c] : unavailableColors
@@ -185,19 +201,30 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                 hideInnerCircle(variable, rScale)
                 hideCircleNewCasesLabels(variable)
                 hideGlobalCircle(variable)
+
                 if (otherBreakdownPreviousData[i].length != 0 & c=='region'){
                     createSmallNumbersBreakdownPie(variable, otherBreakdownPreviousData[i], otherBreakdownAllData[i])
                 }else if(c=='sex' & breakdownIndex != 0) {
                     removeSmallNumbersBreakdownPie(variable, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
                 }
-                
+
+                // Create Line Plot
+                currentConfig = variable + '_' + c
+                updateScaleSwitch(configScalesDict[currentConfig])
+                createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig], configUnavailableDict[currentConfig])
+
+
                 breakdownIndex++
             } else{
                 showCircleNewCases(variable, globalDataPreviousArray[i], globalDataAllArray[i], rScales[variable])
                 greyOutOtherCircles(variable, rScale)
                 removeOtherBreakdownPies(variable, breakdownDataAll, breakdownDataAll, breakdownIndex)
-                //removeAllSmallNumberBreakdownPies(otherBreakdownPreviousData, otherBreakdownAllData)
                 updateShowBreakdownFlagDict(variable)
+
+                // Create Line Plot
+                currentConfig = variable
+                updateScaleSwitch(configScalesDict[currentConfig])
+                createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig], configUnavailableDict[currentConfig])
 
                 if(!d3.select('.pie-other-group').empty()) {
 
@@ -211,6 +238,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
         })
 
         d3.select('#callback-rect').on('click', function(){
+
             
             allVars.forEach(function(v,i){
                 const ci = breakdownIndex > 0 ? breakdownIndexArray[breakdownIndex-1] : 0
@@ -223,6 +251,13 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
 
                 breakdownIndex = 0
                 resetShowBreakdownFlagDict()
+
+                // Create Line Plot
+                currentConfig = 'global'
+    
+                updateScaleSwitch(configScalesDict[currentConfig])
+                createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig], configUnavailableDict[currentConfig])
+            
             })
 
         })

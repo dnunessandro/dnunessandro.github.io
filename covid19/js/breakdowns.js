@@ -160,7 +160,7 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         return function(t) { return CircleAllArc(i(t)); };
         }
 
-    const otherRScale =  getRadiusScale(0, chartWidth*smallValuesMaxRadiusWidthFrac,sumArray(otherBreakdownDataPreviousArray), sumArray(otherBreakdownDataAllArray) )
+    const otherRScale =  getRadiusScale(0, globalChartWidth*smallValuesMaxRadiusWidthFrac,sumArray(otherBreakdownDataPreviousArray), sumArray(otherBreakdownDataAllArray) )
 
     // Edges of Pies Arcs
     const CirclePreviousArc = d3.arc()
@@ -234,7 +234,7 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
 
 function removeSmallNumbersBreakdownPie(variable, otherBreakdownDataAllArray, otherBreakdownDataPreviousArray){
 
-    const otherRScale =  getRadiusScale(0, chartWidth*smallValuesMaxRadiusWidthFrac,sumArray(otherBreakdownDataPreviousArray), sumArray(otherBreakdownDataAllArray) )
+    const otherRScale =  getRadiusScale(0, globalChartWidth*smallValuesMaxRadiusWidthFrac,sumArray(otherBreakdownDataPreviousArray), sumArray(otherBreakdownDataAllArray) )
 
     // Edges of Pies Arcs
     const CirclePreviousArc = d3.arc()

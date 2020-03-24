@@ -44,9 +44,24 @@ function getAdditionalAgeBrackets(data, newAgeBracketsDict, allVars){
             allVars.forEach(function(a){
                 data[i][ a + '_' + k + '_m'] = sumArray(newAgeBracketsDict[k].map(b => data[i][ a + '_' + b + '_m']))
                 data[i][ a + '_' + k + '_f'] = sumArray(newAgeBracketsDict[k].map(b => data[i][ a + '_' + b + '_f']))
+                
             })
         })
     })
+    return data
+}
+
+function mergeSexAgeDailyBrackets(data, ageBrackets, newAgeBracketsDict){
+    
+    const newAgeBrackets = getNewAgeBrackets(ageBrackets, newAgeBracketsDict)
+    data.forEach(function(d,i){
+        allVars.forEach(function(v){
+            newAgeBrackets.forEach(function(b){
+                data[i][ v + '_' + b] = data[i][ v + '_' + b + '_m'] + data[i][ v + '_' + b + '_f']
+            })
+        })
+    })
+   
     return data
 }
 
@@ -243,4 +258,192 @@ function getOtherBreakdownArrays(globalData, variable, categories){
 
     return [breakdownDataPreviousArray, breakdownDataAllArray]
 
+}
+
+function getFormattedData(data){
+    data.forEach(function(d,i){
+        data[i]['formattedData'] = timeFormat(timeParse(d['data']))
+    })
+    return data
+}
+
+function getDataByKeys(data, dataKeys){
+
+    let dataArrays = []
+    dataKeys.forEach(function(k, i){
+        dataArrays.push(data.map(d=>d[k]))
+    })
+
+    return dataArrays
+
+}
+
+function getFirstNonZeroDataDay(dataArrays){
+    let firstNonZeroIndexArray = []
+    dataArrays.forEach(a=>firstNonZeroIndexArray.push(findFirstNonZeroElementInArray(a)))
+    return Math.max(Math.min(...firstNonZeroIndexArray)-1,0)
+}
+
+function findFirstNonZeroElementInArray(a){
+    let result = 0;
+    for (let index = 0; index < a.length; index++) {
+        if(a[index]!=0){
+            result = index
+            break;
+        }
+    }
+    return result
+}
+
+// function translateMonth(date){
+//     Object.keys(monthTranslationDict).forEach(function(m){
+//         if (date.includes(m)){
+//             const translatedDate = date.replace(m, monthTranslationDict[m])
+//             return translatedDate
+//         } else {
+//             return date
+//         }
+//     })
+// }
+
+function createConfigKeysDict(smallCategoryValuesDict){
+
+    let configKeysDict = {}
+
+    // Add Global Keys
+    configKeysDict['global'] = allVars
+
+    // Add New Cases Breakdwon Keys
+    allVars.forEach(a=>configKeysDict[a]=[a])
+
+    // Add Sex Breakdwon Keys
+    allVars.forEach(a=>configKeysDict[a + '_sex']=[a+'_m', a+'_f'])
+
+    // Add Age Breakdwon Keys
+    allVars.forEach(a=>configKeysDict[a + '_age']= getNewAgeBrackets(ageBrackets, newAgeBracketsDict).map(b=>a + '_' + b))
+
+    // Add Region Breakdown Keys
+    allVars.forEach(a=>configKeysDict[a + '_region'] = 
+    updateSmallCategoryValues('region', a, regions, smallCategoryValuesDict).map(r=>a + '_' + r))
+
+    // Add Other Breakdown Keys
+    allVars.forEach(a=>configKeysDict[a + '_other'] = smallCategoryValuesDict[a].map(c=>a + '_' + c))
+    
+    return configKeysDict
+
+}
+
+
+function getNewAgeBrackets(ageBrackets, newAgeBracketsDict){
+
+    let newAgeBrackets = []
+    let oldKeys = []
+    const newAgeBracketsDictKeys = Object.keys(newAgeBracketsDict)
+    newAgeBracketsDictKeys.forEach(k=>newAgeBracketsDict[k].forEach(v=>oldKeys.push(v)))
+    
+    ageBrackets.forEach(function(b){
+        oldKeys.includes(b) ? undefined : newAgeBrackets.push(b)
+    })
+    return newAgeBrackets
+}
+
+function createConfigColorsDict(){
+
+    let configColorsDict = {}
+
+    // Add Global Breakdown Colors
+    configColorsDict['global'] = allVars.map(a=>varsColorsDict[a])
+
+    // Add New Cases Breakdwon Colors
+    allVars.forEach(a=>configColorsDict[a]=[varsColorsDict[a]])
+
+    // Add Sex Breakdwon Colors
+    allVars.forEach(a=>configColorsDict[a + '_sex'] = breakdownColorsDict['sex'])
+
+    // Add Age Breakdwon Colors
+    allVars.forEach(a=>configColorsDict[a + '_age']= breakdownColorsDict['age'])
+
+    // Add Region Breakdown Colors
+    allVars.forEach(a=>configColorsDict[a + '_region'] = breakdownColorsDict['region'])
+    +
+    // Add Other Breakdown Keys
+    allVars.forEach(a=>configColorsDict[a + '_other'] = smallValuesColors)
+    
+    return configColorsDict
+}
+
+function createConfigUnavailableDict(){
+
+    let configUnavailableDict = {}
+
+    // Add Global Breakdown Colors
+    configUnavailableDict['global'] = false
+
+    // Add New Cases Breakdwon Colors
+    allVars.forEach(a=>configUnavailableDict[a]=false)
+
+    // Add Sex Breakdwon Colors
+    allVars.forEach(a=>configUnavailableDict[a + '_sex'] = unavailableVarsDict.includes(a) ? true : false)
+
+    // Add Age Breakdwon Colors
+    allVars.forEach(a=>configUnavailableDict[a + '_age']= unavailableVarsDict.includes(a) ? true : false)
+
+    // Add Region Breakdown Colors
+    allVars.forEach(a=>configUnavailableDict[a + '_region'] = unavailableVarsDict.includes(a) ? true : false)
+    +
+    // Add Other Breakdown Keys
+    allVars.forEach(a=>configUnavailableDict[a + '_other'] = unavailableVarsDict.includes(a) ? true : false)
+    
+    return configUnavailableDict
+
+}
+
+function createConfigScalesDict(){
+
+    let configScalesDict = {}
+
+    // Add Global Breakdown Colors
+    configScalesDict['global'] = false
+
+    // Add New Cases Breakdwon Colors
+    allVars.forEach(a=>configScalesDict[a]=true)
+
+    // Add Sex Breakdwon Colors
+    allVars.forEach(a=>configScalesDict[a + '_sex'] = true)
+
+    // Add Age Breakdwon Colors
+    allVars.forEach(a=>configScalesDict[a + '_age'] = true)
+
+    // Add Region Breakdown Colors
+    allVars.forEach(a=>configScalesDict[a + '_region'] = true)
+    +
+    // Add Other Breakdown Keys
+    allVars.forEach(a=>configScalesDict[a + '_other'] = true)
+    
+    return configScalesDict
+
+}
+
+function getDummyUnavailableDailyData(data){
+
+    let dummyUnavailableDailyData = {}
+    
+    dummyUnavailableDailyData['dates'] = data.map(d=>d['data'])
+    dummyUnavailableDailyData['dummyArray1'] = getIncreasingRandomArrayOfSizeN(dummyUnavailableDailyData['dates'].length, 0, 1)
+    dummyUnavailableDailyData['dummyArray2'] = getIncreasingRandomArrayOfSizeN(dummyUnavailableDailyData['dates'].length, 10000, 1.5)
+    
+    return dummyUnavailableDailyData
+}
+
+function getIncreasingRandomArrayOfSizeN(n, seedStart, multFactor){
+    let randomArray = []
+    let seed = seedStart
+    let dummyArray = [...Array(n)]
+    dummyArray.forEach((v,i)=>randomArray.push(((i+1)+random(seed))*multFactor), seed++)
+    return randomArray
+}
+
+function random(seed) {
+    let x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
 }

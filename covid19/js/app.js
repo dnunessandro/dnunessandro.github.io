@@ -1,11 +1,13 @@
 d3.json(dataPath).then(function(data){
 
-
     // Compute Additional Daily Numbers
     data = getAdditionalAgeBrackets(data, newAgeBracketsDict, allVars)
     data = getDailySexData(data, allVars, ageBrackets)
+    console.log(data)
+    data = mergeSexAgeDailyBrackets(data, ageBrackets, newAgeBracketsDict)
     const smallCategoryValuesDict = getSmallCategoryValuesDict(data.slice(-1)[0], regions, smallValuesFracTresh)
     data = computeOtherCategory(data, 'region', smallCategoryValuesDict)
+    data = getFormattedData(data)
     
     
     // Get Global Data
@@ -27,6 +29,7 @@ d3.json(dataPath).then(function(data){
     const fixedBreakdownDataAll =  fixUnavailableBreakdownData(breakdownDataPrevious, breakdownDataAll, globalDataPreviousArray, globalDataAllArray, unavailableDict)
     breakdownDataPrevious = fixedBreakdownDataAll[0]
     breakdownDataAll = fixedBreakdownDataAll[1]
+    const dummyUnavailableDailyData = getDummyUnavailableDailyData(data)
     
     // Create Scales
     const scales = createScales(globalDataAllArray, globalDataPreviousArray)
@@ -51,8 +54,22 @@ d3.json(dataPath).then(function(data){
     // Create New Cases Breakdown
     createAllCirclesNewsCasesBreakdown(allVars, globalDataPreviousArray, globalDataAllArray, rScales)
 
+    // Get Configuration Dicts
+    const configKeysDict = createConfigKeysDict(smallCategoryValuesDict)
+    const configColorsDict = createConfigColorsDict()
+    const configUnavailableDict = createConfigUnavailableDict()
+    const configScalesDict = createConfigScalesDict()
+
+    console.log(configKeysDict)
+    // Create Line Plot
+    //updateScaleToggle(linearScaleFlag)
+    createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig])
 
     // Bind Animations
-    bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDataPrevious, breakdownDataAll, rScale, rScales, otherBreakdownPreviousData, otherBreakdownAllData)
+    bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDataPrevious, breakdownDataAll, 
+        rScale, rScales, otherBreakdownPreviousData, otherBreakdownAllData,
+        data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict)
+
+
 
 })

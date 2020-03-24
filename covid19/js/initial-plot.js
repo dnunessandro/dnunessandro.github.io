@@ -1,12 +1,12 @@
 
 function createCircleGroups(globalDataAllArray, cxScale){
-    const circleGroups = svg.selectAll('g')
+    const circleGroups = svgGlobal.selectAll('g')
         .data(globalDataAllArray)
         .enter()
         .append('g')
         .attr('class', (_,i)=>allVars[i])
         .classed('circle-group', true)
-        .style('transform', (d,i)=>"translate(" + parseInt(cxScale(i)) + "px," + parseInt(chartHeight/2) + "px)")
+        .style('transform', (d,i)=>"translate(" + parseInt(cxScale(i)) + "px," + parseInt(globalChartHeight/2) + "px)")
 
     return circleGroups
 }

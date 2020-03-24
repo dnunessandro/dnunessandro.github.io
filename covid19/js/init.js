@@ -59,9 +59,15 @@ const smallValuesColors = d3.schemePastel1
 const boxColor = '#f3f3f3'
 
 // Dimensions Variables
-const chartWidth = parseInt($(window).width()*0.95)
-const chartHeight = parseInt($(window).height()*0.8)
-const chartWidthFracPad = 0.2
+const globalChartWidth = parseInt($(window).width()*0.95)
+const globalChartHeight = parseInt($(window).height()*0.5)
+const timeChartWidth = parseInt($(window).width()*0.95)
+const timeChartHeight = parseInt($(window).height()*0.3)
+const globalChartWidthFracPad = 0.2
+const timeChartWidthFracPadLeft = 0.1
+const timeChartWidthFracPadRight = 0.1
+const timeChartHeightFracPadTop = 0
+const timeChartHeightFracPadBottom = 0.1
 const minRadiusWidthFrac = 0.01
 const maxRadiusWidthFrac = 0.17
 const minRadiusLabel = 20
@@ -70,18 +76,23 @@ const breakdownShapeRx = 8
 const maxRadiusThreshFrac = 0.5
 const greyedOutRadiusFrac = 0.05
 
-// Create SVG Element
-const svg = d3.select('#chart')
+// Create SVG Elements
+const svgGlobal = d3.select('#global-chart')
     .append('svg')
-    .attr('width', chartWidth)
-    .attr('height', chartHeight)
+    .attr('width', globalChartWidth)
+    .attr('height', globalChartHeight)
+
+const svgTime = d3.select('#time-chart')
+    .append('svg')
+    .attr('width', timeChartWidth)
+    .attr('height', timeChartHeight)
 
 // Create Dummy SVG Rect Element
-const dummyRect = svg
+const dummyRect = svgGlobal
     .append('rect')
     .attr('id', 'callback-rect')
-    .attr('width', chartWidth)
-    .attr('height', chartHeight)
+    .attr('width', globalChartWidth)
+    .attr('height', globalChartHeight)
     .style('opacity', 0)
 
 // Create Pie Element
@@ -104,6 +115,7 @@ let showbreakDownFlagDict = {
 }
 
 // Dealing with Unavailable Data
+const unavailableVarsDict = ['recuperados', 'obitos']
 const unavailableDict = {
     'confirmados': [],
     'recuperados': [0.6, 0.4],
@@ -115,3 +127,25 @@ const unavailableColors = ['#AEB5BF', '#D9D9D9']
 const smallValuesFracTresh = 0.02
 const smallValuesMinRadiusWidthFrac = 0.01
 const smallValuesMaxRadiusWidthFrac = 0.1
+
+// Time Parsing
+const timeParse = d3.timeParse('%d/%m/%Y')
+const timeFormat = d3.timeFormat('%e %B')
+// const monthTranslationDict = {
+//     'January': 'Janeiro',
+//     'February': 'Fevereiro',
+//     'March': 'Março',
+//     'April': 'Abril',
+//     'May': 'Maio',
+//     'June': 'Junho',
+//     'July': 'Julho',
+//     'August': 'Agosto',
+//     'September': 'Setembro',
+//     'October': 'Outubro',
+//     'November': 'Novembro',
+//     'December': 'Dezembro'
+// }
+
+// Current Config
+let currentConfig = 'global'
+
