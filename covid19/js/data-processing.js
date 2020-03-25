@@ -416,11 +416,44 @@ function createConfigScalesDict(){
 
     // Add Region Breakdown Colors
     allVars.forEach(a=>configScalesDict[a + '_region'] = true)
-    +
+
     // Add Other Breakdown Keys
     allVars.forEach(a=>configScalesDict[a + '_other'] = true)
     
     return configScalesDict
+
+}
+
+function createConfigLabelsDict(configKeysDict){
+
+    let configLabelsDict = {}
+
+    // Add Global Labels
+    configLabelsDict['global'] = configKeysDict['global'].map(k=>labelsDict[k])
+
+    // Add New Cases Breakdwon Labels
+    allVars.forEach(a=>configLabelsDict[a]=['Casos Anteriores', 'Novos Casos'])
+
+    // Add Sex Breakdwon Colors
+    allVars.forEach(a=>configLabelsDict[a + '_sex'] = 
+        configKeysDict[a + '_sex'].map( k=>labelsDict[k.replace(a + '_', '')] ))
+
+    // Add Age Breakdwon Colors
+    allVars.forEach(a=>configLabelsDict[a + '_age'] = 
+        configKeysDict[a + '_age'].map(k=>labelsDict[k.replace(a + '_', '')]))
+
+    // Add Region Breakdown Colors
+    allVars.forEach(a=>configLabelsDict[a + '_region'] = 
+        configKeysDict[a + '_region'].map(k=>labelsDict[k.replace(a + '_', '')]))
+
+    // Add Other Breakdown Keys
+    allVars.forEach(a=>configLabelsDict[a + '_other'] = 
+        configKeysDict[a + '_other'].map(k=>labelsDict[k.replace(a + '_', '')]))
+
+    return configLabelsDict
+
+
+
 
 }
 
@@ -429,8 +462,11 @@ function getDummyUnavailableDailyData(data){
     let dummyUnavailableDailyData = {}
     
     dummyUnavailableDailyData['dates'] = data.map(d=>d['data'])
-    dummyUnavailableDailyData['dummyArray1'] = getIncreasingRandomArrayOfSizeN(dummyUnavailableDailyData['dates'].length, 0, 1)
-    dummyUnavailableDailyData['dummyArray2'] = getIncreasingRandomArrayOfSizeN(dummyUnavailableDailyData['dates'].length, 10000, 1.5)
+    let dummyArray = [...Array(dummyUnavailableDailyData['dates'].length)]
+    dummyUnavailableDailyData['dummyArray1'] = 
+        dummyArray.map(d3.randomExponential(0.01)).sort((a,b)=>a-b)
+    dummyUnavailableDailyData['dummyArray2'] = 
+    dummyArray.map(d3.randomExponential(0.01)).sort((a,b)=>a-b)
     
     return dummyUnavailableDailyData
 }
@@ -439,7 +475,7 @@ function getIncreasingRandomArrayOfSizeN(n, seedStart, multFactor){
     let randomArray = []
     let seed = seedStart
     let dummyArray = [...Array(n)]
-    dummyArray.forEach((v,i)=>randomArray.push(((i+1)+random(seed))*multFactor), seed++)
+    dummyArray.forEach((v,i)=>randomArray.push(((i+1)+random(seed)*5)*multFactor), seed++)
     return randomArray
 }
 

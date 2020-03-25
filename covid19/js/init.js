@@ -59,14 +59,14 @@ const smallValuesColors = d3.schemePastel1
 const boxColor = '#f3f3f3'
 
 // Dimensions Variables
-const globalChartWidth = parseInt($(window).width()*0.95)
-const globalChartHeight = parseInt($(window).height()*0.5)
-const timeChartWidth = parseInt($(window).width()*0.95)
+const globalChartWidth = parseInt($(window).width()*0.99)
+const globalChartHeight = parseInt($(window).height()*0.35)
+const timeChartWidth = parseInt($(window).width()*0.99)
 const timeChartHeight = parseInt($(window).height()*0.3)
-const globalChartWidthFracPad = 0.2
-const timeChartWidthFracPadLeft = 0.1
-const timeChartWidthFracPadRight = 0.1
-const timeChartHeightFracPadTop = 0
+const globalChartWidthFracPad = 0.22
+const timeChartWidthFracPadLeft = 0.07
+const timeChartWidthFracPadRight = 0.25
+const timeChartHeightFracPadTop = 0.1
 const timeChartHeightFracPadBottom = 0.1
 const minRadiusWidthFrac = 0.01
 const maxRadiusWidthFrac = 0.17
@@ -75,6 +75,10 @@ const breakdownShapePad = 5
 const breakdownShapeRx = 8
 const maxRadiusThreshFrac = 0.5
 const greyedOutRadiusFrac = 0.05
+const previousOuterRadiusFrac = 0.7
+const allInnerRadiusFrac = 1
+const allOuterRadiusFrac = 1.2
+const timeLabelXOffsetFrac = 1.02
 
 // Create SVG Elements
 const svgGlobal = d3.select('#global-chart')
@@ -149,3 +153,33 @@ const timeFormat = d3.timeFormat('%e %B')
 // Current Config
 let currentConfig = 'global'
 
+// Labels
+const labelsDict = {
+    'confirmados': 'Confirmados',
+    'recuperados': 'Recuperados',
+    'obitos': 'Óbitos',
+    'm': 'Masculino',
+    'f': 'Feminino',
+    '0_9': '[0-9]',
+    '10_19': '[10-19]',
+    '20_29': '[20-29]',
+    '30_39': '[30-39]',
+    '40_49': '[40-49]',
+    '50_59': '[50-59]',
+    '60_69': '[60-69]',
+    '70_79': '[70-79]',
+    '80_plus': '[80-[',
+    '0_19': '[0-19]',
+    '70_plus': '[70-[',
+    'arsnorte': 'Norte',
+    'arscentro': 'Centro',
+    'arslvt': 'LVT',
+    'arsalentejo': 'Alentejo',
+    'arsalgarve': 'Algarve',
+    'acores': 'Açores',
+    'madeira': 'Madeira',
+    'estrangeiro': 'Estrangeiro',
+    'region_other': 'Outras Regiões'
+}
+
+let initialConditionsFlag = true

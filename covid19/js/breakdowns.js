@@ -1,4 +1,7 @@
-function createBreakdownPie(variable, breakdownDataAll, breakdownDataPrevious, colors, rScales){
+function createBreakdownPie(variable, breakdownIndex, breakdownDataAll, breakdownDataPrevious, colors, rScales){
+
+    // Check if First Category
+    const firstCategoryFlag = breakdownIndex == 0
 
     // Functions to Draw Slices
     function tweenInnerPie(b) {
@@ -14,13 +17,25 @@ function createBreakdownPie(variable, breakdownDataAll, breakdownDataPrevious, c
         }
 
     // Edges of Pies Arcs
+    const previousOuterRadius = firstCategoryFlag ? 
+        rScales[variable](sumArray(breakdownDataPrevious)) :
+        rScales[variable](sumArray(breakdownDataPrevious)) * previousOuterRadiusFrac
+
     const CirclePreviousArc = d3.arc()
         .innerRadius(0)
-        .outerRadius(rScales[variable](sumArray(breakdownDataPrevious)))
+        .outerRadius(previousOuterRadius)
+
+    const allInnerRadius = firstCategoryFlag ? 
+        rScales[variable](sumArray(breakdownDataPrevious)) :
+        rScales[variable](sumArray(breakdownDataPrevious)) * allInnerRadiusFrac
+
+    const allOuterRadius = firstCategoryFlag ? 
+        rScales[variable](sumArray(breakdownDataAll)) :
+        rScales[variable](sumArray(breakdownDataAll)) * allOuterRadiusFrac
 
     const CircleAllArc = d3.arc()
-        .innerRadius(rScales[variable](sumArray(breakdownDataPrevious)))
-        .outerRadius(rScales[variable](sumArray(breakdownDataAll)))
+        .innerRadius(allInnerRadius)
+        .outerRadius(allOuterRadius)
 
 
     // Draw Inner Pie
@@ -39,13 +54,14 @@ function createBreakdownPie(variable, breakdownDataAll, breakdownDataPrevious, c
         .classed('pie-group', true)
         .classed(variable, true)
 
-    piePreviousGroup.append('path')
+    const piePreviousGroupTweened = piePreviousGroup
+        .append('path')
         .classed('previous', true)
         .classed('pie-path', true)
         .classed(variable, true)
         .merge(piePreviousDataPaths)
         .style('fill', (_,i)=>colors[i])
-        .transition()
+        .transition('a')
         .duration(500)
         .ease(d3.easePoly)
         .attrTween("d", tweenInnerPie)
@@ -66,31 +82,42 @@ function createBreakdownPie(variable, breakdownDataAll, breakdownDataPrevious, c
         .classed('pie-group', true)
         .classed(variable, true)
 
-    pieAllGroup
+    const pieAllGroupTweened = pieAllGroup
         .append('path')
         .classed('all', true)
         .classed('pie-path', true)
         .classed(variable, true)
         .merge(pieAllDataPaths)
         .style('fill', (_,i)=>colors[i])
-        .transition()
+        .transition('b')
         .duration(800)
         .ease(d3.easePoly)
         .attrTween("d", tweenOuterPie)
 
 
+    if (firstCategoryFlag){
+
+        piePreviousGroupTweened
+            .attr('d', CirclePreviousArc.outerRadius(previousOuterRadius))
+            .transition('c')
+            .duration(300)
+            .ease(d3.easePoly)
+            .attr('d', CirclePreviousArc.outerRadius(previousOuterRadius*previousOuterRadiusFrac))
+
+        pieAllGroupTweened
+            .attr('d', CircleAllArc.innerRadius(allInnerRadius))
+            .attr('d', CircleAllArc.outerRadius(allOuterRadius))
+            .transition('d')
+            .duration(500)
+            .ease(d3.easePoly)
+            .attr('d', CircleAllArc.innerRadius(allInnerRadius*allInnerRadiusFrac))
+            .attr('d', CircleAllArc.outerRadius(allOuterRadius*allOuterRadiusFrac))
+
+    }
+
 }
 
 function removeBreakdownPie(variable, rScales, breakdownDataAll, breakdownDataPrevious){
-
-    // Edges of Pies Arcs
-    const CirclePreviousArc = d3.arc()
-        .innerRadius(0)
-        .outerRadius(rScales[variable](sumArray(breakdownDataPrevious)))
-
-    const CircleAllArc = d3.arc()
-        .innerRadius(rScales[variable](sumArray(breakdownDataPrevious)))
-        .outerRadius(rScales[variable](sumArray(breakdownDataAll)))
 
     // Functions to Draw Slices
     function tweenInnerPie(b) {
@@ -105,22 +132,38 @@ function removeBreakdownPie(variable, rScales, breakdownDataAll, breakdownDataPr
         return function(t) { return CircleAllArc(i(t)); };
         }
 
+    // Edges of Pies Arcs
+    const previousOuterRadius = rScales[variable](sumArray(breakdownDataPrevious)) 
+        * previousOuterRadiusFrac
+
+    const CirclePreviousArc = d3.arc()
+        .innerRadius(0)
+        .outerRadius(previousOuterRadius)
+
+    const allInnerRadius = rScales[variable](sumArray(breakdownDataPrevious)) * allInnerRadiusFrac
+
+    const allOuterRadius = rScales[variable](sumArray(breakdownDataAll)) * allOuterRadiusFrac
+
+    const CircleAllArc = d3.arc()
+        .innerRadius(allInnerRadius)
+        .outerRadius(allOuterRadius)
+
     // Remove Inner Pie
     d3.selectAll('.previous.pie-path.' + variable)
-        .transition()
+        .transition('e')
         .duration(500)
         .ease(d3.easePoly)
         .attrTween("d", tweenInnerPie)
 
     // Remove Outer Pie
     d3.selectAll('.all.pie-path.' + variable)
-        .transition()
+        .transition('f')
         .duration(800)
         .ease(d3.easePoly)
         .attrTween("d", tweenOuterPie)
 
     d3.selectAll('.pie-group.' + variable)
-        .transition()
+        .transition('g')
         .delay(800)
         .remove()
 }
@@ -137,7 +180,6 @@ function removeOtherBreakdownPies(variable, breakdownDataAll, breakdownDataAll, 
 }
 
 
-        
 function removeAllSmallNumberBreakdownPies(otherBreakdownPreviousData, otherBreakdownAllData){
     allVars.forEach(function(v, i){
         removeSmallNumbersBreakdownPie(v, otherBreakdownPreviousData[i], otherBreakdownAllData[i])
@@ -146,7 +188,7 @@ function removeAllSmallNumberBreakdownPies(otherBreakdownPreviousData, otherBrea
 
 
 function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArray, otherBreakdownDataAllArray){
-
+    
      // Functions to Draw Slices
     function tweenInnerPie(b) {
         //b.innerRadius = 0;
@@ -163,13 +205,16 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
     const otherRScale =  getRadiusScale(0, globalChartWidth*smallValuesMaxRadiusWidthFrac,sumArray(otherBreakdownDataPreviousArray), sumArray(otherBreakdownDataAllArray) )
 
     // Edges of Pies Arcs
+    const previousOuterRadius = otherRScale(sumArray(otherBreakdownDataPreviousArray))
     const CirclePreviousArc = d3.arc()
         .innerRadius(0)
-        .outerRadius(otherRScale(sumArray(otherBreakdownDataPreviousArray)))
+        .outerRadius(previousOuterRadius)
 
+    const allInnerRadius = otherRScale(sumArray(otherBreakdownDataPreviousArray))
+    const allOuterRadius = otherRScale(sumArray(otherBreakdownDataAllArray))
     const CircleAllArc = d3.arc()
-        .innerRadius(otherRScale(sumArray(otherBreakdownDataPreviousArray)))
-        .outerRadius(otherRScale(sumArray(otherBreakdownDataAllArray)))
+        .innerRadius(allInnerRadius)
+        .outerRadius(allOuterRadius)
 
         // Draw Inner Pie
     const piePreviousData = d3.select('.circle-group.' + variable)
@@ -189,7 +234,8 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         .style('transform', 'translate(' + parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px,' +
             parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px)')
 
-    piePreviousGroup.append('path')
+    const piePreviousGroupTweened = piePreviousGroup
+        .append('path')
         .classed('previous', true)
         .classed('pie-other-path', true)
         .classed(variable, true)
@@ -199,6 +245,7 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         .duration(500)
         .ease(d3.easePoly)
         .attrTween("d", tweenInnerPie)
+        
 
     // Draw Outer Pie
     const pieAllData = d3.select('.circle-group.' + variable)
@@ -216,9 +263,9 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         .classed('pie-other-group', true)
         .classed(variable, true)
         .style('transform', 'translate(' + parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px,' +
-        parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px)')
+            parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px)')
 
-    pieAllGroup
+    const pieAllGroupTweened = pieAllGroup
         .append('path')
         .classed('all', true)
         .classed('pie-other-path', true)
@@ -229,6 +276,24 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         .duration(800)
         .ease(d3.easePoly)
         .attrTween("d", tweenOuterPie)
+
+
+    piePreviousGroupTweened
+        //.attr('d', CirclePreviousArc.outerRadius(previousOuterRadius))
+        .transition()
+        .duration(500)
+        .ease(d3.easePoly)
+        .attr('d', CirclePreviousArc.outerRadius(previousOuterRadius*previousOuterRadiusFrac))
+
+    pieAllGroupTweened
+        //.attr('d', CircleAllArc.innerRadius(allInnerRadius))
+        //.attr('d', CircleAllArc.outerRadius(allOuterRadius))
+        .transition()
+        .duration(800)
+        .ease(d3.easePoly)
+        .attr('d', CircleAllArc.innerRadius(allInnerRadius*allInnerRadiusFrac))
+        .attr('d', CircleAllArc.outerRadius(allOuterRadius*allOuterRadiusFrac))
+
 }
 
 
@@ -239,11 +304,11 @@ function removeSmallNumbersBreakdownPie(variable, otherBreakdownDataAllArray, ot
     // Edges of Pies Arcs
     const CirclePreviousArc = d3.arc()
         .innerRadius(0)
-        .outerRadius(otherRScale(sumArray(otherBreakdownDataPreviousArray)))
+        .outerRadius(otherRScale(sumArray(otherBreakdownDataPreviousArray))*previousOuterRadiusFrac)
 
     const CircleAllArc = d3.arc()
-        .innerRadius(otherRScale(sumArray(otherBreakdownDataPreviousArray)))
-        .outerRadius(otherRScale(sumArray(otherBreakdownDataAllArray)))
+        .innerRadius(otherRScale(sumArray(otherBreakdownDataPreviousArray))*allInnerRadiusFrac)
+        .outerRadius(otherRScale(sumArray(otherBreakdownDataAllArray))*allOuterRadiusFrac)
 
 
     // Functions to Draw Slices
@@ -261,20 +326,20 @@ function removeSmallNumbersBreakdownPie(variable, otherBreakdownDataAllArray, ot
 
     // Remove Inner Pie
     d3.selectAll('.previous.pie-other-path.' + variable)
-        .transition()
+        .transition('k')
         .duration(500)
         .ease(d3.easePoly)
         .attrTween("d", tweenInnerPie)
 
     // Remove Outer Pie
     d3.selectAll('.all.pie-other-path.' + variable)
-        .transition()
+        .transition('l')
         .duration(800)
         .ease(d3.easePoly)
         .attrTween("d", tweenOuterPie)
 
     d3.selectAll('.pie-other-group.' + variable)
-        .transition()
+        .transition('m')
         .delay(800)
         .remove()
 }

@@ -168,98 +168,136 @@ function resetShowBreakdownFlagDict(){
 }
 
 function updateScaleSwitch(linearScaleFlag){
-    $('#radio-a').prop('checked', linearScaleFlag)
-    $('#radio-b').prop('checked', !linearScaleFlag)
+ 
+    $('#scale-button').prop('checked', linearScaleFlag)
+    $('#scale-button').bootstrapToggle(linearScaleFlag ? 'on': 'off')
 }
 
-function changeScale(data, configKeysDict, configColorsDict, configUnavailableDict){
-    const linearScaleFlag = $('#radio-a').prop('checked')
-    createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig], configUnavailableDict[currentConfig] )
+function changeScale(data, configKeysDict, configColorsDict, configUnavailableDict, configLabelsDict){
+    createLinePlot(data, 
+        configKeysDict[currentConfig], 
+        configColorsDict[currentConfig], 
+        configUnavailableDict[currentConfig],
+        configLabelsDict[currentConfig])
 
 }
 
                        
 function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDataPrevious, breakdownDataAll, 
     rScale, rScales, otherBreakdownPreviousData, otherBreakdownAllData, 
-    data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict){
+    data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict, configLabelsDict){
 
-        $('.switch').on('click', function(){
-            changeScale(data, configKeysDict, configColorsDict, configUnavailableDict)
-        } )
+    $('#scale-button').on('change', function(){
+        $('#togg').bootstrapToggle('toggle')
+        changeScale(data, configKeysDict, configColorsDict, configUnavailableDict, configLabelsDict)
+    } )
 
+    d3.selectAll('.circle-group').on('click', function(d, i){
 
-        d3.selectAll('.circle-group').on('click', function(d, i){
+        const variable = allVars[i]
+        showbreakDownFlagDict
 
-            const variable = allVars[i]
+        if (showbreakDownFlagDict[variable]){ // Draw Next Category Breakdown Pie
 
-            if (showbreakDownFlagDict[variable]){
+            const ci = breakdownIndexArray[breakdownIndex]
+            const c = breakdownCategories[ci]
+            const colors = unavailableDict[variable].length == 0 ? breakdownColorsDict[c] : unavailableColors
+            createBreakdownPie(variable, breakdownIndex, breakdownDataAll[ci][i], breakdownDataPrevious[ci][i], colors, rScales)
+            hideInnerCircle(variable, rScale)
+            hideCircleNewCasesLabels(variable)
+            hideGlobalCircle(variable)
 
-                const ci = breakdownIndexArray[breakdownIndex]
-                const c = breakdownCategories[ci]
-                const colors = unavailableDict[variable].length == 0 ? breakdownColorsDict[c] : unavailableColors
-                createBreakdownPie(variable, breakdownDataAll[ci][i], breakdownDataPrevious[ci][i], colors, rScales)
-                hideInnerCircle(variable, rScale)
-                hideCircleNewCasesLabels(variable)
-                hideGlobalCircle(variable)
+            if (otherBreakdownPreviousData[i].length != 0 & c=='region'){ // Create Small Numbers Pie Chart
+                createSmallNumbersBreakdownPie(variable, otherBreakdownPreviousData[i], otherBreakdownAllData[i])
+                
+                d3.selectAll('.pie-other-group').on('click', function(){
 
-                if (otherBreakdownPreviousData[i].length != 0 & c=='region'){
-                    createSmallNumbersBreakdownPie(variable, otherBreakdownPreviousData[i], otherBreakdownAllData[i])
-                }else if(c=='sex' & breakdownIndex != 0) {
-                    removeSmallNumbersBreakdownPie(variable, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
-                }
+                    createOtherLinePlot(data, configKeysDict, 
+                        configColorsDict, configUnavailableDict, configLabelsDict)
 
-                // Create Line Plot
-                currentConfig = variable + '_' + c
-                updateScaleSwitch(configScalesDict[currentConfig])
-                createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig], configUnavailableDict[currentConfig])
+                })
 
-
-                breakdownIndex++
-            } else{
-                showCircleNewCases(variable, globalDataPreviousArray[i], globalDataAllArray[i], rScales[variable])
-                greyOutOtherCircles(variable, rScale)
-                removeOtherBreakdownPies(variable, breakdownDataAll, breakdownDataAll, breakdownIndex)
-                updateShowBreakdownFlagDict(variable)
-
-                // Create Line Plot
-                currentConfig = variable
-                updateScaleSwitch(configScalesDict[currentConfig])
-                createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig], configUnavailableDict[currentConfig])
-
-                if(!d3.select('.pie-other-group').empty()) {
-
-                    const targetVariable = d3.select('.pie-other-group').attr('class').split(' ').slice(-1)[0]
-                    removeSmallNumbersBreakdownPie(targetVariable, otherBreakdownAllData[allVars.indexOf(targetVariable)], 
-                    otherBreakdownPreviousData[allVars.indexOf(targetVariable)])
-                } 
+            }else if(c=='sex' & breakdownIndex != 0 & otherBreakdownAllData[i].length!=0) {
+                removeSmallNumbersBreakdownPie(variable, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
             }
-            
 
+            // Create Line Plot
+            currentConfig = variable + '_' + c
+
+            updateScaleSwitch(configScalesDict[currentConfig])
+            createLinePlot(data, configKeysDict[currentConfig], 
+                configColorsDict[currentConfig], 
+                configUnavailableDict[currentConfig],
+                configLabelsDict[currentConfig])
+
+
+            breakdownIndex++
+        } else{ // Show New Cases Breakdown
+            showCircleNewCases(variable, globalDataPreviousArray[i], globalDataAllArray[i], rScales[variable])
+            greyOutOtherCircles(variable, rScale)
+            removeOtherBreakdownPies(variable, breakdownDataAll, breakdownDataAll, breakdownIndex)
+            updateShowBreakdownFlagDict(variable)
+
+            // Create Line Plot
+            currentConfig = variable
+            updateScaleSwitch(configScalesDict[currentConfig])
+            createLinePlot(data, 
+                configKeysDict[currentConfig], 
+                configColorsDict[currentConfig], 
+                configUnavailableDict[currentConfig],
+                configLabelsDict[currentConfig])
+
+            breakdownIndex = 0
+
+            if(!d3.select('.pie-other-group').empty()) {
+
+                const targetVariable = d3.select('.pie-other-group').attr('class').split(' ').slice(-1)[0]
+                removeSmallNumbersBreakdownPie(targetVariable, otherBreakdownAllData[allVars.indexOf(targetVariable)], 
+                otherBreakdownPreviousData[allVars.indexOf(targetVariable)])
+            } 
+        }
+        
+
+    })
+
+    d3.select('#callback-rect').on('click', function(){
+
+        initialConditionsFlag = true
+        
+        allVars.forEach(function(v,i){
+            const ci = breakdownIndex > 0 ? breakdownIndexArray[breakdownIndex-1] : 0
+
+            removeBreakdownPie(v, rScales, breakdownDataAll[ci][i], breakdownDataPrevious[ci][i])
+            if(!d3.select('.pie-other-group.' + v).empty()) {  
+                removeSmallNumbersBreakdownPie(v, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
+            } 
+            resetCircle(v, rScale)
+
+            breakdownIndex = 0
+            resetShowBreakdownFlagDict()
+
+            // Create Line Plot
+            currentConfig = 'global'
+
+            updateScaleSwitch(configScalesDict[currentConfig])
+            createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig], 
+                configUnavailableDict[currentConfig], configLabelsDict[currentConfig])
+        
         })
 
-        d3.select('#callback-rect').on('click', function(){
+    })
 
-            
-            allVars.forEach(function(v,i){
-                const ci = breakdownIndex > 0 ? breakdownIndexArray[breakdownIndex-1] : 0
+}
 
-                removeBreakdownPie(v, rScales, breakdownDataAll[ci][i], breakdownDataPrevious[ci][i])
-                if(!d3.select('.pie-other-group.' + v).empty()) {  
-                    removeSmallNumbersBreakdownPie(v, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
-                } 
-                resetCircle(v, rScale)
 
-                breakdownIndex = 0
-                resetShowBreakdownFlagDict()
+function setLabelsInitialConditions(xScale, yScale, timeChartLabelsUnformatted){
 
-                // Create Line Plot
-                currentConfig = 'global'
-    
-                updateScaleSwitch(configScalesDict[currentConfig])
-                createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig], configUnavailableDict[currentConfig])
-            
-            })
+    if (initialConditionsFlag){
+        timeChartLabelsUnformatted
+            .attr('x', xScale.range()[1])
+            .attr('y', yScale.range()[0])
+            .style('opacity', 0)
+    }
 
-        })
-
+    initialConditionsFlag = false
 }
