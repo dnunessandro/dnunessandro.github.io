@@ -4,7 +4,7 @@ d3.json(dataPath).then(function(data){
     data = getAdditionalAgeBrackets(data, newAgeBracketsDict, allVars)
     data = getDailySexData(data, allVars, ageBrackets)
     data = mergeSexAgeDailyBrackets(data, ageBrackets, newAgeBracketsDict)
-    const smallCategoryValuesDict = getSmallCategoryValuesDict(data.slice(-1)[0], regions, smallValuesFracTresh)
+    const smallCategoryValuesDict = getSmallCategoryValuesDict(data.slice(-1)[0], regions, smallValuesFracThresh)
     data = computeOtherCategory(data, 'region', smallCategoryValuesDict)
     data = getFormattedData(data)
 
@@ -60,7 +60,6 @@ d3.json(dataPath).then(function(data){
     const configLabelsDict = createConfigLabelsDict(configKeysDict)
 
     // Create Line Plot
-    console.log(configScalesDict[currentConfig])
     updateScaleSwitch(configScalesDict[currentConfig])
     createLinePlot(data, 
         configKeysDict[currentConfig], 
@@ -74,6 +73,6 @@ d3.json(dataPath).then(function(data){
         data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict, configLabelsDict)
         
 
-        
+    console.log(configKeysDict)
 
 })

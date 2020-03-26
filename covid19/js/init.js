@@ -57,6 +57,7 @@ const breakdownColorsDict = {
 const smallValuesColors = d3.schemePastel1
 
 const boxColor = '#f3f3f3'
+const otherHighlightColor = '#05C7F2'
 
 // Dimensions Variables
 const globalChartWidth = parseInt($(window).width()*0.99)
@@ -70,14 +71,17 @@ const timeChartHeightFracPadTop = 0.1
 const timeChartHeightFracPadBottom = 0.1
 const minRadiusWidthFrac = 0.01
 const maxRadiusWidthFrac = 0.17
+const previousPieOuterRadiusWidthFrac = 0.13
+const allPieInnerRadiusWidthFrac = 0.16
+const allPieOuterRadiusWidthFrac = 0.2
+const otherPreviousPieOuterRadiusWidthFrac = 0.08
+const otherAllPieInnerRadiusWidthFrac = 0.1
+const otherAllPieOuterRadiusWidthFrac = 0.12
 const minRadiusLabel = 20
 const breakdownShapePad = 5
 const breakdownShapeRx = 8
 const maxRadiusThreshFrac = 0.5
 const greyedOutRadiusFrac = 0.05
-const previousOuterRadiusFrac = 0.7
-const allInnerRadiusFrac = 1
-const allOuterRadiusFrac = 1.2
 const timeLabelXOffsetFrac = 1.02
 
 // Create SVG Elements
@@ -100,7 +104,8 @@ const dummyRect = svgGlobal
     .style('opacity', 0)
 
 // Create Pie Element
-const pie = d3.pie().sort(null)
+const pieInner = d3.pie()
+const pieOuter = d3.pie().padAngle(0.05)
 
 // Mobile Flag
 const mobileFlag = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
@@ -128,9 +133,10 @@ const unavailableDict = {
 const unavailableColors = ['#AEB5BF', '#D9D9D9']
 
 // Dealing with Small Category Values
-const smallValuesFracTresh = 0.02
+const smallValuesFracThresh = 0.03
 const smallValuesMinRadiusWidthFrac = 0.01
 const smallValuesMaxRadiusWidthFrac = 0.1
+let smallValuesDisplayedFlag = false
 
 // Time Parsing
 const timeParse = d3.timeParse('%d/%m/%Y')
@@ -183,3 +189,4 @@ const labelsDict = {
 }
 
 let initialConditionsFlag = true
+let numbersDisplayedFlag = false

@@ -66,14 +66,46 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
 
     setLabelsInitialConditions(xScale, yScale, timeChartLabelsUnformatted)
 
+    
+    // Update Label Positions with Force Layout
+    const newPositions = dataArrays.map(d => {
+        return {
+        fx: 0,
+        targetY: yScale(d.slice(-1)[0])
+        };
+    });
+    createTimeChartLabelsForce(newPositions)
+    
+
     timeChartLabelsUnformatted
         .transition()
         .duration(1000)
         .ease(d3.easePoly)
         .style('opacity', 1)
         .style('fill', (_,i)=>colors[i])
-        .attr('y', (_,i)=>yScale(dataArrays[i].slice(-1)[0]))
+        //.attr('y', (_,i)=>yScale(dataArrays[i].slice(-1)[0]))
+        .attr('y', (_,i)=>newPositions[i].y)
         .attr('x', xScale( timeParse(datesArray.slice(-1)[0]))*timeLabelXOffsetFrac )
+
+    
+
+    // Add Show Pie Labels Event
+    d3.selectAll('.label').on('click', function(){
+
+        if (numbersDisplayedFlag){
+            changePieNumbersOpacity(0)
+            showNamesOnTimeChartLabels()
+    
+            numbersDisplayedFlag = false
+        } else{
+            changePieNumbersOpacity(1)
+            showNumbersOnTimeChartLabels(dataArrays)
+            
+            
+            numbersDisplayedFlag = true
+        }
+        
+    })
         
     // Create Axes
     const xAxis = d3.axisBottom(xScale)
@@ -94,6 +126,7 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
             parseInt(timeChartHeight - timeChartHeightFracPadBottom*timeChartHeight) + 'px)')
     }
 
+    // Update Axis
     d3.select('#x-axis')
         .transition()
         .duration(1000)
@@ -113,6 +146,7 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
         .ease(d3.easePoly)
         .call(yAxis)
 
+    // Deal with Unavailable Data
     if(unavailableFlag){
         d3.select('#time-chart').selectAll('.tick')
             .select('text')
@@ -135,8 +169,39 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
             .style('font-size', '10px')
 
     }
-    
 }
+
+function changePieNumbersOpacity(opacityVal){
+
+    const pieLabels = smallValuesDisplayedFlag ? d3.selectAll('.pie-other-label') : d3.selectAll('.pie-label')
+    
+    pieLabels
+        .transition()
+        .duration(300)
+        .ease(d3.easePoly)
+        .style('opacity', opacityVal)
+}
+
+function showNumbersOnTimeChartLabels(dataArrays){
+
+    const labels = d3.selectAll('.label')
+    labels
+        .transition()
+        .duration(1000)
+        .ease(d3.easePoly)
+        .text((_,i)=>dataArrays[i].slice(-1)[0])
+}
+
+function showNamesOnTimeChartLabels(){
+
+    const labels = d3.selectAll('.label')
+    labels
+        .transition()
+        .duration(1000)
+        .ease(d3.easePoly)
+        .text(d=>d)
+}
+
 
 	
 function animatelines(unavailableFlag) {

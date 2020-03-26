@@ -182,13 +182,23 @@ function changeScale(data, configKeysDict, configColorsDict, configUnavailableDi
 
 }
 
+function changePieOpacity(variable, opacityVal){
+
+    d3.selectAll('.pie-path.' + variable)
+    .filter(function(d,i){
+        return !d3.select(this).attr('class').includes('other')
+    })
+    .transition()
+    .duration(300)
+    .ease(d3.easePoly)
+    .style('opacity', opacityVal)
+}
                        
 function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDataPrevious, breakdownDataAll, 
     rScale, rScales, otherBreakdownPreviousData, otherBreakdownAllData, 
     data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict, configLabelsDict){
 
     $('#scale-button').on('change', function(){
-        $('#togg').bootstrapToggle('toggle')
         changeScale(data, configKeysDict, configColorsDict, configUnavailableDict, configLabelsDict)
     } )
 
@@ -202,28 +212,79 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
             const ci = breakdownIndexArray[breakdownIndex]
             const c = breakdownCategories[ci]
             const colors = unavailableDict[variable].length == 0 ? breakdownColorsDict[c] : unavailableColors
-            createBreakdownPie(variable, breakdownIndex, breakdownDataAll[ci][i], breakdownDataPrevious[ci][i], colors, rScales)
+            currentConfig = variable + '_' + c
+
+            createBreakdownPie(variable, breakdownIndex, breakdownDataAll[ci][i], breakdownDataPrevious[ci][i], 
+                colors, rScales, configKeysDict[currentConfig], configLabelsDict[currentConfig], configUnavailableDict[currentConfig])
             hideInnerCircle(variable, rScale)
             hideCircleNewCasesLabels(variable)
             hideGlobalCircle(variable)
 
-            if (otherBreakdownPreviousData[i].length != 0 & c=='region'){ // Create Small Numbers Pie Chart
-                createSmallNumbersBreakdownPie(variable, otherBreakdownPreviousData[i], otherBreakdownAllData[i])
-                
-                d3.selectAll('.pie-other-group').on('click', function(){
+            d3.selectAll('.pie-path.region_other').on('click', function(){ // Show Small Numbers Pie
 
-                    createOtherLinePlot(data, configKeysDict, 
-                        configColorsDict, configUnavailableDict, configLabelsDict)
+                event.stopPropagation()
+
+                if (smallValuesDisplayedFlag){ // If Already Shown
+
+                    currentConfig = variable + '_' + c
+                    console.log(currentConfig)
+
+                    removeSmallNumbersBreakdownPie(variable, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
+                    updateScaleSwitch(configScalesDict[currentConfig])
+                    createLinePlot(data, configKeysDict[currentConfig], 
+                        configColorsDict[currentConfig], 
+                        configUnavailableDict[currentConfig],
+                        configLabelsDict[currentConfig])
+                    changePieOpacity(variable, 1)
+                    smallValuesDisplayedFlag = false
+
+                } else{ // If Not Shown Yet
+
+                createSmallNumbersBreakdownPie(variable, otherBreakdownPreviousData[i], otherBreakdownAllData[i])
+                createOtherLinePlot(data, configKeysDict, configColorsDict, configUnavailableDict, configLabelsDict)
+                changePieOpacity(variable, 0.5)
+                smallValuesDisplayedFlag = true
+
+
+                d3.selectAll('.pie-other-path.' + variable).on('click', function(){
+
+                    event.stopPropagation()
+
+                    currentConfig = variable + '_' + c
+                    console.log(currentConfig)
+
+                    removeSmallNumbersBreakdownPie(variable, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
+                    updateScaleSwitch(configScalesDict[currentConfig])
+                    createLinePlot(data, configKeysDict[currentConfig], 
+                        configColorsDict[currentConfig], 
+                        configUnavailableDict[currentConfig],
+                        configLabelsDict[currentConfig])
+                    changePieOpacity(variable, 1)
+                    smallValuesDisplayedFlag = false
 
                 })
+
+                }
+                
+
+            })
+
+
+            if (otherBreakdownPreviousData[i].length != 0 & c=='region' & !configUnavailableDict[currentConfig]){ // Create Small Numbers Pie Chart
+                // createSmallNumbersBreakdownPie(variable, otherBreakdownPreviousData[i], otherBreakdownAllData[i])
+                
+                // d3.selectAll('.pie-other-group').on('click', function(){
+
+                //     createOtherLinePlot(data, configKeysDict, 
+                //         configColorsDict, configUnavailableDict, configLabelsDict)
+
+                // })
 
             }else if(c=='sex' & breakdownIndex != 0 & otherBreakdownAllData[i].length!=0) {
                 removeSmallNumbersBreakdownPie(variable, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
             }
 
             // Create Line Plot
-            currentConfig = variable + '_' + c
-
             updateScaleSwitch(configScalesDict[currentConfig])
             createLinePlot(data, configKeysDict[currentConfig], 
                 configColorsDict[currentConfig], 
