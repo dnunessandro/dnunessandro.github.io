@@ -16,19 +16,25 @@
 </head>
 <body>
     <div id="chart">
-            <div id="global-chart"></div>
-            <div id="time-chart"></div>
-            <div id="buttons">
-                <input type="checkbox"
-                id="scale-button"
-                checked 
-                data-toggle="toggle" 
-                data-on="Linear" 
-                data-off="Log"
-                data-onstyle="primary"
-                data-offstyle="info"
-                >
+            <div id="global-chart" class="panel panel-primary">
+                <div class="panel-heading">Estatísticas Globais</div>
             </div>
+            <div id="time-chart" class="panel panel-primary">
+                <div class="panel-heading">Evolução Temporal</div>
+                <div id="buttons">
+                    <input type="checkbox"
+                    id="scale-button"
+                    checked 
+                    data-toggle="toggle" 
+                    data-on="Linear" 
+                    data-off="Log"
+                    data-onstyle="primary"
+                    data-offstyle="info">
+                </div>
+                
+            </div>
+            
+            
     </div>
 </body>
 <script src="js/data-processing.js"></script>
