@@ -3,39 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://d3js.org/d3-queue.v3.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.js"
-        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-        crossorigin="anonymous"></script>
-  <script src="https://d3js.org/d3.v5.js"></script>
-  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
     <title>Covid-19 Portugal</title>
 </head>
 <body>
-    <div id="chart">
-            <div id="global-chart" class="panel panel-primary">
-                <div class="panel-heading">Estatísticas Globais</div>
+    <div id="chart" class="container">
+        <div id="title" class=" jumbotron pt-2 pb-1 my-2">
+            <h3 class="">COVID-19 em Portugal</h3>
+            <p class="lead mb-1">Evolução e panorama actual da doença.</p>
+        </div>
+        <div class="row justify-content-center mx-1">
+
+            <div class="card col-12 col-md-3 mb-2 px-0">
+                <div class="card-header px-2">Dados Globais</div>
+                <div id="global-chart" class="card-body"></div>
             </div>
-            <div id="time-chart" class="panel panel-primary">
-                <div class="panel-heading">Evolução Temporal</div>
-                <div id="buttons">
-                    <input type="checkbox"
-                    id="scale-button"
-                    checked 
-                    data-toggle="toggle" 
-                    data-on="Linear" 
-                    data-off="Log"
-                    data-onstyle="primary"
-                    data-offstyle="info">
+
+
+            <div class="card col-12 col-md-3 mb-2 px-0">
+                <div class="card-header px-2">Evolução Temporal</div>
+                <div id="time-chart" class=" card-body col-12 col-md-3">
+                    <div id="buttons">
+                        <input type="checkbox"
+                            id="scale-button"
+                            checked 
+                            data-toggle="toggle" 
+                            data-on="Linear" 
+                            data-off="Log"
+                            data-onstyle="primary"
+                            data-offstyle="info">
+                    </div>
                 </div>
-                
+
             </div>
             
-            
+        </div>
+
+        <div id="footer" class="card-footer text-muted fixed-bottom py-1 text-center bg-light">
+            <p class="my-1">Informação veiculada pela <a href="https://www.dgs.pt/">DGS</a> e disponibilizada por <a href="https://github.com/dssg-pt/covid19pt-data">DSSG-PT</a>.</p>
+        </div>
+
     </div>
+        
+        
 </body>
 <script src="js/data-processing.js"></script>
 <script src="js/scales.js"></script>

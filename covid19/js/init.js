@@ -60,10 +60,13 @@ const boxColor = '#f3f3f3'
 const otherHighlightColor = '#05C7F2'
 
 // Dimensions Variables
-const globalChartWidth = parseInt($(window).width()*0.99)
-const globalChartHeight = parseInt($(window).height()*0.35)
-const timeChartWidth = parseInt($(window).width()*0.99)
+const globalChartWidth = parseInt($('#global-chart').width())
+const globalChartHeight = parseInt($(window).height()*0.25)
+const timeChartWidth = parseInt($('#time-chart').width())
 const timeChartHeight = parseInt($(window).height()*0.3)
+const circlesHeightFrac = 0.55
+const circlesTitlesFrac = 1.2
+const globalChartHeightExpandedFrac = 1.4
 const globalChartWidthFracPad = 0.22
 const timeChartWidthFracPadLeft = 0.07
 const timeChartWidthFracPadRight = 0.25
@@ -84,14 +87,18 @@ const maxRadiusThreshFrac = 0.5
 const greyedOutRadiusFrac = 0.05
 const timeLabelXOffsetFrac = 1.02
 
+console.log(globalChartWidth)
+console.log(globalChartHeight)
+
 // Create SVG Elements
 const svgGlobal = d3.select('#global-chart')
     .append('svg')
     .attr('width', globalChartWidth)
     .attr('height', globalChartHeight)
 
+
 const svgTime = d3.select('#time-chart')
-    .append('svg')
+    .append('svg') 
     .attr('width', timeChartWidth)
     .attr('height', timeChartHeight)
 

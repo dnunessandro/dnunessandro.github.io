@@ -85,8 +85,8 @@ function getGlobalAgeData(globalData, lastDayData, secondLastDayData, allVars, a
 
     allVars.forEach(function(v){
         ageBrackets.forEach(function(b){
-            globalData[v + '_' + b] = lastDayData[v + '_' + b + '_m'] + lastDayData[v + '_' + b + '_f']
-            globalData[v + '_' + b + '_anterior'] = secondLastDayData[v + '_' + b + '_m'] + secondLastDayData[v + '_' + b + '_f']
+            globalData[v + '_' + b] = lastDayData[v + '_' + b + '_f'] + lastDayData[v + '_' + b + '_m']
+            globalData[v + '_' + b + '_anterior'] = secondLastDayData[v + '_' + b + '_f'] + secondLastDayData[v + '_' + b + '_m'] 
         })
     })
 

@@ -229,6 +229,9 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                     currentConfig = variable + '_' + c
                     console.log(currentConfig)
 
+
+                    const globalChartHeight = parseInt($(window).height()*0.25)
+
                     removeSmallNumbersBreakdownPie(variable, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
                     updateScaleSwitch(configScalesDict[currentConfig])
                     createLinePlot(data, configKeysDict[currentConfig], 
@@ -236,7 +239,21 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                         configUnavailableDict[currentConfig],
                         configLabelsDict[currentConfig])
                     changePieOpacity(variable, 1)
+
+                    svgGlobal
+                        .transition()
+                        .duration(300)
+                        .ease(d3.easePoly)
+                        .attr('height', globalChartHeight)
+                    d3.select('#footer')
+                        .transition()
+                        .duration(300)
+                        .ease(d3.easePoly)
+                        .style('opacity', 1)
+
+
                     smallValuesDisplayedFlag = false
+            
 
                 } else{ // If Not Shown Yet
 
@@ -245,8 +262,21 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                 changePieOpacity(variable, 0.5)
                 smallValuesDisplayedFlag = true
 
+                svgGlobal
+                    .transition()
+                    .duration(300)
+                    .ease(d3.easePoly)
+                    .attr('height', globalChartHeight*globalChartHeightExpandedFrac)
+                d3.select('#footer')
+                    .transition()
+                    .duration(300)
+                    .ease(d3.easePoly)
+                    .style('opacity', 0)
+
 
                 d3.selectAll('.pie-other-path.' + variable).on('click', function(){
+
+                
 
                     event.stopPropagation()
 
@@ -261,6 +291,17 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                         configLabelsDict[currentConfig])
                     changePieOpacity(variable, 1)
                     smallValuesDisplayedFlag = false
+
+                    svgGlobal
+                        .transition()
+                        .duration(300)
+                        .ease(d3.easePoly)
+                        .attr('height', globalChartHeight)
+                    d3.select('#footer')
+                        .transition()
+                        .duration(300)
+                        .ease(d3.easePoly)
+                        .style('opacity', 1)
 
                 })
 
@@ -315,6 +356,17 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                 const targetVariable = d3.select('.pie-other-group').attr('class').split(' ').slice(-1)[0]
                 removeSmallNumbersBreakdownPie(targetVariable, otherBreakdownAllData[allVars.indexOf(targetVariable)], 
                 otherBreakdownPreviousData[allVars.indexOf(targetVariable)])
+
+                svgGlobal
+                        .transition()
+                        .duration(300)
+                        .ease(d3.easePoly)
+                        .attr('height', globalChartHeight)
+                d3.select('#footer')
+                        .transition()
+                        .duration(300)
+                        .ease(d3.easePoly)
+                        .style('opacity', 1)
             } 
         }
         
@@ -343,6 +395,17 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
             updateScaleSwitch(configScalesDict[currentConfig])
             createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig], 
                 configUnavailableDict[currentConfig], configLabelsDict[currentConfig])
+
+            svgGlobal
+                .transition()
+                .duration(300)
+                .ease(d3.easePoly)
+                .attr('height', globalChartHeight)
+            d3.select('#footer')
+                .transition()
+                .duration(300)
+                .ease(d3.easePoly)
+                .style('opacity', 1)
         
         })
 

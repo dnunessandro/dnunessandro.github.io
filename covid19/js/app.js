@@ -73,6 +73,6 @@ d3.json(dataPath).then(function(data){
         data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict, configLabelsDict)
         
 
-    console.log(configKeysDict)
+    console.log(globalData)
 
 })

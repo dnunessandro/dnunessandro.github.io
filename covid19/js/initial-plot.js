@@ -6,7 +6,7 @@ function createCircleGroups(globalDataAllArray, cxScale){
         .append('g')
         .attr('class', (_,i)=>allVars[i])
         .classed('circle-group', true)
-        .style('transform', (d,i)=>"translate(" + parseInt(cxScale(i)) + "px," + parseInt(globalChartHeight/2) + "px)")
+        .style('transform', (d,i)=>"translate(" + parseInt(cxScale(i)) + "px," + parseInt(globalChartHeight*circlesHeightFrac) + "px)")
 
     return circleGroups
 }
@@ -51,7 +51,7 @@ function createTitles(circleGroups, globalDataAllArray, rScale){
         .attr('class', (_,i)=>allVars[i])
         .classed('circle-title', true)
         .attr('x', 0)
-        .attr('y', (d,i)=> -rScale(Math.max(...globalDataAllArray))-20)
+        .attr('y', (d,i)=> -rScale(Math.max(...globalDataAllArray))*circlesTitlesFrac)
         .style('opacity', 0)
         .transition()
         .duration(1000)
