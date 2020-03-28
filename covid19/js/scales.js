@@ -103,3 +103,17 @@ function getTimeChartYScale(linearScaleFlag, rangeMin, rangeMax, ...arrays){
         return getTimeChartLogScale(rangeMin, rangeMax, ...arrays)
     }
 }
+
+function createCircleLabelsYScale(labels, supFrac, infFrac, step){
+    
+    const maxLabels = 8
+    const nlabels = labels.length
+    const padFrac = ( (maxLabels - nlabels)*step)
+
+    const scale = d3.scalePoint()
+        .domain(labels)
+        .range([globalChartHeight* (supFrac + padFrac), globalChartHeight - globalChartHeight * (infFrac + padFrac)])
+
+    return scale
+
+}

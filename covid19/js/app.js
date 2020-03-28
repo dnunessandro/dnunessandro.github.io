@@ -28,6 +28,7 @@ d3.json(dataPath).then(function(data){
     const fixedBreakdownDataAll =  fixUnavailableBreakdownData(breakdownDataPrevious, breakdownDataAll, globalDataPreviousArray, globalDataAllArray, unavailableDict)
     breakdownDataPrevious = fixedBreakdownDataAll[0]
     breakdownDataAll = fixedBreakdownDataAll[1]
+
     
     // Create Scales
     const scales = createScales(globalDataAllArray, globalDataPreviousArray)
@@ -59,6 +60,10 @@ d3.json(dataPath).then(function(data){
     const configScalesDict = createConfigScalesDict()
     const configLabelsDict = createConfigLabelsDict(configKeysDict)
 
+    // Create Circles Labels
+    const circlsLabelsXFracDict = createCirclesLabelsFracDict(allVars, circleLabelsXFracArray)
+
+
     // Create Line Plot
     updateScaleSwitch(configScalesDict[currentConfig])
     createLinePlot(data, 
@@ -68,11 +73,9 @@ d3.json(dataPath).then(function(data){
         configLabelsDict[currentConfig])
 
     // Bind Animations
-    bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDataPrevious, breakdownDataAll, 
+    bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDataPrevious, breakdownDataAll,
         rScale, rScales, otherBreakdownPreviousData, otherBreakdownAllData,
-        data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict, configLabelsDict)
-        
+        data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict, configLabelsDict, circlsLabelsXFracDict)
 
-    console.log(globalData)
 
 })

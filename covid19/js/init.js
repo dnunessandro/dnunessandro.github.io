@@ -65,7 +65,7 @@ const globalChartHeight = parseInt($(window).height()*0.25)
 const timeChartWidth = parseInt($('#time-chart').width())
 const timeChartHeight = parseInt($(window).height()*0.3)
 const circlesHeightFrac = 0.55
-const circlesTitlesFrac = 1.2
+const circlesTitlesFrac = 1.25
 const globalChartHeightExpandedFrac = 1.4
 const globalChartWidthFracPad = 0.22
 const timeChartWidthFracPadLeft = 0.07
@@ -86,9 +86,8 @@ const breakdownShapeRx = 8
 const maxRadiusThreshFrac = 0.5
 const greyedOutRadiusFrac = 0.05
 const timeLabelXOffsetFrac = 1.02
-
-console.log(globalChartWidth)
-console.log(globalChartHeight)
+const circleLabelsXFracArray = [0.5, 0.75, 0.35, 0.7]
+const circleLabelRadius = 5
 
 // Create SVG Elements
 const svgGlobal = d3.select('#global-chart')
@@ -111,8 +110,8 @@ const dummyRect = svgGlobal
     .style('opacity', 0)
 
 // Create Pie Element
-const pieInner = d3.pie()
-const pieOuter = d3.pie().padAngle(0.05)
+const pieInner = d3.pie().sort(null)
+const pieOuter = d3.pie().sort(null).padAngle(0.05)
 
 // Mobile Flag
 const mobileFlag = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)

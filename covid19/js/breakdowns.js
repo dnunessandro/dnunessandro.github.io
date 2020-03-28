@@ -99,8 +99,16 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
 
     // Highlight Other Category
     d3.selectAll('.pie-path.region_other')
-        .style('stroke', otherHighlightColor)
         .style('stroke-width', 3)
+        .style('stroke', otherHighlightColor)
+        .style('stroke-opacity', 0)
+        .transition('z')
+        .duration(600)
+        .delay(600)
+        .ease(d3.easePoly)
+        .style('stroke-opacity', 1)
+        
+        
 
     if (firstCategoryFlag){
 
@@ -132,6 +140,7 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
         .classed('previous',true)
         .classed('pie-label-group', true)
         .classed(variable, true)
+        .style('opacity', 0)
       
     const piePreviousLabelsGroup = d3.select('.circle-group.' + variable)
         .select('.previous.pie-label-group.' + variable)
@@ -148,9 +157,14 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
         targetY: d[1]
         };
     });
-    console.log(newPositions)
     createPieChartLabelsForce(newPositions, 7)
-    console.log(newPositions)
+
+    const piePreviousLabelsRects = piePreviousLabelsGroup
+        .enter()
+        .append('rect')
+        .classed('previous', true)
+        .classed('pie-label-bg', true)
+        .classed(variable, true)
 
     piePreviousLabelsGroup
         .enter()
@@ -159,12 +173,33 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
         .classed('pie-label', true)
         .classed(variable, true)
         .text((_,i)=>breakdownDataPrevious[i])
-        .style('opacity', 0)
         .attr('transform', (_,i) => 'translate(' + pieLabelsOutsideCoordinatePairs[i][0] + ',' + newPositions[i].y + ')' )
-        .attr("text-anchor", function(d) {
-            return (d.endAngle + d.startAngle)/2 > Math.PI ?
-                "end" : "start";
-        })
+        // .attr("text-anchor", function(d) {
+        //     return (d.endAngle + d.startAngle)/2 > Math.PI ?
+        //         "end" : "start";
+        // })
+
+    // Get Labels Width and Height
+    let textWidthArray = []
+    let textHeightArray = []
+    labels.forEach(function(_,i){
+
+        textBBox = d3.selectAll('text.pie-label.previous.' + variable)
+            .filter((_,e)=>e==i)
+            .node()
+            .getBBox()
+            textWidthArray.push(textBBox.width)
+            textHeightArray.push(textBBox.height)
+
+    })
+
+    piePreviousLabelsRects
+        .style('fill', boxColor)
+        .style('width', (_,i)=>(textWidthArray[i]+6))
+        .style('height', (_,i)=>textHeightArray[i]+6)
+        .style('rx', breakdownShapeRx)
+        .attr('transform', (_,i) => 'translate(' + parseInt(pieLabelsOutsideCoordinatePairs[i][0]-(textWidthArray[i]+6)/2) + ',' + parseInt(newPositions[i].y-(textHeightArray[i]+6)/2) + ')' )
+
 
     // Draw Outer Pie Labels
     d3.selectAll('.all.pie-label-group').remove()
@@ -174,6 +209,7 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
         .classed('all',true)
         .classed('pie-label-group', true)
         .classed(variable, true)
+        .style('opacity', 0)
     
     const pieAllLabelsGroup = d3.select('.circle-group.' + variable)
         .select('.all.pie-label-group.' + variable)
@@ -192,21 +228,47 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
     });
     createPieChartLabelsForce(newPositions)
 
+    const pieAllLabelsRects = pieAllLabelsGroup
+        .enter()
+        .append('rect')
+        .classed('all', true)
+        .classed('pie-label-bg', true)
+        .classed(variable, true)
+
     pieAllLabelsGroup
         .enter()
         .append('text')
         .classed('all', true)
         .classed('pie-label', true)
         .classed(variable, true)
-        .style('opacity', 0)
-        .text((_,i)=>breakdownDataAll[i])
+        .text((_,i)=>breakdownDataAll[i]-breakdownDataPrevious[i])
         .attr('transform', (_,i) => 'translate(' + pieLabelsOutsideCoordinatePairs[i][0] + ',' + newPositions[i].y + ')' )
-        .attr("text-anchor", function(d) {
-            return (d.endAngle + d.startAngle)/2 > Math.PI ?
-                "end" : "start";
-        })
+
+
+    // Get Labels Width and Height
+    textWidthArray = []
+    textHeightArray = []
+    labels.forEach(function(_,i){
+
+        textBBox = d3.selectAll('text.pie-label.all.' + variable)
+            .filter((_,e)=>e==i)
+            .node()
+            .getBBox()
+            textWidthArray.push(textBBox.width)
+            textHeightArray.push(textBBox.height)
+
+    })
+
+    pieAllLabelsRects
+        .style('fill', boxColor)
+        .style('width', (_,i)=>(textWidthArray[i]+6))
+        .style('height', (_,i)=>textHeightArray[i]+6)
+        .style('rx', breakdownShapeRx)
+        .attr('transform', (_,i) => 'translate(' + parseInt(pieLabelsOutsideCoordinatePairs[i][0]-(textWidthArray[i]+6)/2) + ',' + parseInt(newPositions[i].y-(textHeightArray[i]+6)/2) + ')' )
+    
 
     }
+    
 
     
 
@@ -431,6 +493,7 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         .classed('previous',true)
         .classed('pie-other-label-group', true)
         .classed(variable, true)
+        .style('opacity', 0)
         .style('transform', 'translate(' + parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px,' +
             parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px)')
     
@@ -452,6 +515,14 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
 
     createPieChartLabelsForce(newPositions, 5)
 
+    const piePreviousLabelsRects = piePreviousLabelsGroup
+        .enter()
+        .append('rect')
+        .classed('previous', true)
+        .classed('pie-label-bg', true)
+        .classed(variable, true)
+
+
     piePreviousLabelsGroup
         .enter()
         .append('text')
@@ -459,12 +530,33 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         .classed('pie-other-label', true)
         .classed(variable, true)
         .text((_,i)=>otherBreakdownDataPreviousArray[i])
-        .style('opacity', 0)
         .attr('transform', (_,i) => 'translate(' + pieLabelsOutsideCoordinatePairs[i][0] + ',' + newPositions[i].y + ')' )
-        .attr("text-anchor", function(d) {
-            return (d.endAngle + d.startAngle)/2 > Math.PI ?
-                "end" : "start";
-        })
+        // .attr("text-anchor", function(d) {
+        //     return (d.endAngle + d.startAngle)/2 > Math.PI ?
+        //         "end" : "start";
+        // })
+
+    //Get Labels Width and Height
+    let textWidthArray = []
+    let textHeightArray = []
+    otherBreakdownDataPreviousArray.forEach(function(_,i){
+
+        textBBox = d3.selectAll('text.pie-other-label.previous.' + variable)
+            .filter((_,e)=>e==i)
+            .node()
+            .getBBox()
+            textWidthArray.push(textBBox.width)
+            textHeightArray.push(textBBox.height)
+
+    })
+
+    piePreviousLabelsRects
+        .style('fill', boxColor)
+        .style('width', (_,i)=>(textWidthArray[i]+4))
+        .style('height', (_,i)=>textHeightArray[i]+4)
+        .style('rx', breakdownShapeRx)
+        .attr('transform', (_,i) => 'translate(' + parseInt(pieLabelsOutsideCoordinatePairs[i][0]-(textWidthArray[i]+4)/2) + ',' + parseInt(newPositions[i].y-(textHeightArray[i]+4)/2) + ')' )
+
 
 
 
@@ -476,6 +568,7 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         .classed('all',true)
         .classed('pie-other-label-group', true)
         .classed(variable, true)
+        .style('opacity', 0)
         .style('transform', 'translate(' + parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px,' +
             parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px)')
     
@@ -497,21 +590,46 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
 
     createPieChartLabelsForce(newPositions)
 
+    const pieAllLabelsRects = pieAllLabelsGroup
+        .enter()
+        .append('rect')
+        .classed('all', true)
+        .classed('pie-label-bg', true)
+        .classed(variable, true)
+
     pieAllLabelsGroup
         .enter()
         .append('text')
         .classed('all', true)
         .classed('pie-other-label', true)
         .classed(variable, true)
-        
-        .text((_,i)=>otherBreakdownDataAllArray[i])
-        .style('opacity', 0)
+        .text((_,i)=>otherBreakdownDataAllArray[i]-otherBreakdownDataPreviousArray[i])
         .attr('transform', (_,i) => 'translate(' + pieLabelsOutsideCoordinatePairs[i][0] + ',' + newPositions[i].y + ')' )
-        .attr("text-anchor", function(d) {
-            return (d.endAngle + d.startAngle)/2 > Math.PI ?
-                "end" : "start";
-        })
+        // .attr("text-anchor", function(d) {
+        //     return (d.endAngle + d.startAngle)/2 > Math.PI ?
+        //         "end" : "start";
+        // })
 
+        //Get Labels Width and Height
+        textWidthArray = []
+        textHeightArray = []
+        otherBreakdownDataAllArray.forEach(function(_,i){
+    
+            textBBox = d3.selectAll('text.pie-other-label.all.' + variable)
+                .filter((_,e)=>e==i)
+                .node()
+                .getBBox()
+                textWidthArray.push(textBBox.width)
+                textHeightArray.push(textBBox.height)
+    
+        })
+    
+        pieAllLabelsRects
+            .style('fill', boxColor)
+            .style('width', (_,i)=>(textWidthArray[i]+4))
+            .style('height', (_,i)=>textHeightArray[i]+4)
+            .style('rx', breakdownShapeRx)
+            .attr('transform', (_,i) => 'translate(' + parseInt(pieLabelsOutsideCoordinatePairs[i][0]-(textWidthArray[i]+4)/2) + ',' + parseInt(newPositions[i].y-(textHeightArray[i]+4)/2) + ')' )
     
 
 }
@@ -586,12 +704,104 @@ function translateLabelOutside(d, arc, radius){
 
 
 
+function createCircleLabels(variable, xFrac, labels, colors, supFrac, infFrac, step){
+
+    const yScale = createCircleLabelsYScale(labels, supFrac, infFrac, step)
+
+    let labelsGroups = svgGlobal.selectAll('g.circle-label-group.' + variable)
+        .data(labels)
+
+    labelsGroups.exit().remove()
+
+    const labelGroupsEnter = labelsGroups.enter()
+        .append('g')
+        .classed('circle-label-group', true)
+        .classed(variable, true)   
+
+    labelGroupsEnter
+        .append('rect')
+        .classed('circle-label-bg', true)
+        .classed(variable, true)
+
+    labelGroupsEnter
+        .append('circle')
+        .classed('circle-label-color', true)
+        .classed(variable, true)
+        
+    labelGroupsEnter
+        .append('text')
+        .classed('circle-label', true)
+        .classed(variable, true)
+        
+    labelsGroups = labelsGroups.merge(labelGroupsEnter)
+
+    labelsGroups
+        .transition()
+        .duration(600)
+        .delay((_,i)=>i*100)
+        .ease(d3.easePoly)
+        .attr('transform', d=>'translate('+ xFrac*globalChartWidth + ',' + yScale(d) + ')')
+
+    labelsGroups
+        .select('circle')
+        .transition()
+        .duration(600)
+        .delay((_,i)=>i*100)
+        .ease(d3.easePoly)
+        .style('fill', (_,i)=>colors[i])
+        .attr('r', circleLabelRadius)
+        .attr('transform', 'translate(0,' + '0)')
+
+    labelsGroups
+        .select('text')
+        .text((_,i)=>labels[i])
+        .attr('transform', 'translate(' + circleLabelRadius*1.5 + ',0)' )
+        .style('opacity', 0)
+        .transition()
+        .duration(600)
+        .delay((_,i)=>i*100)
+        .ease(d3.easePoly)
+        .style('opacity', 1)
+
+
+    // Get Labes Width and Height
+    let textWidthArray = []
+    let textHeightArray = []
+    labels.forEach(function(_,i){
+
+        textBBox = d3.selectAll('.circle-label.' + variable)
+            .filter((_,e)=>e==i)
+            .node()
+            .getBBox()
+            textWidthArray.push(textBBox.width)
+            textHeightArray.push(textBBox.height)
+
+    })
+
+    labelsGroups
+        .select('rect')
+        .style('fill', boxColor)
+        .style('width', (_,i)=>(textWidthArray[i] + 2*circleLabelRadius + 14))
+        .style('height', (_,i)=>textHeightArray[i]*1.4)
+        .style('rx', breakdownShapeRx)
+        .attr('transform', (d,i)=> 'translate(' + (-circleLabelRadius*2) + ',' + (-textHeightArray[i]*1.4/2) +')' )
+
+}
 
 
 
+function removeAllCircleLabels(){
 
+    const labelGroups = d3.selectAll('.circle-label-group')
 
+    labelGroups
+        .style('opacity', 1)
+        .transition()
+        .duration(600)
+        .delay((_,i)=>i*100)
+        .attr('transform', 'translate(0' + (-100) + ')')
+        .style('opacity', 0)
+        .remove()
 
-
-
+}
 

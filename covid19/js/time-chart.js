@@ -101,6 +101,22 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
             changePieNumbersOpacity(1)
             showNumbersOnTimeChartLabels(dataArrays)
             
+            numbersDisplayedFlag = true
+        }
+        
+    })
+
+    // Add Show Pie Labels Event
+    d3.selectAll('.circle-label').on('click', function(){
+
+        if (numbersDisplayedFlag){
+            changePieNumbersOpacity(0)
+            showNamesOnTimeChartLabels()
+    
+            numbersDisplayedFlag = false
+        } else{
+            changePieNumbersOpacity(1)
+            showNumbersOnTimeChartLabels(dataArrays)
             
             numbersDisplayedFlag = true
         }
@@ -173,7 +189,7 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
 
 function changePieNumbersOpacity(opacityVal){
 
-    const pieLabels = smallValuesDisplayedFlag ? d3.selectAll('.pie-other-label') : d3.selectAll('.pie-label')
+    const pieLabels = smallValuesDisplayedFlag ? d3.selectAll('.pie-other-label-group') : d3.selectAll('.pie-label-group')
     
     pieLabels
         .transition()
@@ -186,9 +202,11 @@ function showNumbersOnTimeChartLabels(dataArrays){
 
     const labels = d3.selectAll('.label')
     labels
+        .style('opacity', 0)
         .transition()
-        .duration(1000)
+        .duration(300)
         .ease(d3.easePoly)
+        .style('opacity', 1)
         .text((_,i)=>dataArrays[i].slice(-1)[0])
 }
 
@@ -196,9 +214,11 @@ function showNamesOnTimeChartLabels(){
 
     const labels = d3.selectAll('.label')
     labels
+        .style('opacity', 0)
         .transition()
-        .duration(1000)
+        .duration(300)
         .ease(d3.easePoly)
+        .style('opacity', 1)
         .text(d=>d)
 }
 

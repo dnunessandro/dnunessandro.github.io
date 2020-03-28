@@ -355,7 +355,7 @@ function createConfigColorsDict(){
     configColorsDict['global'] = allVars.map(a=>varsColorsDict[a])
 
     // Add New Cases Breakdwon Colors
-    allVars.forEach(a=>configColorsDict[a]=[varsColorsDict[a]])
+    allVars.forEach(a=>configColorsDict[a]=[varsColorsDict[a], varsColorsDict[a+'_novos']])
 
     // Add Sex Breakdwon Colors
     allVars.forEach(a=>configColorsDict[a + '_sex'] = breakdownColorsDict['sex'])
@@ -482,4 +482,16 @@ function getIncreasingRandomArrayOfSizeN(n, seedStart, multFactor){
 function random(seed) {
     let x = Math.sin(seed) * 10000;
     return x - Math.floor(x);
+}
+
+function createCirclesLabelsFracDict(allVars, xFracArray){
+
+    let pieLabelsFracDict = {}
+
+    allVars.forEach((v,i)=>pieLabelsFracDict[v] = xFracArray[i])
+
+    pieLabelsFracDict['other'] = xFracArray.slice(-1)[0]
+
+    return pieLabelsFracDict
+
 }

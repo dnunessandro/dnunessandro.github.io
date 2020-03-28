@@ -1,6 +1,7 @@
 .circle-title{
     font-size: 12px;
     text-anchor: middle;
+    dominant-baseline: middle;
     fill: #555
 }
 
@@ -11,6 +12,11 @@
     fill: #555
 }
 
+.circle-label{
+  font-size: 10px;
+  dominant-baseline: middle;
+}
+ 
 .new-cases-value{
     font-size: 16px;
     text-anchor: middle;
@@ -18,6 +24,19 @@
     fill: #555;
     cursor: default
 }
+
+.pie-label{
+  font-size: 10px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.pie-other-label{
+  font-size: 9px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
 
 .line{
   fill: none;
@@ -34,7 +53,7 @@
 
 
 #footer p{
-  font-size: 0.8rem;
+  font-size: 0.6rem;
 }
 
 .card{

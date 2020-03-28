@@ -44,21 +44,57 @@ function createCircleShapesPrevious(circleGroups, globalDataPreviousArray, rScal
 
 function createTitles(circleGroups, globalDataAllArray, rScale){
 
-    const circleTitles = circleGroups
+    const circleTitlesGroups = circleGroups
         .data(globalDataAllArray)
+        .append('g')
+        .attr('class', (_,i)=>allVars[i])
+        .classed('circle-title-group', true)
+        .attr('transform', d=> 'translate(0,' +  (-rScale(Math.max(...globalDataAllArray))*circlesTitlesFrac) + ')')
+
+    const circleTitlesRects = circleTitlesGroups
+            .append('rect')
+            .attr('class', (_,i)=>allVars[i])
+            .classed('circle-title-bg', true)
+
+    circleTitlesGroups
         .append('text')
         .text((_,i)=>varsTitlesDict[allVars[i]])
         .attr('class', (_,i)=>allVars[i])
         .classed('circle-title', true)
-        .attr('x', 0)
-        .attr('y', (d,i)=> -rScale(Math.max(...globalDataAllArray))*circlesTitlesFrac)
         .style('opacity', 0)
         .transition()
         .duration(1000)
         .ease(d3.easePoly)
         .style('opacity', 1)
 
-    return circleTitles
+        //Get Labels Width and Height
+        let textWidthArray = []
+        let textHeightArray = []
+        allVars.forEach(function(_,i){
+
+        textBBox = d3.selectAll('.circle-title')
+            .filter((_,e)=>e==i)
+            .node()
+            .getBBox()
+
+            textWidthArray.push(textBBox.width)
+            textHeightArray.push(textBBox.height)
+        })
+
+        console.log(d3.selectAll('.circle-title'))
+        console.log(parseInt(-(textWidthArray[0]+8)/2))
+
+        circleTitlesRects
+            .style('width', (_,i)=>(textWidthArray[i]+8))
+            .style('height', (_,i)=>textHeightArray[i]+8)
+            .style('rx', breakdownShapeRx)
+            .style('fill', boxColor)
+            .attr('transform', (_,i)=> 'translate(' + parseInt(-(textWidthArray[i]+8)/2) + ',' + parseInt((-1.4*textHeightArray[i]+8)) + ')' )
+
+
+
+
+    return circleTitlesGroups
 }
 
 function createValueLabels(circleGroups, rScale){
