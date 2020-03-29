@@ -171,6 +171,7 @@ function updateScaleSwitch(linearScaleFlag){
  
     $('#scale-button').prop('checked', linearScaleFlag)
     $('#scale-button').bootstrapToggle(linearScaleFlag ? 'on': 'off')
+
 }
 
 function changeScale(data, configKeysDict, configColorsDict, configUnavailableDict, configLabelsDict){
@@ -206,7 +207,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
 
         const variable = allVars[i]
         initialConditionsFlag = false
-        changeMainLabelsOpacity()
+
         
         if (showbreakDownFlagDict[variable]){ // Draw Next Category Breakdown Pie
 
@@ -215,6 +216,9 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
             const colors = unavailableDict[variable].length == 0 ? breakdownColorsDict[c] : unavailableColors
             currentConfig = variable + '_' + c
 
+            changeCircleTitlesOpacity()
+
+            createBreakdownTitle(breakdownTitlesDict[c], breakdwownIconsDict[c], breakdownIndex)
             createBreakdownPie(variable, breakdownIndex, breakdownDataAll[ci][i], breakdownDataPrevious[ci][i], 
                 colors, rScales, configKeysDict[currentConfig], configLabelsDict[currentConfig], configUnavailableDict[currentConfig])
             hideInnerCircle(variable, rScale)
@@ -259,7 +263,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                 smallValuesDisplayedFlag = true
 
                 changeUiElementsExpandedState(globalChartHeight*globalChartHeightExpandedFrac, 0)
-                removeAllCircleLabels()
+                changeCircleTitlesOpacity(variable)
                 
                 createCircleLabels('other', circlsLabelsXFracDict['other'], configLabelsDict[currentConfig], configColorsDict[currentConfig], 0.65, -0.4, 0.05)
 
@@ -280,7 +284,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                     smallValuesDisplayedFlag = false
 
                     changeUiElementsExpandedState(globalChartHeight, 1)
-                    removeAllCircleLabels()
+                    changeCircleTitlesOpacity(variable)
                     createCircleLabels('other', circlsLabelsXFracDict[variable], configLabelsDict[currentConfig], configColorsDict[currentConfig], 0.05, 0.2, 0.05)
 
 
@@ -322,6 +326,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
             greyOutOtherCircles(variable, rScale)
             removeOtherBreakdownPies(variable, breakdownDataAll, breakdownDataAll, breakdownIndex)
             removeAllCircleLabels()
+            changeCircleTitlesOpacity(variable)
             updateShowBreakdownFlagDict(variable)
             createCircleLabels('other', circlsLabelsXFracDict[variable], configLabelsDict[currentConfig], configColorsDict[currentConfig], 0.05, 0.2, 0.05)
 
@@ -352,8 +357,9 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
     d3.select('#callback-rect').on('click', function(){
 
         initialConditionsFlag = true
-        changeMainLabelsOpacity()
+        changeCircleTitlesOpacity()
         removeAllCircleLabels()
+        
         
         allVars.forEach(function(v,i){
             const ci = breakdownIndex > 0 ? breakdownIndexArray[breakdownIndex-1] : 0
@@ -397,21 +403,6 @@ function setLabelsInitialConditions(xScale, yScale, timeChartLabelsUnformatted){
     initialConditionsFlag = false
 }
 
-function changeMainLabelsOpacity(){
-
-    const circleTitles = d3.selectAll('.circle-title-group')
-        .transition()
-        .duration(400)
-        .ease(d3.easePoly)
-
-    if (initialConditionsFlag){
-        circleTitles
-            .style('opacity', 1)
-    } else{
-        circleTitles
-            .style('opacity', 0)
-    }
-}
 
 function changeUiElementsExpandedState(globalChartHeight, footerOpacity){
 

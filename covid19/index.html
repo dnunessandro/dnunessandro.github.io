@@ -4,43 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-    <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://d3js.org/d3.v5.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+    <script src="https://kit.fontawesome.com/40153623a1.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <title>Covid-19 Portugal</title>
 </head>
 <body>
-    <div id="chart" class="container">
-        <div id="title" class=" jumbotron pt-2 pb-1 my-2">
+    <div id="chart" class="container px-2">
+        <div id="title" class="jumbotron pt2 pb-1 pt-3 mt-2 mb-0 shadow">
             <h3 class="mb-1">COVID-19 em Portugal</h3>
             <p class="lead mb-1">Evolução e panorama actual da doença.</p>
         </div>
-        <div class="row justify-content-center mx-1">
+        <div id="global-chart-div" class="row justify-content-center mx-0">
 
-            <div class="card col-12 col-md-3 mb-2 px-0">
-                <div class="card-header px-2">Dados Globais</div>
+            <div class="card shadow col-12 col-md-3 mt-2 mb-0 px-0">
+                <div class="card-header px-2 pb-2 pt-2">Dados Globais</div>
                 <div id="global-chart" class="card-body"></div>
             </div>
 
-
-            <div class="card col-12 col-md-3 mb-2 px-0">
-                <div class="card-header px-2">Evolução Temporal</div>
-                <div id="time-chart" class=" card-body col-12 col-md-3">
+            <div class="card shadow col-12 col-md-3 mt-2 px-0">
+                <div class="card-header px-2 pb-2 pt-2">Evolução Temporal</div>
+                <div id="time-chart" class="card-body col-12 col-md-3">
                     <div id="buttons">
+                        <style>
+                            .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20rem}
+                            .toggle.ios .toggle-handle { border-radius: 20rem}
+                          </style>
                         <input type="checkbox"
+                            data-size="sm"
                             id="scale-button"
                             checked 
                             data-toggle="toggle" 
                             data-on="Linear" 
                             data-off="Log"
-                            data-onstyle="primary"
-                            data-offstyle="info">
+                            data-onstyle="light"
+                            data-offstyle="light"
+                            data-style="ios"
+                            class="btn"
+                            >
                     </div>
                 </div>
 

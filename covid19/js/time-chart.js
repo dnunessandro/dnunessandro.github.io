@@ -20,14 +20,100 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
         (1-timeChartWidthFracPadRight)*timeChartWidth,
         ...datesArray)
 
-
     const yScale = getTimeChartYScale($('#scale-button').prop('checked'), 
             (1-timeChartHeightFracPadBottom)*timeChartHeight,
             timeChartHeightFracPadTop*timeChartHeight, 
             ...dataArrays)
 
-    // Create Line Elements
+    // Create Axes
+    const xNTicks = 4
+    const xAxis = d3.axisBottom(xScale)
+        .ticks(xNTicks)
+        .tickFormat(timeFormat)
+        .tickSize(0)
+        .tickPadding(10)
+    const YNTicks = 3
+    const yAxis = d3.axisLeft(yScale)
+        .ticks(YNTicks)
+        .tickFormat(d3.format("~s"))
+        .tickSize(0)
 
+
+    // Append X Axis
+    if (svgTime.select('#x-axis').empty()){
+        svgTime
+            .append('g')
+            .attr('id', 'x-axis')
+            .style('transform', 'translate(0,' + 
+            parseInt(timeChartHeight - timeChartHeightFracPadBottom*timeChartHeight) + 'px)')
+    }
+
+    // Add the X gridlines
+    const bottomPad = timeChartHeight - timeChartHeight*timeChartHeightFracPadBottom
+    console.log(bottomPad)
+    svgTime.append("g")
+        .attr('id', 'x-grid')		
+        .attr("class", "grid")
+        .attr("transform", "translate(0," + bottomPad + ")")
+
+    // Update X Axis
+    d3.select('#x-axis')
+        .transition()
+        .duration(1000)
+        .ease(d3.easePoly)
+        .call(xAxis)
+        .style('fill', fontColor)
+
+    // Update X Grid
+    d3.select('#x-grid')
+        .transition()
+        .duration(1000)
+        .ease(d3.easePoly)
+        .call(xAxis)
+        .call(xAxis
+            .tickSize(- timeChartHeight )
+            .tickFormat("")
+            .tickSizeOuter(0)
+        )
+
+    // Append Y Axis
+    if (svgTime.select('#y-axis').empty()){
+        svgTime
+            .append('g')
+            .attr('id', 'y-axis')
+            .style('transform', 'translate(' + parseInt(timeChartWidthFracPadLeft * timeChartWidth) + 'px,0)')
+    }
+
+    // Add the Y gridlines
+    const leftPad = timeChartWidthFracPadLeft * timeChartWidth
+    svgTime.append("g")
+        .attr('id', 'y-grid')		
+        .attr("class", "grid")
+        .attr("transform", "translate("+leftPad+",0)")
+
+    // Update Y Axis
+    d3.select('#y-axis')
+        .transition()
+        .duration(1000)
+        .ease(d3.easePoly)
+        .call(yAxis)
+        
+        .style('fill', fontColor)
+
+    // Update Y Grid
+    d3.select('#y-grid')
+        .transition()
+        .duration(1000)
+        .ease(d3.easePoly)
+        .call(yAxis)
+        .call(yAxis
+            .tickSize(-(1 - timeChartWidthFracPadLeft - timeChartWidthFracPadRight) * timeChartWidth )
+            .tickFormat("")
+            .tickSizeOuter(0)
+        )
+
+
+    // Create Line Elements
     const line = d3.line()
         .x((_, i)=>xScale(timeParse(datesArray[i])))
         .y(d=>yScale(d))
@@ -47,6 +133,8 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
         .attr('d', line)
 
     animatelines(unavailableFlag)
+
+    
 
 
     // Create Labels Elements
@@ -123,44 +211,9 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
         
     })
         
-    // Create Axes
-    const xAxis = d3.axisBottom(xScale)
-        .ticks(4)
-        .tickFormat(timeFormat)
-        .tickSize(0)
-    const yAxis = d3.axisLeft(yScale)
-        .ticks(3)
-        .tickFormat(d3.format("~s"))
-        .tickSize(0)
+    
 
-    // Append Axis
-    if (svgTime.select('#x-axis').empty()){
-        svgTime
-            .append('g')
-            .attr('id', 'x-axis')
-            .style('transform', 'translate(0,' + 
-            parseInt(timeChartHeight - timeChartHeightFracPadBottom*timeChartHeight) + 'px)')
-    }
 
-    // Update Axis
-    d3.select('#x-axis')
-        .transition()
-        .duration(1000)
-        .ease(d3.easePoly)
-        .call(xAxis)
-
-    if (svgTime.select('#y-axis').empty()){
-        svgTime
-            .append('g')
-            .attr('id', 'y-axis')
-            .style('transform', 'translate(' + parseInt(timeChartWidthFracPadLeft * timeChartWidth) + 'px,0)')
-    }
-
-    d3.select('#y-axis')
-        .transition()
-        .duration(1000)
-        .ease(d3.easePoly)
-        .call(yAxis)
 
     // Deal with Unavailable Data
     if(unavailableFlag){

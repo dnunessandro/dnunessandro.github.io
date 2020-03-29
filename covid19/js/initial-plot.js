@@ -76,20 +76,16 @@ function createTitles(circleGroups, globalDataAllArray, rScale){
             .filter((_,e)=>e==i)
             .node()
             .getBBox()
-
             textWidthArray.push(textBBox.width)
             textHeightArray.push(textBBox.height)
         })
 
-        console.log(d3.selectAll('.circle-title'))
-        console.log(parseInt(-(textWidthArray[0]+8)/2))
-
         circleTitlesRects
-            .style('width', (_,i)=>(textWidthArray[i]+8))
-            .style('height', (_,i)=>textHeightArray[i]+8)
-            .style('rx', breakdownShapeRx)
+            .style('width', (_,i)=>(textWidthArray[i]+12))
+            .style('height', (_,i)=>textHeightArray[i]+12)
+            .attr('rx', breakdownShapeRx)
             .style('fill', boxColor)
-            .attr('transform', (_,i)=> 'translate(' + parseInt(-(textWidthArray[i]+8)/2) + ',' + parseInt((-1.4*textHeightArray[i]+8)) + ')' )
+            .attr('transform', (_,i)=> 'translate(' + parseInt(-(textWidthArray[i]+12)/2) + ',' + (-(textHeightArray[i]+12)/2) + ')' )
 
 
 

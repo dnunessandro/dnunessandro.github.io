@@ -31,6 +31,17 @@ const varsTitlesDict = {
     'obitos': 'Óbitos'
 }
 
+const breakdownTitlesDict = {
+    'sex': 'Sexo',
+    'age': 'Faixa Etária',
+    'region': 'Região'
+}
+const breakdwownIconsDict = {
+    'sex': '\uf228',
+    'age': '\uf0c0',
+    'region': '\uf5a0'
+}
+
 // Colors
 const varsColorsDict = {
     'confirmados': '#d7b354',
@@ -56,21 +67,22 @@ const breakdownColorsDict = {
 
 const smallValuesColors = d3.schemePastel1
 
-const boxColor = '#f3f3f3'
+const boxColor = '#E9ECEF'
 const otherHighlightColor = '#05C7F2'
+const fontColor = '#4c4e4d'
 
 // Dimensions Variables
 const globalChartWidth = parseInt($('#global-chart').width())
-const globalChartHeight = parseInt($(window).height()*0.25)
+const globalChartHeight = parseInt($(window).height()*0.3)
 const timeChartWidth = parseInt($('#time-chart').width())
-const timeChartHeight = parseInt($(window).height()*0.3)
+const timeChartHeight = parseInt($(window).height()*0.35)
 const circlesHeightFrac = 0.55
-const circlesTitlesFrac = 1.25
+const circlesTitlesFrac = 1.4
 const globalChartHeightExpandedFrac = 1.4
 const globalChartWidthFracPad = 0.22
 const timeChartWidthFracPadLeft = 0.07
-const timeChartWidthFracPadRight = 0.25
-const timeChartHeightFracPadTop = 0.1
+const timeChartWidthFracPadRight = 0.18
+const timeChartHeightFracPadTop = 0.09
 const timeChartHeightFracPadBottom = 0.1
 const minRadiusWidthFrac = 0.01
 const maxRadiusWidthFrac = 0.17
@@ -88,6 +100,9 @@ const greyedOutRadiusFrac = 0.05
 const timeLabelXOffsetFrac = 1.02
 const circleLabelsXFracArray = [0.5, 0.75, 0.35, 0.7]
 const circleLabelRadius = 5
+
+$('#buttons').css('padding-top', '0.3rem')
+$('#buttons').css('padding-left', '0.3rem')
 
 // Create SVG Elements
 const svgGlobal = d3.select('#global-chart')
@@ -146,7 +161,7 @@ let smallValuesDisplayedFlag = false
 
 // Time Parsing
 const timeParse = d3.timeParse('%d/%m/%Y')
-const timeFormat = d3.timeFormat('%e %B')
+const timeFormat = d3.timeFormat('%e %b')
 // const monthTranslationDict = {
 //     'January': 'Janeiro',
 //     'February': 'Fevereiro',
@@ -191,7 +206,7 @@ const labelsDict = {
     'acores': 'Açores',
     'madeira': 'Madeira',
     'estrangeiro': 'Estrangeiro',
-    'region_other': 'Outras Regiões'
+    'region_other': 'Outras'
 }
 
 let initialConditionsFlag = true

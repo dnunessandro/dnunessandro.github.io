@@ -173,6 +173,8 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
         .classed('pie-label', true)
         .classed(variable, true)
         .text((_,i)=>breakdownDataPrevious[i])
+        .style('fill', '#4c4e4d')
+        .style('font-size', '0.6rem')
         .attr('transform', (_,i) => 'translate(' + pieLabelsOutsideCoordinatePairs[i][0] + ',' + newPositions[i].y + ')' )
         // .attr("text-anchor", function(d) {
         //     return (d.endAngle + d.startAngle)/2 > Math.PI ?
@@ -242,6 +244,8 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
         .classed('pie-label', true)
         .classed(variable, true)
         .text((_,i)=>breakdownDataAll[i]-breakdownDataPrevious[i])
+        .style('fill', '#4c4e4d')
+        .style('font-size', '0.6rem')
         .attr('transform', (_,i) => 'translate(' + pieLabelsOutsideCoordinatePairs[i][0] + ',' + newPositions[i].y + ')' )
 
 
@@ -530,6 +534,8 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         .classed('pie-other-label', true)
         .classed(variable, true)
         .text((_,i)=>otherBreakdownDataPreviousArray[i])
+        .style('fill', '#4c4e4d')
+        .style('font-size', '0.6rem')
         .attr('transform', (_,i) => 'translate(' + pieLabelsOutsideCoordinatePairs[i][0] + ',' + newPositions[i].y + ')' )
         // .attr("text-anchor", function(d) {
         //     return (d.endAngle + d.startAngle)/2 > Math.PI ?
@@ -604,6 +610,8 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         .classed('pie-other-label', true)
         .classed(variable, true)
         .text((_,i)=>otherBreakdownDataAllArray[i]-otherBreakdownDataPreviousArray[i])
+        .style('fill', '#4c4e4d')
+        .style('font-size', '0.6rem')
         .attr('transform', (_,i) => 'translate(' + pieLabelsOutsideCoordinatePairs[i][0] + ',' + newPositions[i].y + ')' )
         // .attr("text-anchor", function(d) {
         //     return (d.endAngle + d.startAngle)/2 > Math.PI ?
@@ -788,8 +796,6 @@ function createCircleLabels(variable, xFrac, labels, colors, supFrac, infFrac, s
 
 }
 
-
-
 function removeAllCircleLabels(){
 
     const labelGroups = d3.selectAll('.circle-label-group')
@@ -805,3 +811,111 @@ function removeAllCircleLabels(){
 
 }
 
+
+function changeCircleTitlesOpacity(variable){
+
+    if(initialConditionsFlag){
+        
+        const allLabelGroups = d3.selectAll('.circle-title-group')
+        allLabelGroups
+            .transition()
+            .duration(600)
+            .ease(d3.easePoly)
+            .delay((_,i)=>i*100)
+            .style('opacity', 1)
+    }else{
+
+
+        const otherLabelGroups = d3.selectAll('.circle-title-group')
+            .filter((_,i)=>i!=allVars.indexOf(variable))
+
+        otherLabelGroups
+            .transition()
+            .duration(600)
+            .ease(d3.easePoly)
+            .style('opacity', 0)
+
+        const currentlySelectedLabelGroup = d3.selectAll('.circle-title-group')
+            .filter((_,i)=>i==allVars.indexOf(variable))
+
+        currentlySelectedLabelGroup
+            .transition()
+            .duration(600)
+            .ease(d3.easePoly)
+            .style('opacity', 1)
+        }
+}
+
+function createBreakdownTitle(breakdownTitle, breakdownIcon, breakdownIndex){
+
+    let breakdownTitleGroup = svgGlobal.selectAll('g.breakdown-title-group')
+        .data([breakdownTitle])
+
+    const breakdownTitleGroupEnter = breakdownTitleGroup
+        .enter()
+        .append('g')
+        .classed('breakdown-title-group', true)
+
+    const breakdownTitleRect = breakdownTitleGroupEnter
+        .append('rect')
+        .classed('breakdown-title-bg', true)
+
+    const breakdowTitleText = breakdownTitleGroupEnter
+        .append('text')
+        .classed('breakdown-title-text', true)
+        .style('fill', fontColor)
+
+    const breakdownTitleIcon = breakdownTitleGroupEnter
+        .append('text')
+        .classed('breakdown-title-icon', true)
+
+    breakdownTitleGroup = breakdownTitleGroup.merge(breakdownTitleGroupEnter)
+
+    breakdownTitleGroup.select('.breakdown-title-icon')
+        .style('font-family', 'FontAwesome')
+        .style('font-size', '2rem' )
+        .text(d=> breakdownIcon)
+
+    breakdownTitleGroup.select('.breakdown-title-text')
+        .text(d=>d)
+
+    const textBBox = d3.select('.breakdown-title-text')
+        .node()
+        .getBBox()
+
+    const textWidth = textBBox.width
+    const textHeight = textBBox.height
+
+    const iconBBox = d3.select('.breakdown-title-icon')
+        .node()
+        .getBBox()
+
+    const iconWidth = iconBBox.width
+    const iconHeight = iconBBox.height
+
+    breakdownTitleGroup.select('.breakdown-title-icon')
+        .attr('transform', 'translate(' + (-iconWidth/2-5) +','+ (-textHeight-10)+')' )
+
+    breakdownTitleGroup.select('rect')
+        .attr('width', textWidth + 10)
+        .attr('height', textHeight + 5)
+        .style('fill', boxColor)
+        .attr('rx', breakdownShapeRx)
+        .attr('transform', 'translate('+ (-(textWidth+10)/2) + ',' + (-(textHeight+5)/2) + ')')
+
+    breakdownTitleGroup
+        .style('opacity', 0)
+        .attr('transform', 'translate(' + (globalChartWidth+20) + ','+ (globalChartHeight-textHeight/2-10)+')')
+        .transition()
+        .duration(1000)
+        .ease(d3.easePoly)
+        .style('opacity', 1)
+        .attr('transform', 'translate(' + (globalChartWidth-textWidth/2-10) + ',' 
+            + (globalChartHeight-textHeight/2-10) + ')')
+
+    // $('#global-chart-div')
+    //     .append('<i class="fas fa-venus-mars"></i>')
+    //     .css('position', 'absolute')
+    //     .css('')
+
+}
