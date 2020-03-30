@@ -4,14 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
         rel="stylesheet">
-        <script
-        src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
@@ -28,7 +27,7 @@
 <body>
     <div id="chart" class="container px-2">
         <div id="title" class="jumbotron container col-12 col-md-5 pt2 pb-1 pt-3 mt-2 mb-0 shadow">
-            <h3 class="mb-1">COVID-19 em Portugal</h3>
+            <h4 class="mb-1">COVID-19 em Portugal</h4>
             <p class="lead mb-1">Evolução e panorama actual da doença.</p>
         </div>
         <div class="row justify-content-center mx-0">
@@ -52,7 +51,6 @@
                             .toggle-off.ios {
                                 border-radius: 20rem
                             }
-
                             .toggle.ios .toggle-handle {
                                 border-radius: 20rem
                             }
@@ -64,18 +62,13 @@
                 </div>
             </div>
         </div>
-
     </div>
 
-
-    <div id="footer" class="card-footer text-muted fixed-bottom py-1 text-center bg-light">
+    <div id="footer" class="card-footer text-muted fixed-bottom py-0 py-md-2 px-0 text-center bg-light">
         <p class="my-1">Informação veiculada pela <a href="https://www.dgs.pt/">DGS</a> e disponibilizada por <a
                 href="https://github.com/dssg-pt/covid19pt-data">DSSG-PT</a>.<br> Última Actualização: </p>
     </div>
-
-    </div>
-
-
+  
 </body>
 <script src="js/data-processing.js"></script>
 <script src="js/scales.js"></script>

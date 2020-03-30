@@ -6,11 +6,11 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
         getDummyUnavailableDailyData(data)['dummyArray2']] : 
         getDataByKeys(data, dataKeys)
     
-    const firstNonZeroIndex = getFirstNonZeroDataDay(dataArrays)
+    const firstNonZeroIndex = unavailableFlag ? 0 : getFirstNonZeroDataDay(dataArrays)
     dataArrays = dataArrays.map(a=>a.slice(firstNonZeroIndex))
     let datesArray = unavailableFlag ? getDummyUnavailableDailyData(data)['dates'] : data.map(d=>d['data'])
     datesArray = datesArray.slice(firstNonZeroIndex)
-
+ 
     // Get colors
     colors = unavailableFlag ? unavailableColors : colors
 
@@ -121,7 +121,6 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
     const lines = d3.select('#time-chart').select('svg').selectAll('.line')
         .data(dataArrays)
 
-    console.log(datesArray)
         
     lines.exit().remove()
 
@@ -130,11 +129,12 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
         .append('path')
         .classed('line', true)
         .merge(lines)
+        .attr('d', line)
         .attr('id', (_,i)=> 'line' + i)
         .style('stroke', (_,i)=>colors[i])
-        .attr('d', line)
-
-    animatelines(unavailableFlag)
+ 
+    
+    animatelines()
 
     
 
@@ -186,29 +186,29 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
             changePieNumbersOpacity(0)
             showNamesOnTimeChartLabels()
     
-            numbersDisplayedFlag = false
+            numbersDisplayedFlag = !numbersDisplayedFlag
         } else{
             changePieNumbersOpacity(1)
             showNumbersOnTimeChartLabels(dataArrays)
             
-            numbersDisplayedFlag = true
+            numbersDisplayedFlag = !numbersDisplayedFlag
         }
         
     })
 
     // Add Show Pie Labels Event
-    d3.selectAll('.circle-label').on('click', function(){
+    d3.selectAll('.circle-label-group').on('click', function(){
 
         if (numbersDisplayedFlag){
             changePieNumbersOpacity(0)
             showNamesOnTimeChartLabels()
     
-            numbersDisplayedFlag = false
+            numbersDisplayedFlag = !numbersDisplayedFlag
         } else{
             changePieNumbersOpacity(1)
             showNumbersOnTimeChartLabels(dataArrays)
             
-            numbersDisplayedFlag = true
+            numbersDisplayedFlag = !numbersDisplayedFlag
         }
         
     })
@@ -279,7 +279,7 @@ function showNamesOnTimeChartLabels(){
 
 
 	
-function animatelines(unavailableFlag) {
+function animatelines() {
 
     d3.selectAll(".line").style("opacity","0.5");
 
@@ -289,14 +289,14 @@ function animatelines(unavailableFlag) {
     // Get the length of each line in turn
     var totalLength = d3.select("#line" + i).node().getTotalLength();
 
-        d3.selectAll("#line" + i).attr("stroke-dasharray", unavailableFlag ? 3 + " " + 3 : totalLength + " " + totalLength)
+        d3.selectAll("#line" + i).attr("stroke-dasharray",  totalLength + " " + totalLength)
           .attr("stroke-dashoffset", totalLength)
-          .transition()
-          .duration(1000)
+          .transition('j')
+          .duration(800)
           .delay(100*i)
           .ease(d3.easeExp)
           .attr("stroke-dashoffset", 0)
-          .style("stroke-width",3)
+          .style("stroke-width", 3)
     })
 
  

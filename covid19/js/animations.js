@@ -26,13 +26,14 @@ function showOuterCircle(variable, currentValue, variableRScale) {
         .style('opacity', 1)
         .style('fill', varsColorsDict[variable + '_novos'])
         .attr('r', variableRScale(currentValue))
+        .style('stroke', 'none')
 }
 
 function hideGlobalCircleValue(variable) {
 
     d3.select('.circle-value.' + variable)
         .transition()
-        .duration(200)
+        .duration(300)
         .ease(d3.easePoly)
         .style('opacity', 0)
 }
@@ -41,7 +42,7 @@ function showCircleNewCasesLabels(variable) {
 
     d3.select('.new-cases-labels.' + variable)
         .transition()
-        .duration(200)
+        .duration(300)
         .ease(d3.easePoly)
         .style('opacity', 1)
 }
@@ -70,6 +71,7 @@ function greyOutCircle(variable, rScale) {
         .style('fill', boxColor)
         .attr('r', greyedOutRadiusFrac * globalChartWidth)
         .style('opacity', 1)
+        .style('stroke', 'none')
 
     d3.selectAll('.circle-value.' + variable)
         .transition()
@@ -95,18 +97,19 @@ function resizeOuterCircleToOriginal(variable, rScale) {
 
     d3.select('.circle-shape.all.' + variable)
         .transition('a')
-        .duration(200)
+        .duration(500)
         .ease(d3.easePoly)
         .style('fill', varsColorsDict[variable])
         .attr('r', d => rScale(d))
         .style('opacity', 1)
+        .style('stroke', circleStrokeColor)
 }
 
 function hideInnerCircle(variable, rScale) {
 
     d3.select('.circle-shape.previous.' + variable)
         .transition()
-        .duration(200)
+        .duration(500)
         .ease(d3.easePoly)
         .attr('r', d => rScale(d))
         .style('opacity', 0)
@@ -116,7 +119,7 @@ function hideCircleNewCasesLabels(variable) {
 
     d3.select('.new-cases-labels.' + variable)
         .transition()
-        .duration(200)
+        .duration(500)
         .ease(d3.easePoly)
         .style('opacity', 0)
 }
@@ -151,7 +154,7 @@ function hideGlobalCircle(variable) {
 
     d3.select('.all.circle-shape.' + variable)
         .transition()
-        .duration(200)
+        .duration(500)
         .ease(d3.easePoly)
         .style('opacity', 0)
 }
@@ -217,10 +220,10 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
             currentConfig = variable + '_' + c
 
             changeCircleTitlesOpacity()
-            changeUiElementsExpandedState(globalChartHeight, 1)
+            changeUiElementsExpandedState(globalChartHeightFixed, 1)
             changePieOpacity(variable, 1)
-
-            createBreakdownTitle(breakdownTitlesDict[c], breakdownIconsDict[c], configUnavailableDict[currentConfig])
+   
+            createBreakdownTitle(variable, breakdownTitlesDict[c], breakdownIconsDict[c], configUnavailableDict[currentConfig])
             createBreakdownPie(variable, breakdownIndex, breakdownDataAll[ci][i], breakdownDataPrevious[ci][i],
                 colors, rScales, configKeysDict[currentConfig], configLabelsDict[currentConfig], configUnavailableDict[currentConfig])
             hideInnerCircle(variable, rScale)
@@ -233,7 +236,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
             configUnavailableDict[currentConfig] ? removeAllCircleLabels() :
                 createCircleLabels('other', circlsLabelsXFracDict[variable], configLabelsDict[currentConfig], configColorsDict[currentConfig], 0.05, 0.2, 0.05)
 
-            d3.selectAll('.pie-path.region_other').on('click', function () { // Show Small Numbers Pie
+            d3.selectAll('.pie-path.region_other, .pie-other-label-group, .pie-other-group').on('click', function () { // Show Small Numbers Pie
 
                 event.stopPropagation()
 
@@ -243,9 +246,9 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
 
                     const globalChartHeight = parseInt($(window).height() * 0.25)
 
+                    changeUiElementsExpandedState(globalChartHeightFixed, 1)
                     removeAllCircleLabels()
                     createCircleLabels('other', circlsLabelsXFracDict[variable], configLabelsDict[currentConfig], configColorsDict[currentConfig], 0.05, 0.2, 0.05)
-
 
                     removeSmallNumbersBreakdownPie(variable, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
                     updateScaleSwitch(configScalesDict[currentConfig])
@@ -254,8 +257,6 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                         configUnavailableDict[currentConfig],
                         configLabelsDict[currentConfig])
                     changePieOpacity(variable, 1)
-
-                    changeUiElementsExpandedState(globalChartHeight, 1)
 
                     smallValuesDisplayedFlag = false
 
@@ -267,17 +268,17 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                     changePieOpacity(variable, 0.5)
                     smallValuesDisplayedFlag = true
 
-                    changeUiElementsExpandedState(globalChartHeight * globalChartHeightExpandedFrac, 0)
-                    changeCircleTitlesOpacity(variable)
+                    changeUiElementsExpandedState(globalChartHeightFixed * globalChartHeightExpandedFrac, 0)
 
                     createCircleLabels('other', circlsLabelsXFracDict['other'], configLabelsDict[currentConfig], configColorsDict[currentConfig], 0.65, -0.4, 0.05)
 
-                    d3.selectAll('.pie-other-path.' + variable).on('click', function () {
+                    d3.selectAll('.pie-other-label-group, .pie-other-group').on('click', function () {
+
+                        console.log(currentConfig)
 
                         event.stopPropagation()
 
                         currentConfig = variable + '_' + c
-                        changeUiElementsExpandedState(globalChartHeight, 1)
 
                         removeSmallNumbersBreakdownPie(variable, otherBreakdownAllData[i], otherBreakdownPreviousData[i])
                         updateScaleSwitch(configScalesDict[currentConfig])
@@ -288,9 +289,11 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                         changePieOpacity(variable, 1)
                         smallValuesDisplayedFlag = false
 
-                        changeUiElementsExpandedState(globalChartHeight, 1)
-                        changeCircleTitlesOpacity(variable)
-                        createCircleLabels('other', circlsLabelsXFracDict[variable], configLabelsDict[currentConfig], configColorsDict[currentConfig], 0.05, 0.2, 0.05)
+                        changeUiElementsExpandedState(globalChartHeightFixed, 1)
+                        //changeCircleTitlesOpacity(variable)
+                        createCircleLabels('other', circlsLabelsXFracDict[variable], 
+                        configLabelsDict[currentConfig], configColorsDict[currentConfig], 
+                        0.05, 0.2, 0.05)
 
 
                     })
@@ -347,15 +350,15 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
 
             breakdownIndex = 0
 
-            if (!d3.select('.pie-other-group').empty()) {
+            // if (!d3.select('.pie-other-group').empty()) {
 
-                const targetVariable = d3.select('.pie-other-group').attr('class').split(' ').slice(-1)[0]
-                removeSmallNumbersBreakdownPie(targetVariable, otherBreakdownAllData[allVars.indexOf(targetVariable)],
-                    otherBreakdownPreviousData[allVars.indexOf(targetVariable)])
+            //     const targetVariable = d3.select('.pie-other-group').attr('class').split(' ').slice(-1)[0]
+            //     removeSmallNumbersBreakdownPie(targetVariable, otherBreakdownAllData[allVars.indexOf(targetVariable)],
+            //         otherBreakdownPreviousData[allVars.indexOf(targetVariable)])
 
 
-                changeUiElementsExpandedState(globalChartHeight, 1)
-            }
+            //     changeUiElementsExpandedState(globalChartHeightFixed, 1)
+            // }
         }
 
 
@@ -364,6 +367,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
     d3.select('#callback-rect').on('click', function () {
 
         initialConditionsFlag = true
+        smallValuesDisplayedFlag = false
         changeCircleTitlesOpacity()
         removeAllCircleLabels()
         removeUnavailableTitle()
@@ -388,7 +392,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
             createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig],
                 configUnavailableDict[currentConfig], configLabelsDict[currentConfig])
 
-            changeUiElementsExpandedState(globalChartHeight, 1)
+            changeUiElementsExpandedState(globalChartHeightFixed, 1)
 
         })
 
@@ -410,17 +414,17 @@ function setLabelsInitialConditions(xScale, yScale, timeChartLabelsUnformatted) 
 }
 
 
-function changeUiElementsExpandedState(globalChartHeight, footerOpacity) {
-
-    svgGlobal
-        .transition()
-        .duration(300)
-        .ease(d3.easePoly)
-        .attr('height', globalChartHeight)
+function changeUiElementsExpandedState(height, footerOpacity) {
     d3.select('#footer')
         .transition()
-        .duration(300)
+        .duration(500)
         .ease(d3.easePoly)
         .style('opacity', footerOpacity)
+    svgGlobal
+        .transition()
+        .duration(500)
+        .ease(d3.easePoly)
+        .attr('height', height)
+    
 
 }

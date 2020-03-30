@@ -23,6 +23,8 @@ function createCircleShapesAll(circleGroups, rScale){
         .duration(1000)
         .ease(d3.easePoly)
         .attr('r', (d,i)=>rScale(d))
+        .style('stroke-width', circleStrokeWidth)
+        .style('stroke', circleStrokeColor)
 
     return circleShapesAll
 }
@@ -49,7 +51,7 @@ function createTitles(circleGroups, globalDataAllArray, rScale){
         .append('g')
         .attr('class', (_,i)=>allVars[i])
         .classed('circle-title-group', true)
-        .attr('transform', d=> 'translate(0,' +  (-rScale(Math.max(...globalDataAllArray))*circlesTitlesFrac) + ')')
+        .attr('transform', d=> 'translate(0,' +  Math.max((-rScale(Math.max(...globalDataAllArray))*circlesTitlesFrac), -circlesHeightFrac*globalChartHeight + 20) + ')')
 
     const circleTitlesRects = circleTitlesGroups
             .append('rect')
@@ -81,8 +83,8 @@ function createTitles(circleGroups, globalDataAllArray, rScale){
         })
 
         circleTitlesRects
-            .style('width', (_,i)=>(textWidthArray[i]+12))
-            .style('height', (_,i)=>textHeightArray[i]+12)
+            .attr('width', (_,i)=>(textWidthArray[i]+12))
+            .attr('height', (_,i)=>textHeightArray[i]+12)
             .attr('rx', breakdownShapeRx)
             .style('fill', boxColor)
             .attr('transform', (_,i)=> 'translate(' + parseInt(-(textWidthArray[i]+12)/2) + ',' + (-(textHeightArray[i]+12)/2) + ')' )
@@ -165,6 +167,8 @@ function createCircleNewCasesBreakdown(variable, previousValue, currentValue, va
         .attr('y', -(textHeight+breakdownShapePad+2)/2)
         .attr('rx', breakdownShapeRx)
         .style('fill', boxColor)
+        .style('stroke', varsColorsDict[variable])
+        .style('stroke-width', '1')
         
 
     textBBox = d3.select('.new-cases-value.' + variable).node().getBBox()
@@ -178,6 +182,8 @@ function createCircleNewCasesBreakdown(variable, previousValue, currentValue, va
         .attr('height', textHeight+breakdownShapePad)
         .attr('rx', breakdownShapeRx)
         .style('fill', boxColor)
+        .style('stroke', varsColorsDict[variable + '_novos'])
+        .style('stroke-width', '1')
 
 }
 

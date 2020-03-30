@@ -109,10 +109,11 @@ function createCircleLabelsYScale(labels, supFrac, infFrac, step){
     const maxLabels = 8
     const nlabels = labels.length
     const padFrac = ( (maxLabels - nlabels)*step)
+    const twoLabelsOffset = (nlabels == 2 ? -30 : 0)
 
     const scale = d3.scalePoint()
         .domain(labels)
-        .range([globalChartHeight* (supFrac + padFrac), globalChartHeight - globalChartHeight * (infFrac + padFrac)])
+        .range([globalChartHeight * (supFrac + padFrac)+twoLabelsOffset, globalChartHeight - globalChartHeight * (infFrac + padFrac)+twoLabelsOffset])
 
     return scale
 

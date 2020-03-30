@@ -15,6 +15,10 @@ $.ajax({
         // Add Last Update to Footer
         getLastUpdate()
 
+        // Get Age and Region Dicts 
+        const regionsDict = getRegionsDictPerVariable(regions, allVars)
+        const ageBracketsDict = getAgeBracketsDictPerVariable(ageBrackets, allVars)
+
         // Compute Additional Daily Numbers
         data = getAdditionalAgeBrackets(data, newAgeBracketsDict, allVars)
         data = getDailySexData(data, allVars, ageBrackets)
@@ -25,16 +29,15 @@ $.ajax({
 
 
 
-
         // Get Global Data
-        const globalData = getGlobalData(data, globalVarsDict, smallCategoryValuesDict)
+        const globalData = getGlobalData(data, globalVarsDict, smallCategoryValuesDict, ageBracketsDict, regionsDict)
         const globalDataAllArray = allVars.map(d => globalData[d])
         const globalDataPreviousArray = allVars.map(d => d + '_anterior').map(d => globalData[d])
 
 
 
         // Get Breakdown Data
-        breakdownData = getBreakdownData(globalData, breakdownCategories, allVars, ageBrackets, regions, smallCategoryValuesDict)
+        breakdownData = getBreakdownData(globalData, breakdownCategories, allVars, ageBracketsDict, regionsDict, smallCategoryValuesDict)
         let breakdownDataAll = breakdownData[0]
         let breakdownDataPrevious = breakdownData[1]
 
@@ -73,7 +76,7 @@ $.ajax({
         createAllCirclesNewsCasesBreakdown(allVars, globalDataPreviousArray, globalDataAllArray, rScales)
 
         // Get Configuration Dicts
-        const configKeysDict = createConfigKeysDict(smallCategoryValuesDict)
+        const configKeysDict = createConfigKeysDict(smallCategoryValuesDict, ageBracketsDict, regionsDict)
         const configColorsDict = createConfigColorsDict()
         const configUnavailableDict = createConfigUnavailableDict()
         const configScalesDict = createConfigScalesDict()

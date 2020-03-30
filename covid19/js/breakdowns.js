@@ -4,7 +4,6 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
     // Check if First Category
     const firstCategoryFlag = breakdownIndex == 0
 
-    // Functions to Draw Slices
     function tweenInnerPie(b) {
         //b.innerRadius = 0;
         var i = d3.interpolate({startAngle: 0, endAngle: 0}, b);
@@ -31,7 +30,7 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
         globalChartWidth * allPieInnerRadiusWidthFrac
 
     const allOuterRadius = firstCategoryFlag ? 
-        rScales[variable](sumArray(breakdownDataAll)) :
+        rScales[variable](sumArray(breakdownDataAll)) + 1 :
         globalChartWidth * allPieOuterRadiusWidthFrac
 
     const CircleAllArc = d3.arc()
@@ -62,10 +61,15 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
         .classed('pie-path', true)
         .classed(variable, true)
         .style('fill', (_,i)=>colors[i])
+        .style('stroke-width', '0')
+        .style('opacity', firstCategoryFlag ? '0' : '1')
         .transition('a')
         .duration(500)
         .ease(d3.easePoly)
         .attrTween("d", tweenInnerPie)
+        .style('stroke-width', breakdownCircleStrokeWidth)
+        .style('stroke', circleStrokeColor)
+        .style('opacity', '1')
 
     // Draw Outer Pie
     const pieAllData = d3.select('.circle-group.' + variable)
@@ -90,40 +94,43 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
         .classed('all', true)
         .classed('pie-path', true)
         .classed(variable, true)
+        .style('stroke-width', '0')
         .style('fill', (_,i)=>colors[i])
+        .style('opacity', firstCategoryFlag ? '0' : '1')
         .transition('b')
-        .duration(800)
+        .duration(600)
         .ease(d3.easePoly)
         .attrTween("d", tweenOuterPie)
+        .style('stroke-width', breakdownCircleStrokeWidth)
+        .style('stroke', circleStrokeColor)
+        .style('opacity', '1')
 
 
     // Highlight Other Category
     d3.selectAll('.pie-path.region_other')
-        .style('stroke-width', 3)
-        .style('stroke', otherHighlightColor)
-        .style('stroke-opacity', 0)
         .transition('z')
         .duration(600)
         .delay(600)
         .ease(d3.easePoly)
-        .style('stroke-opacity', 1)
-        
-        
+        .style('stroke-width', '2')
+        .style('stroke', otherHighlightColor)
 
+        
+    
     if (firstCategoryFlag){
 
         piePreviousGroupTweened
             .attr('d', CirclePreviousArc.outerRadius(previousOuterRadius))
-            .transition('c')
-            .duration(300)
+            .transition('a')
+            .duration(200)
             .ease(d3.easePoly)
             .attr('d', CirclePreviousArc.outerRadius(globalChartWidth * previousPieOuterRadiusWidthFrac))
 
         pieAllGroupTweened
             .attr('d', CircleAllArc.innerRadius(allInnerRadius))
             .attr('d', CircleAllArc.outerRadius(allOuterRadius))
-            .transition('d')
-            .duration(500)
+            .transition('b')
+            .duration(200)
             .ease(d3.easePoly)
             .attr('d', CircleAllArc.innerRadius(globalChartWidth * allPieInnerRadiusWidthFrac))
             .attr('d', CircleAllArc.outerRadius(globalChartWidth * allPieOuterRadiusWidthFrac))
@@ -197,9 +204,9 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
 
     piePreviousLabelsRects
         .style('fill', boxColor)
-        .style('width', (_,i)=>(textWidthArray[i]+6))
-        .style('height', (_,i)=>textHeightArray[i]+6)
-        .style('rx', breakdownShapeRx)
+        .attr('width', (_,i)=>(textWidthArray[i]+6))
+        .attr('height', (_,i)=>textHeightArray[i]+6)
+        .attr('rx', breakdownShapeRx)
         .attr('transform', (_,i) => 'translate(' + parseInt(pieLabelsOutsideCoordinatePairs[i][0]-(textWidthArray[i]+6)/2) + ',' + parseInt(newPositions[i].y-(textHeightArray[i]+6)/2) + ')' )
 
 
@@ -220,7 +227,7 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
 
     // Update Label Positions with Force Layout
     pieLabelsOutsideCoordinatePairs = pieOuter(breakdownDataAll)
-        .map(d=>translateLabelOutside(d, CircleAllArc, allOuterRadius*0.8))
+        .map(d=>translateLabelOutside(d, CircleAllArc, Math.max(5, allOuterRadius)))
 
     newPositions = pieLabelsOutsideCoordinatePairs.map(d => {
         return {
@@ -265,9 +272,9 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
 
     pieAllLabelsRects
         .style('fill', boxColor)
-        .style('width', (_,i)=>(textWidthArray[i]+6))
-        .style('height', (_,i)=>textHeightArray[i]+6)
-        .style('rx', breakdownShapeRx)
+        .attr('width', (_,i)=>(textWidthArray[i]+6))
+        .attr('height', (_,i)=>textHeightArray[i]+6)
+        .attr('rx', breakdownShapeRx)
         .attr('transform', (_,i) => 'translate(' + parseInt(pieLabelsOutsideCoordinatePairs[i][0]-(textWidthArray[i]+6)/2) + ',' + parseInt(newPositions[i].y-(textHeightArray[i]+6)/2) + ')' )
     
 
@@ -294,15 +301,15 @@ function removeBreakdownPie(variable, rScales, breakdownDataAll, breakdownDataPr
         }
 
     // Edges of Pies Arcs
-    const previousOuterRadius = globalChartWidth * otherPreviousPieOuterRadiusWidthFrac
+    const previousOuterRadius = globalChartWidth * previousPieOuterRadiusWidthFrac
 
     const CirclePreviousArc = d3.arc()
         .innerRadius(0)
         .outerRadius(previousOuterRadius)
 
-    const allInnerRadius = globalChartWidth * otherAllPieInnerRadiusWidthFrac
+    const allInnerRadius = globalChartWidth * allPieInnerRadiusWidthFrac
 
-    const allOuterRadius = globalChartWidth * otherAllPieOuterRadiusWidthFrac
+    const allOuterRadius = globalChartWidth * allPieOuterRadiusWidthFrac
 
     const CircleAllArc = d3.arc()
         .innerRadius(allInnerRadius)
@@ -318,13 +325,14 @@ function removeBreakdownPie(variable, rScales, breakdownDataAll, breakdownDataPr
     // Remove Outer Pie
     d3.selectAll('.all.pie-path.' + variable)
         .transition('f')
-        .duration(800)
+        .duration(600)
         .ease(d3.easePoly)
         .attrTween("d", tweenOuterPie)
 
     d3.selectAll('.pie-group.' + variable)
         .transition('g')
-        .delay(800)
+        .duration(400)
+        .ease(d3.easePoly)
         .remove()
 
     // Remove Labels
@@ -364,7 +372,7 @@ function removeAllSmallNumberBreakdownPies(otherBreakdownPreviousData, otherBrea
 
 
 function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArray, otherBreakdownDataAllArray){
-    
+
      // Functions to Draw Slices
     function tweenInnerPie(b) {
         //b.innerRadius = 0;
@@ -401,14 +409,25 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
 
     piePreviousData.exit().remove()
 
-    const piePreviousGroup = piePreviousData
+    const nonTranslatedPiePreviousGroup = piePreviousData
         .enter()
         .append('g')
         .classed('previous', true)
         .classed('pie-other-group', true)
         .classed(variable, true)
-        .style('transform', 'translate(' + parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px,' +
-            parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px)')
+
+    let piePreviousGroup;
+
+    if (allVars.indexOf(variable) == 2){
+
+        piePreviousGroup = nonTranslatedPiePreviousGroup
+            .style('transform', 'translate(' + (-parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5)) + 'px,' +
+                parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px)')
+    }else{
+        piePreviousGroup = nonTranslatedPiePreviousGroup
+            .style('transform', 'translate(' + parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px,' +
+                parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px)')
+    }
 
     const piePreviousGroupTweened = piePreviousGroup
         .append('path')
@@ -432,14 +451,23 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
 
     pieAllData.exit().remove()
 
-    const pieAllGroup = pieAllData
+    const nonTranslatedPieAllGroup = pieAllData
         .enter()
         .append('g')
         .classed('all', true)
         .classed('pie-other-group', true)
         .classed(variable, true)
-        .style('transform', 'translate(' + parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px,' +
-            parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px)')
+
+    let pieAllGroup;
+    if (allVars.indexOf(variable) == 2){
+        pieAllGroup = nonTranslatedPieAllGroup
+            .style('transform', 'translate(' + (-parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5)) + 'px,' +
+                parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px)')
+    }else{
+        pieAllGroup = nonTranslatedPieAllGroup
+            .style('transform', 'translate(' + parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px,' +
+                parseInt(otherRScale(sumArray(otherBreakdownDataAllArray))*2.5) + 'px)')
+    }
 
     const pieAllGroupTweened = pieAllGroup
         .append('path')
@@ -470,7 +498,7 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
     // Draw Highlight
     const HighlightArc = d3.arc()
         .innerRadius(globalChartWidth*otherAllPieOuterRadiusWidthFrac)
-        .outerRadius(globalChartWidth*otherAllPieOuterRadiusWidthFrac*1.1)
+        .outerRadius(globalChartWidth*otherAllPieOuterRadiusWidthFrac*1.05)
     function tweenHighlight(b) {
             //b.innerRadius = 0;
             var i = d3.interpolate({startAngle: 0, endAngle: 0}, b);
@@ -558,9 +586,9 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
 
     piePreviousLabelsRects
         .style('fill', boxColor)
-        .style('width', (_,i)=>(textWidthArray[i]+4))
-        .style('height', (_,i)=>textHeightArray[i]+4)
-        .style('rx', breakdownShapeRx)
+        .attr('width', (_,i)=>(textWidthArray[i]+4))
+        .attr('height', (_,i)=>textHeightArray[i]+4)
+        .attr('rx', breakdownShapeRx)
         .attr('transform', (_,i) => 'translate(' + parseInt(pieLabelsOutsideCoordinatePairs[i][0]-(textWidthArray[i]+4)/2) + ',' + parseInt(newPositions[i].y-(textHeightArray[i]+4)/2) + ')' )
 
 
@@ -634,9 +662,9 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
     
         pieAllLabelsRects
             .style('fill', boxColor)
-            .style('width', (_,i)=>(textWidthArray[i]+4))
-            .style('height', (_,i)=>textHeightArray[i]+4)
-            .style('rx', breakdownShapeRx)
+            .attr('width', (_,i)=>(textWidthArray[i]+4))
+            .attr('height', (_,i)=>textHeightArray[i]+4)
+            .attr('rx', breakdownShapeRx)
             .attr('transform', (_,i) => 'translate(' + parseInt(pieLabelsOutsideCoordinatePairs[i][0]-(textWidthArray[i]+4)/2) + ',' + parseInt(newPositions[i].y-(textHeightArray[i]+4)/2) + ')' )
     
 
@@ -656,6 +684,10 @@ function removeSmallNumbersBreakdownPie(variable, otherBreakdownDataAllArray, ot
         .innerRadius(globalChartWidth * otherAllPieInnerRadiusWidthFrac)
         .outerRadius(globalChartWidth * otherAllPieOuterRadiusWidthFrac)
 
+    const HighlightArc = d3.arc()
+        .innerRadius(globalChartWidth*otherAllPieOuterRadiusWidthFrac)
+        .outerRadius(globalChartWidth*otherAllPieOuterRadiusWidthFrac*1.05)
+
 
     // Functions to Draw Slices
     function tweenInnerPie(b) {
@@ -670,23 +702,36 @@ function removeSmallNumbersBreakdownPie(variable, otherBreakdownDataAllArray, ot
         return function(t) { return CircleAllArc(i(t)); };
         }
 
+    function tweenHighlight(b) {
+        //b.innerRadius = 0;
+        var i = d3.interpolate(b, {startAngle: 0, endAngle: 0});
+        return function(t) { return HighlightArc(i(t)); };
+        }
+
     // Remove Inner Pie
     d3.selectAll('.previous.pie-other-path.' + variable)
         .transition('k')
-        .duration(500)
+        .duration(300)
         .ease(d3.easePoly)
         .attrTween("d", tweenInnerPie)
 
     // Remove Outer Pie
     d3.selectAll('.all.pie-other-path.' + variable)
         .transition('l')
-        .duration(800)
+        .duration(500)
         .ease(d3.easePoly)
         .attrTween("d", tweenOuterPie)
 
-    d3.selectAll('.pie-other-group.' + variable)
+    // Remove Highlight
+    d3.selectAll('.highlight-path')
         .transition('m')
-        .delay(800)
+        .duration(500)
+        .ease(d3.easePoly)
+        .attrTween("d", tweenHighlight)
+
+    d3.selectAll('.pie-other-group.' + variable)
+        .transition('n')
+        .duration(500)
         .remove()
 
      // Remove Labels
@@ -725,6 +770,7 @@ function createCircleLabels(variable, xFrac, labels, colors, supFrac, infFrac, s
         .append('g')
         .classed('circle-label-group', true)
         .classed(variable, true)   
+        .attr('transform', d=>'translate('+ xFrac*globalChartWidth + ',' + (-100) + ')')
 
     labelGroupsEnter
         .append('rect')
@@ -758,7 +804,7 @@ function createCircleLabels(variable, xFrac, labels, colors, supFrac, infFrac, s
         .ease(d3.easePoly)
         .style('fill', (_,i)=>colors[i])
         .attr('r', circleLabelRadius)
-        .attr('transform', 'translate(0,' + '0)')
+
 
     labelsGroups
         .select('text')
@@ -789,9 +835,9 @@ function createCircleLabels(variable, xFrac, labels, colors, supFrac, infFrac, s
     labelsGroups
         .select('rect')
         .style('fill', boxColor)
-        .style('width', (_,i)=>(textWidthArray[i] + 2*circleLabelRadius + 14))
-        .style('height', (_,i)=>textHeightArray[i]*1.4)
-        .style('rx', breakdownShapeRx)
+        .attr('width', (_,i)=>(textWidthArray[i] + 2*circleLabelRadius + 14))
+        .attr('height', (_,i)=>textHeightArray[i]*1.4)
+        .attr('rx', breakdownShapeRx)
         .attr('transform', (d,i)=> 'translate(' + (-circleLabelRadius*2) + ',' + (-textHeightArray[i]*1.4/2) +')' )
 
 }
@@ -845,15 +891,16 @@ function changeCircleTitlesOpacity(variable){
         }
 }
 
-function createBreakdownTitle(breakdownTitle, breakdownIcon, unavailableFlag){
+function createBreakdownTitle(variable, breakdownTitle, breakdownIcon, unavailableFlag){
 
-    let breakdownTitleGroup = svgGlobal.selectAll('g.breakdown-title-group')
+    let breakdownTitleGroup = svgGlobal.selectAll('g.breakdown-title-group.' + variable)
         .data([breakdownTitle])
 
     const breakdownTitleGroupEnter = breakdownTitleGroup
         .enter()
         .append('g')
         .classed('breakdown-title-group', true)
+        .classed(variable, true)
 
     const breakdownTitleRect = breakdownTitleGroupEnter
         .append('rect')
@@ -872,7 +919,8 @@ function createBreakdownTitle(breakdownTitle, breakdownIcon, unavailableFlag){
     breakdownTitleGroup.select('.breakdown-title-icon')
         .style('font-family', 'FontAwesome')
         .style('font-size', '2rem' )
-        .style('opacity',unavailableFlag ? 0.4 : 0.7)
+        .style('fill', '#485058')
+        .style('opacity',unavailableFlag ? 0.4 : 1)
         .text(d=> breakdownIcon)
 
     breakdownTitleGroup.select('.breakdown-title-text')
@@ -905,15 +953,35 @@ function createBreakdownTitle(breakdownTitle, breakdownIcon, unavailableFlag){
         .attr('rx', breakdownShapeRx)
         .attr('transform', 'translate('+ (-(textWidth+10)/2) + ',' + (-(textHeight+5)/2) + ')')
 
-    breakdownTitleGroup
-        .style('opacity', 0)
-        .attr('transform', 'translate(' + (globalChartWidth+20) + ',' + (textHeight + iconHeight + 5)+')')
-        .transition()
-        .duration(600)
-        .ease(d3.easePoly)
-        .style('opacity', 1)
-        .attr('transform', 'translate(' + (globalChartWidth-textWidth/2-10) + ',' 
-            + (textHeight + iconHeight + 5) + ')')
+    
+
+        if (allVars.indexOf(variable) == 2){
+
+            breakdownTitleGroup
+                .style('opacity', 0)
+                .attr('transform', 'translate(' + (-20) + ',' + (textHeight + iconHeight + 5)+')')
+                .transition()
+                .duration(600)
+                .ease(d3.easePoly)
+                .style('opacity', 1)
+                .attr('transform', 'translate(' + (20 + textWidth/2-10) + ',' 
+                    + (textHeight + iconHeight + 5) + ')')
+            
+
+        } else{
+            breakdownTitleGroup
+                .style('opacity', 0)
+                .attr('transform', 'translate(' + (globalChartWidth+20) + ',' + (textHeight + iconHeight + 5)+')')
+                .transition()
+                .duration(600)
+                .ease(d3.easePoly)
+                .style('opacity', 1)
+                .attr('transform', 'translate(' + (globalChartWidth-textWidth/2-10) + ',' 
+                    + (textHeight + iconHeight + 5) + ')')
+        }
+
+    
+        
 
 }
 
@@ -932,16 +1000,24 @@ function removeBreakdownTitle(){
         constBreakdownTitleTransform.lastIndexOf(')'))
     )
 
-    d3.select('.breakdown-title-group')
+    const breakdownTitleGroup = d3.select('.breakdown-title-group')
         .transition()
         .duration(600)
         .ease(d3.easePoly)
         .style('opacity', 0)
-        .attr('transform', 'translate(' + (xPosition + 100) + ',' + yPosition + ')')
 
-    console.log(xPosition)
-    console.log(yPosition)
-    console.log('translate(' + parseInt(xPosition + 100) + ',' + parseInt(yPosition) + ')')
+    if (d3.select('.breakdown-title-group').attr('class').includes(allVars.slice(-1)[0])){
+        breakdownTitleGroup
+            .attr('transform', 'translate(' + (xPosition - 100) + ',' + yPosition + ')')
+            .remove()
+    }else{
+        breakdownTitleGroup
+            .attr('transform', 'translate(' + (xPosition + 100) + ',' + yPosition + ')')
+            .remove()
+    }
+
+    
+        
 
 }
 
@@ -973,7 +1049,7 @@ function createUnavailableTitle(variable, unavailableText, unavailableIcon, cxSc
     breakdownTitleGroup.select('.unavailable-title-icon')
         .style('font-family', 'FontAwesome')
         .style('font-size', '1.5rem' )
-        .style('opacity', 0.5)
+        .style('opacity', 1)
         .text(d=> unavailableIcon)
         
 
@@ -981,8 +1057,8 @@ function createUnavailableTitle(variable, unavailableText, unavailableIcon, cxSc
         .text(d=>d)
         .style('fill', fontColor)
         .style('font-size', '0.6rem')
-        .style('opacity', 1)
-        .attr('transform', 'translate(0, 15)')
+        .style('opacity', 0.8)
+        .attr('transform', 'translate(0, 12)')
 
     const textBBox = d3.select('.unavailable-title-text')
         .node()
@@ -999,14 +1075,14 @@ function createUnavailableTitle(variable, unavailableText, unavailableIcon, cxSc
     const iconHeight = iconBBox.height
 
     breakdownTitleGroup.select('.unavailable-title-icon')
-        .attr('transform', 'translate(0,-15)')
+        .attr('transform', 'translate(0,-10)')
 
     breakdownTitleGroup.select('rect')
-        .attr('width', textWidth + 10)
+        .attr('width', textWidth + 12)
         .attr('height', textHeight + 5)
         .style('fill', boxColor)
         .attr('rx', breakdownShapeRx)
-        .attr('transform', 'translate('+ (-(textWidth+10)/2) + ',' + (-(textHeight+5)/2+15 ) + ')')
+        .attr('transform', 'translate('+ (-(textWidth+10)/2) + ',' + (-(textHeight+5)/2+12 ) + ')')
 
 
     breakdownTitleGroup

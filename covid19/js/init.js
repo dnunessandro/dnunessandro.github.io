@@ -10,7 +10,7 @@ const newAgeBracketsDict = {
     '0_19': ['0_9', '10_19'],
     '70_plus': ['70_79', '80_plus'] 
 }
-const regions = ['arsnorte', 'arscentro', 'arslvt', 'arsalentejo', 'arsalgarve', 'acores', 'madeira', 'estrangeiro']
+const regions = ['arsnorte', 'arscentro', 'arslvt', 'arsalentejo', 'arsalgarve', 'acores', 'madeira']
 
 const globalVarsDict = {
     'confirmados': 'confirmados',
@@ -44,14 +44,28 @@ const breakdownIconsDict = {
 }
 
 // Colors
+const chartsBackgroundColor = '#FFF'
+
+// const varsColorsDict = {
+//     'confirmados': '#F9E29B',
+//     'recuperados': '#9FDBC5',
+//     'obitos': '#F5ACA1',
+//     'confirmados_novos': '#EFB603',
+//     'recuperados_novos': '#25A871',
+//     'obitos_novos': '#E63012'
+// }
+
 const varsColorsDict = {
-    'confirmados': '#d7b354',
-    'recuperados': '#6ab96b',
-    'obitos': '#f97b7c',
-    'confirmados_novos': '#f6ce6e',
-    'recuperados_novos': '#86d182',
-    'obitos_novos': '#ff9c9c'
+    'confirmados_novos': '#B3CDE3',
+    'recuperados_novos': '#9FDBC5',
+    'obitos_novos': '#F5ACA1',
+    'confirmados': '#80B1D3',
+    'recuperados': '#66C2A5',
+    'obitos': '#FB8072'
 }
+
+
+
 
 const sexColorsDict = {
     'm': '#6b96be',
@@ -67,7 +81,6 @@ const breakdownColorsDict = {
 }
 
 const smallValuesColors = d3.schemePastel1
-
 const boxColor = '#E9ECEF'
 const otherHighlightColor = '#05C7F2'
 const fontColor = '#4c4e4d'
@@ -82,7 +95,7 @@ const circlesTitlesFrac = 1.37
 const globalChartHeightExpandedFrac = 1.4
 const globalChartWidthFracPad = 0.22
 const timeChartWidthFracPadLeft = 0.07
-const timeChartWidthFracPadRight = 0.18
+const timeChartWidthFracPadRight = 0.22
 const timeChartHeightFracPadTop = 0.09
 const timeChartHeightFracPadBottom = 0.1
 const minRadiusWidthFrac = 0.01
@@ -99,23 +112,28 @@ const breakdownShapeRx = 8
 const maxRadiusThreshFrac = 0.5
 const greyedOutRadiusFrac = 0.05
 const timeLabelXOffsetFrac = 1.02
-const circleLabelsXFracArray = [0.5, 0.75, 0.35, 0.7]
+const circleLabelsXFracArray = [0.5, 0.05, 0.35, 0.7]
 const circleLabelRadius = 5
 
-$('#buttons').css('padding-top', '0.3rem')
-$('#buttons').css('padding-left', '0.3rem')
+// Circles Formatting
+const circleStrokeWidth = '1'
+const breakdownCircleStrokeWidth = '0.5'
+const circleStrokeColor = '#999999'
+
 
 // Create SVG Elements
 const svgGlobal = d3.select('#global-chart')
     .append('svg')
     .attr('width', globalChartWidth)
     .attr('height', globalChartHeight)
+    .style('fill', chartsBackgroundColor)
 
 
 const svgTime = d3.select('#time-chart')
     .append('svg') 
     .attr('width', timeChartWidth)
     .attr('height', timeChartHeight)
+    .style('fill', chartsBackgroundColor)
 
 // Create Dummy SVG Rect Element
 const dummyRect = svgGlobal
@@ -146,13 +164,13 @@ let showbreakDownFlagDict = {
 }
 
 // Dealing with Unavailable Data
-const unavailableVarsDict = ['recuperados', 'obitos']
+const unavailableVarsDict = ['recuperados']
 const unavailableDict = {
     'confirmados': [],
     'recuperados': [0.6, 0.4],
-    'obitos': [0.6, 0.4]
+    'obitos': []
 }
-const unavailableColors = ['#AEB5BF', '#D9D9D9']
+const unavailableColors = ['#D9D9D9', '#CCCCCC']
 const unavailableText = 'Não Disponível'
 unavailableIcon = '\uf059'
 
@@ -160,6 +178,7 @@ unavailableIcon = '\uf059'
 const smallValuesFracThresh = 0.03
 const smallValuesMinRadiusWidthFrac = 0.01
 const smallValuesMaxRadiusWidthFrac = 0.1
+const globalChartHeightFixed = globalChartHeight
 let smallValuesDisplayedFlag = false
 
 // Time Parsing
