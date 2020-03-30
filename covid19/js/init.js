@@ -2,6 +2,7 @@
 const dataPath = 'data/data.json'
 
 // Variables Dicts
+const dataStrFields = ['data', 'data_dados']
 const allVars = ['confirmados', 'recuperados', 'obitos']
 const breakdownCategories = ['sex', 'age', 'region']
 const ageBrackets = ['0_19', '20_29', '30_39', '40_49', '50_59', '60_69', '70_plus']
@@ -36,7 +37,7 @@ const breakdownTitlesDict = {
     'age': 'Faixa Etária',
     'region': 'Região'
 }
-const breakdwownIconsDict = {
+const breakdownIconsDict = {
     'sex': '\uf228',
     'age': '\uf0c0',
     'region': '\uf5a0'
@@ -77,7 +78,7 @@ const globalChartHeight = parseInt($(window).height()*0.3)
 const timeChartWidth = parseInt($('#time-chart').width())
 const timeChartHeight = parseInt($(window).height()*0.35)
 const circlesHeightFrac = 0.55
-const circlesTitlesFrac = 1.4
+const circlesTitlesFrac = 1.37
 const globalChartHeightExpandedFrac = 1.4
 const globalChartWidthFracPad = 0.22
 const timeChartWidthFracPadLeft = 0.07
@@ -152,6 +153,8 @@ const unavailableDict = {
     'obitos': [0.6, 0.4]
 }
 const unavailableColors = ['#AEB5BF', '#D9D9D9']
+const unavailableText = 'Não Disponível'
+unavailableIcon = '\uf059'
 
 // Dealing with Small Category Values
 const smallValuesFracThresh = 0.03
@@ -160,7 +163,7 @@ const smallValuesMaxRadiusWidthFrac = 0.1
 let smallValuesDisplayedFlag = false
 
 // Time Parsing
-const timeParse = d3.timeParse('%d/%m/%Y')
+const timeParse = d3.timeParse('%d-%m-%Y')
 const timeFormat = d3.timeFormat('%e %b')
 // const monthTranslationDict = {
 //     'January': 'Janeiro',

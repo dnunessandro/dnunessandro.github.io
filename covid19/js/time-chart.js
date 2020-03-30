@@ -11,7 +11,6 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
     let datesArray = unavailableFlag ? getDummyUnavailableDailyData(data)['dates'] : data.map(d=>d['data'])
     datesArray = datesArray.slice(firstNonZeroIndex)
 
-
     // Get colors
     colors = unavailableFlag ? unavailableColors : colors
 
@@ -50,7 +49,6 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
 
     // Add the X gridlines
     const bottomPad = timeChartHeight - timeChartHeight*timeChartHeightFracPadBottom
-    console.log(bottomPad)
     svgTime.append("g")
         .attr('id', 'x-grid')		
         .attr("class", "grid")
@@ -118,8 +116,12 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
         .x((_, i)=>xScale(timeParse(datesArray[i])))
         .y(d=>yScale(d))
 
+    
+
     const lines = d3.select('#time-chart').select('svg').selectAll('.line')
         .data(dataArrays)
+
+    console.log(datesArray)
         
     lines.exit().remove()
 

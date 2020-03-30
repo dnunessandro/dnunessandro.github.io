@@ -126,9 +126,6 @@
 }
 
 .breakdown-title-text{
-  font-size: 12px;
-  text-anchor: middle;
-  dominant-baseline: middle;
   fill: #555
 }
 
@@ -138,4 +135,9 @@
 
 .breakdown-title-text{
   font-weight: 600;
+}
+
+.breakdown-title-text, .breakdown-title-icon, .unavailable-title-icon, .unavailable-title-text{
+  text-anchor: middle;
+  dominant-baseline: middle;
 }

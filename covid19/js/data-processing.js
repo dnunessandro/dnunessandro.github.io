@@ -495,3 +495,82 @@ function createCirclesLabelsFracDict(allVars, xFracArray){
     return pieLabelsFracDict
 
 }
+
+function getLastUpdate(){
+
+    $.ajax({
+        url: "https://raw.githubusercontent.com/dssg-pt/covid19pt-data/master/README.md",
+        dataType: "text",
+        type: "GET",
+        error: function(jqXHR, textStatus, errorThrown) {
+            $().toastmessage("showErrorToast",
+                "AJAX call failed: "+textStatus+" "+errorThrown);
+        },
+        success: function( data ) {
+    
+            const lastUpdate = data.substring(data.lastIndexOf('actualização**: ')+16,data.lastIndexOf('ℹ️')-2).trim()
+            
+            writeLastUpdateToFooter(lastUpdate)
+        }
+    })
+
+}
+
+function writeLastUpdateToFooter(lastUpdateStr){
+
+    $('#footer > p').append(lastUpdateStr + '.')
+}
+
+function csvToJson( csv ) {
+    
+    var lines=csv.split("\n");
+
+    var result = [];
+  
+    // NOTE: If your columns contain commas in their values, you'll need
+    // to deal with those before doing the next step 
+    // (you might convert them to &&& or something, then covert them back later)
+    // jsfiddle showing the issue https://jsfiddle.net/
+    var headers=lines[0].split(",");
+  
+    for(var i=1;i<lines.length;i++){
+  
+        var obj = {};
+        var currentline=lines[i].split(",");
+  
+        for(var j=0;j<headers.length;j++){
+            obj[headers[j]] = currentline[j];
+        }
+  
+        result.push(obj);
+  
+    }
+  
+    //return result; //JavaScript object
+    return result //JSON
+}
+
+    
+function parseData(data, strFields){
+    let parsedData = [];
+
+    data.forEach(function(d,i){
+        let entry = {};
+        let entryKeys = Object.keys(d)
+
+        entryKeys.forEach(function(k){
+            if (strFields.includes(k)){
+                entry[k] = d[k]
+            }else{
+                entry[k] = parseInt(d[k]) || 0
+            }
+         
+        })
+
+        parsedData.push(entry)
+    })
+
+    parsedData.splice(-1,1)
+
+    return parsedData
+}

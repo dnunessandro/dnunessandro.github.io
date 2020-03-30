@@ -821,7 +821,6 @@ function changeCircleTitlesOpacity(variable){
             .transition()
             .duration(600)
             .ease(d3.easePoly)
-            .delay((_,i)=>i*100)
             .style('opacity', 1)
     }else{
 
@@ -846,7 +845,7 @@ function changeCircleTitlesOpacity(variable){
         }
 }
 
-function createBreakdownTitle(breakdownTitle, breakdownIcon, breakdownIndex){
+function createBreakdownTitle(breakdownTitle, breakdownIcon, unavailableFlag){
 
     let breakdownTitleGroup = svgGlobal.selectAll('g.breakdown-title-group')
         .data([breakdownTitle])
@@ -863,7 +862,6 @@ function createBreakdownTitle(breakdownTitle, breakdownIcon, breakdownIndex){
     const breakdowTitleText = breakdownTitleGroupEnter
         .append('text')
         .classed('breakdown-title-text', true)
-        .style('fill', fontColor)
 
     const breakdownTitleIcon = breakdownTitleGroupEnter
         .append('text')
@@ -874,10 +872,14 @@ function createBreakdownTitle(breakdownTitle, breakdownIcon, breakdownIndex){
     breakdownTitleGroup.select('.breakdown-title-icon')
         .style('font-family', 'FontAwesome')
         .style('font-size', '2rem' )
+        .style('opacity',unavailableFlag ? 0.4 : 0.7)
         .text(d=> breakdownIcon)
 
     breakdownTitleGroup.select('.breakdown-title-text')
         .text(d=>d)
+        .style('fill', fontColor)
+        .style('font-size', '0.8rem')
+        .style('opacity', unavailableFlag ? 0.7 : 1)
 
     const textBBox = d3.select('.breakdown-title-text')
         .node()
@@ -894,7 +896,7 @@ function createBreakdownTitle(breakdownTitle, breakdownIcon, breakdownIndex){
     const iconHeight = iconBBox.height
 
     breakdownTitleGroup.select('.breakdown-title-icon')
-        .attr('transform', 'translate(' + (-iconWidth/2-5) +','+ (-textHeight-10)+')' )
+        .attr('transform', 'translate(' + (0) +','+ (-textHeight-15)+')' )
 
     breakdownTitleGroup.select('rect')
         .attr('width', textWidth + 10)
@@ -905,17 +907,127 @@ function createBreakdownTitle(breakdownTitle, breakdownIcon, breakdownIndex){
 
     breakdownTitleGroup
         .style('opacity', 0)
-        .attr('transform', 'translate(' + (globalChartWidth+20) + ','+ (globalChartHeight-textHeight/2-10)+')')
+        .attr('transform', 'translate(' + (globalChartWidth+20) + ',' + (textHeight + iconHeight + 5)+')')
         .transition()
-        .duration(1000)
+        .duration(600)
         .ease(d3.easePoly)
         .style('opacity', 1)
         .attr('transform', 'translate(' + (globalChartWidth-textWidth/2-10) + ',' 
-            + (globalChartHeight-textHeight/2-10) + ')')
+            + (textHeight + iconHeight + 5) + ')')
 
-    // $('#global-chart-div')
-    //     .append('<i class="fas fa-venus-mars"></i>')
-    //     .css('position', 'absolute')
-    //     .css('')
+}
+
+function removeBreakdownTitle(){
+
+    const constBreakdownTitleTransform = d3.select('.breakdown-title-group')
+        .attr('transform')
+
+    const xPosition = parseInt(constBreakdownTitleTransform.substring(
+        constBreakdownTitleTransform.lastIndexOf('(')+1,
+        constBreakdownTitleTransform.lastIndexOf(','))
+    )
+
+    const yPosition = parseInt(constBreakdownTitleTransform.substring(
+        constBreakdownTitleTransform.lastIndexOf(',')+1,
+        constBreakdownTitleTransform.lastIndexOf(')'))
+    )
+
+    d3.select('.breakdown-title-group')
+        .transition()
+        .duration(600)
+        .ease(d3.easePoly)
+        .style('opacity', 0)
+        .attr('transform', 'translate(' + (xPosition + 100) + ',' + yPosition + ')')
+
+    console.log(xPosition)
+    console.log(yPosition)
+    console.log('translate(' + parseInt(xPosition + 100) + ',' + parseInt(yPosition) + ')')
+
+}
+
+
+function createUnavailableTitle(variable, unavailableText, unavailableIcon, cxScale){
+
+    let breakdownTitleGroup = svgGlobal.selectAll('g.unavailable-title-group')
+        .data([unavailableText])
+
+    const breakdownTitleGroupEnter = breakdownTitleGroup
+        .enter()
+        .append('g')
+        .classed('unavailable-title-group', true)
+
+    const breakdownTitleRect = breakdownTitleGroupEnter
+        .append('rect')
+        .classed('unavailable-title-bg', true)
+
+    const breakdowTitleText = breakdownTitleGroupEnter
+        .append('text')
+        .classed('unavailable-title-text', true)
+
+    const breakdownTitleIcon = breakdownTitleGroupEnter
+        .append('text')
+        .classed('unavailable-title-icon', true)
+
+    breakdownTitleGroup = breakdownTitleGroup.merge(breakdownTitleGroupEnter)
+
+    breakdownTitleGroup.select('.unavailable-title-icon')
+        .style('font-family', 'FontAwesome')
+        .style('font-size', '1.5rem' )
+        .style('opacity', 0.5)
+        .text(d=> unavailableIcon)
+        
+
+    breakdownTitleGroup.select('.unavailable-title-text')
+        .text(d=>d)
+        .style('fill', fontColor)
+        .style('font-size', '0.6rem')
+        .style('opacity', 1)
+        .attr('transform', 'translate(0, 15)')
+
+    const textBBox = d3.select('.unavailable-title-text')
+        .node()
+        .getBBox()
+
+    const textWidth = textBBox.width
+    const textHeight = textBBox.height
+
+    const iconBBox = d3.select('.unavailable-title-icon')
+        .node()
+        .getBBox()
+
+    const iconWidth = iconBBox.width
+    const iconHeight = iconBBox.height
+
+    breakdownTitleGroup.select('.unavailable-title-icon')
+        .attr('transform', 'translate(0,-15)')
+
+    breakdownTitleGroup.select('rect')
+        .attr('width', textWidth + 10)
+        .attr('height', textHeight + 5)
+        .style('fill', boxColor)
+        .attr('rx', breakdownShapeRx)
+        .attr('transform', 'translate('+ (-(textWidth+10)/2) + ',' + (-(textHeight+5)/2+15 ) + ')')
+
+
+    breakdownTitleGroup
+        .style('opacity', 0)
+        .style('transform', "translate(" + parseInt(cxScale(allVars.indexOf(variable))) + "px," 
+            + parseInt(globalChartHeight*circlesHeightFrac) + "px)")
+        .transition()
+        .duration(300)
+        .ease(d3.easePoly)
+        .style('opacity', 1)
+        
+
+}
+
+function removeUnavailableTitle(){
+
+    d3.select('.unavailable-title-group')
+        .transition()
+        .duration(300)
+        .ease(d3.easePoly)
+        .style('opacity', 0)
+        .remove()
 
 }
