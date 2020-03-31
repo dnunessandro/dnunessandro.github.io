@@ -383,9 +383,22 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
 
         initialConditionsFlag = true
         smallValuesDisplayedFlag = false
+        newCasesFilterFlag = false
         changeCircleTitlesOpacity()
         removeAllCircleLabels()
         removeUnavailableTitle()
+        changeUiElementsExpandedState(globalChartHeightFixed, 1)
+
+        // Create Line Plot
+        currentConfig = 'global'
+        updateScaleSwitch(configScalesDict[currentConfig])
+        updateNewCasesFilterButton()
+        newCasesFilterFlag = false
+        console.log(newCasesFilterFlag)
+        createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig],
+            configUnavailableDict[currentConfig], configShortLabelsDict[currentConfig])
+        
+
         !d3.select('.breakdown-title-group').empty() ? removeBreakdownTitle() : undefined
 
         allVars.forEach(function (v, i) {
@@ -400,15 +413,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
             breakdownIndex = 0
             resetShowBreakdownFlagDict()
 
-            // Create Line Plot
-            currentConfig = 'global'
-
-            updateScaleSwitch(configScalesDict[currentConfig])
-            updateNewCasesFilterButton(newCasesFilterFlag)
-            createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig],
-                configUnavailableDict[currentConfig], configShortLabelsDict[currentConfig])
-
-            changeUiElementsExpandedState(globalChartHeightFixed, 1)
+            
 
         })
 

@@ -4,8 +4,6 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
     numbersDisplayedFlag = false
     dataKeys = newCasesFilterFlag ? dataKeys.map(k=>k+'_novos') : dataKeys
 
-    console.log(newCasesFilterFlag)
-    
 
     // Get Data Arrays
     let dataArrays = unavailableFlag ? [getDummyUnavailableDailyData(data)['dummyArray1'], 
@@ -14,7 +12,6 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
 
 
     const firstNonZeroIndex = unavailableFlag ? 0 : getFirstNonZeroDataDay(dataArrays)
-    console.log(firstNonZeroIndex)
     dataArrays = dataArrays.map(a=>a.slice(firstNonZeroIndex))
     let datesArray = unavailableFlag ? getDummyUnavailableDailyData(data)['dates'] : data.map(d=>d['data'])
     datesArray = datesArray.slice(firstNonZeroIndex)
