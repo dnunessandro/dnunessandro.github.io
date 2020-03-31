@@ -26,8 +26,9 @@ $.ajax({
         const smallCategoryValuesDict = getSmallCategoryValuesDict(data.slice(-1)[0], regions, smallValuesFracThresh)
         data = computeOtherCategory(data, 'region', smallCategoryValuesDict)
         data = getFormattedData(data)
+        data = getDailyNewCases(data)
 
-
+    
 
         // Get Global Data
         const globalData = getGlobalData(data, globalVarsDict, smallCategoryValuesDict, ageBracketsDict, regionsDict)
@@ -89,6 +90,7 @@ $.ajax({
 
         // Create Line Plot
         updateScaleSwitch(configScalesDict[currentConfig])
+        updateNewCasesFilterButton(newCasesFilterFlag)
         createLinePlot(data,
             configKeysDict[currentConfig],
             configColorsDict[currentConfig],

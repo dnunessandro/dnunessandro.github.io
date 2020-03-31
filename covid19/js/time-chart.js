@@ -2,22 +2,28 @@
 function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
 
     numbersDisplayedFlag = false
+    dataKeys = newCasesFilterFlag ? dataKeys.map(k=>k+'_novos') : dataKeys
+
+    console.log(newCasesFilterFlag)
+    
 
     // Get Data Arrays
     let dataArrays = unavailableFlag ? [getDummyUnavailableDailyData(data)['dummyArray1'], 
         getDummyUnavailableDailyData(data)['dummyArray2']] : 
         getDataByKeys(data, dataKeys)
-    
+
+
     const firstNonZeroIndex = unavailableFlag ? 0 : getFirstNonZeroDataDay(dataArrays)
+    console.log(firstNonZeroIndex)
     dataArrays = dataArrays.map(a=>a.slice(firstNonZeroIndex))
     let datesArray = unavailableFlag ? getDummyUnavailableDailyData(data)['dates'] : data.map(d=>d['data'])
     datesArray = datesArray.slice(firstNonZeroIndex)
 
+    
+
     // Get labels max length
     let labelsMaxLen = Math.max(...labels.map(l=>l.length)) 
     labelsMaxLen = labelsMaxLen > 15 ? 5 : labelsMaxLen 
-    console.log(labels)
-    console.log(labelsMaxLen)
  
     // Get colors
     colors = unavailableFlag ? unavailableColors : colors

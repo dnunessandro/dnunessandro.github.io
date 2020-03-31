@@ -97,7 +97,7 @@ const circlesTitlesFrac = 1.37
 const globalChartHeightExpandedFrac = 1.4
 const globalChartWidthFracPad = 0.22
 const timeChartWidthFracPadLeft = 0.07
-const timeChartWidthFracPadRight = 0.07
+const timeChartWidthFracPadRight = 0.08
 const timeChartHeightFracPadTop = 0.09
 const timeChartHeightFracPadBottom = 0.1
 const minRadiusWidthFrac = 0.01
@@ -114,7 +114,7 @@ const breakdownShapeRx = 8
 const maxRadiusThreshFrac = 0.5
 const greyedOutRadiusFrac = 0.05
 const timeLabelXOffsetFrac = 1.02
-const circleLabelsXFracArray = [0.47, 0.15, 0.42, 0.7]
+const circleLabelsXFracArray = [0.47, 0.1, 0.4, 0.7]
 const circleLabelRadius = 5
 
 // Circles Formatting
@@ -262,8 +262,13 @@ const shortLabelsDict = {
 
 let initialConditionsFlag = true
 let numbersDisplayedFlag = false
+let newCasesFilterFlag = false
 
 $('#scale-button').bootstrapToggle({
+    width: '4rem',
+    height: '1.8rem'
+  });
+$('#new-cases-filter-button').bootstrapToggle({
     width: '4rem',
     height: '1.8rem'
   });

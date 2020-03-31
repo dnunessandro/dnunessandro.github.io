@@ -51,6 +51,21 @@ function getDailySexData(data, allVars, ageBrackets){
     
 }
 
+function getDailyNewCases(data){
+
+    for (let i = 1; i < data.length; i++) {
+        const dataElement = data[i];
+
+        const elementKeys = Object.keys(dataElement)
+
+        elementKeys.forEach(function(k){
+            data[i][k + '_novos'] = data[i][k] - data[i-1][k]
+        })
+        
+    }
+    return data
+}
+
 function getAdditionalAgeBrackets(data, newAgeBracketsDict, allVars){
     Object.keys(newAgeBracketsDict).forEach(function(k){
         data.forEach(function(d, i){
@@ -288,9 +303,10 @@ function getDataByKeys(data, dataKeys){
 
     let dataArrays = []
     dataKeys.forEach(function(k, i){
-        dataArrays.push(data.map(d=>d[k]))
+        let dataArray = data.map(d=>d[k])
+        newCasesFilterFlag ? dataArray.shift() : dataArray
+        dataArrays.push(dataArray)
     })
-
     return dataArrays
 
 }

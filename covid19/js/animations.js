@@ -177,14 +177,20 @@ function updateScaleSwitch(linearScaleFlag) {
 
 }
 
+function updateNewCasesFilterButton() {
+
+    $('#new-cases-filter-button').prop('checked', false)
+    $('#new-cases-filter-button').bootstrapToggle('off')
+
+}
+
 function changeScale(data, configKeysDict, configColorsDict, configUnavailableDict, configShortLabelsDict) {
     createLinePlot(data,
         configKeysDict[currentConfig],
         configColorsDict[currentConfig],
         configUnavailableDict[currentConfig],
         configShortLabelsDict[currentConfig])
-
-}
+    }
 
 function changePieOpacity(variable, opacityVal) {
 
@@ -204,6 +210,17 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
 
     $('#scale-button').on('change', function () {
         changeScale(data, configKeysDict, configColorsDict, configUnavailableDict, configShortLabelsDict)
+    })
+
+    $('#new-cases-filter-button').on('change', function(){
+        newCasesFilterFlag = !newCasesFilterFlag
+        createLinePlot(data,
+            configKeysDict[currentConfig],
+            configColorsDict[currentConfig],
+            configUnavailableDict[currentConfig],
+            configShortLabelsDict[currentConfig])
+
+        
     })
 
     d3.selectAll('.circle-group').on('click', function (d, i) {
@@ -387,6 +404,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
             currentConfig = 'global'
 
             updateScaleSwitch(configScalesDict[currentConfig])
+            updateNewCasesFilterButton(newCasesFilterFlag)
             createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig],
                 configUnavailableDict[currentConfig], configShortLabelsDict[currentConfig])
 
