@@ -366,6 +366,7 @@ function removeOtherBreakdownPies(variable, breakdownDataAll, breakdownDataAll, 
 
 function removeAllSmallNumberBreakdownPies(otherBreakdownPreviousData, otherBreakdownAllData){
     allVars.forEach(function(v, i){
+        if(!d3.select('.previous.pie-other-path.' + v).empty())
         removeSmallNumbersBreakdownPie(v, otherBreakdownPreviousData[i], otherBreakdownAllData[i])
     })
 }

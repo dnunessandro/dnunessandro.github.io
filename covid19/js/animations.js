@@ -330,11 +330,12 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
         } else { // Show New Cases Breakdown
             currentConfig = variable
             removeUnavailableTitle()
-
-            !d3.select('.breakdown-title-group').empty() ? removeBreakdownTitle() : undefined
+            changeUiElementsExpandedState(globalChartHeightFixed, 1)
+            !d3.select('.breakdown-title-group').empty() ? removeBreakdownTitle() : undefined   
             showCircleNewCases(variable, globalDataPreviousArray[i], globalDataAllArray[i], rScales[variable])
             greyOutOtherCircles(variable, rScale)
             removeOtherBreakdownPies(variable, breakdownDataAll, breakdownDataAll, breakdownIndex)
+            removeAllSmallNumberBreakdownPies(otherBreakdownPreviousData, otherBreakdownAllData)
             removeAllCircleLabels()
             changeCircleTitlesOpacity(variable)
             updateShowBreakdownFlagDict(variable)
