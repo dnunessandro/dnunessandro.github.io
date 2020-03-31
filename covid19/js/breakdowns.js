@@ -378,7 +378,7 @@ function removeAllSmallNumberBreakdownPies(otherBreakdownPreviousData, otherBrea
 }
 
 
-function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArray, otherBreakdownDataAllArray){
+function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArray, otherBreakdownDataAllArray, colors){
 
      // Functions to Draw Slices
     function tweenInnerPie(b) {
@@ -443,7 +443,7 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         .classed('pie-other-path', true)
         .classed(variable, true)
         .merge(piePreviousDataPaths)
-        .style('fill', (_,i)=>smallValuesColors[i])
+        .style('fill', (_,i)=>colors[i])
         .transition()
         .duration(500)
         .ease(d3.easePoly)
@@ -483,7 +483,7 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         .classed('pie-other-path', true)
         .classed(variable, true)
         .merge(pieAllDataPaths)
-        .style('fill', (_,i)=>smallValuesColors[i])
+        .style('fill', (_,i)=>colors[i])
         .transition()
         .duration(800)
         .ease(d3.easePoly)

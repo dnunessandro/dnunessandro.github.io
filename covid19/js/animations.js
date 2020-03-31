@@ -233,8 +233,8 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
 
             const ci = breakdownIndexArray[breakdownIndex]
             const c = breakdownCategories[ci]
-            const colors = unavailableDict[variable].length == 0 ? breakdownColorsDict[c] : unavailableColors
             currentConfig = variable + '_' + c
+            const colors = unavailableDict[variable].length == 0 ? configColorsDict[currentConfig] : unavailableColors
 
             changeCircleTitlesOpacity()
             changeUiElementsExpandedState(globalChartHeightFixed, 1)
@@ -280,7 +280,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
 
                 } else { // If Not Shown Yet
 
-                    createSmallNumbersBreakdownPie(variable, otherBreakdownPreviousData[i], otherBreakdownAllData[i])
+                    createSmallNumbersBreakdownPie(variable, otherBreakdownPreviousData[i], otherBreakdownAllData[i], configColorsDict[variable + '_other'])
                     createOtherLinePlot(data, configKeysDict, configColorsDict, configUnavailableDict, configLabelsDict)
                     changePieOpacity(variable, 0.5)
                     smallValuesDisplayedFlag = true
@@ -394,7 +394,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
         updateScaleSwitch(configScalesDict[currentConfig])
         updateNewCasesFilterButton()
         newCasesFilterFlag = false
-        console.log(newCasesFilterFlag)
+   
         createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig],
             configUnavailableDict[currentConfig], configShortLabelsDict[currentConfig])
         

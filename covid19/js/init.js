@@ -82,7 +82,7 @@ const breakdownColorsDict = {
 
 
 
-const smallValuesColors = d3.schemeSet2
+const smallValuesColors =  d3.schemeSet3.slice(0,1).concat( d3.schemeSet3.slice(2,8).concat(d3.schemeSet3.slice(9,10))).slice().reverse()
 const boxColor = '#E9ECEF'
 const otherHighlightColor = '#FFD92F'
 const fontColor = '#4c4e4d'

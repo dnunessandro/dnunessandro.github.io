@@ -83,10 +83,11 @@ $.ajax({
         const configLabelsDict = createConfigLabelsDict(configKeysDict)
         const configShortLabelsDict = createConfigShortLabelsDict(configKeysDict)
 
+        console.log(configColorsDict)
+
         // Create Circles Labels
         const circlsLabelsXFracDict = createCirclesLabelsFracDict(allVars, circleLabelsXFracArray)
-        console.log(configKeysDict)
-        console.log(configColorsDict)
+ 
 
 
         // Create Line Plot
