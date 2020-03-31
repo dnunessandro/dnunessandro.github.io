@@ -95,7 +95,7 @@
 }
 
 #buttons{
-  padding-left:  0.3rem;
+  padding-left:  1.8rem;
   padding-top: 0.3rem;
   position: absolute;
   z-index: 9999;
@@ -104,8 +104,8 @@
 
 .btn{
   color: #4c4e4d !important;
-  font-size: 0.5;
 }
+
 
 .toggle-handle{
   background-color: #6C757C;

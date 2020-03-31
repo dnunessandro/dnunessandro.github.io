@@ -67,22 +67,24 @@ const varsColorsDict = {
 
 
 
-const sexColorsDict = {
-    'm': '#6b96be',
-    'f': '#96c3e3',
-    'm_anterior': '#5f9f9a',
-    'f_anterior': '#7cb3ad'
-}
+
+// const breakdownColorsDict = {
+//     'sex': ['#cbd5e8', '#f4cae4'],
+//     'age': ["#b3e2cd", "#fdcdac", "#cbd5e8", "#f4cae4", "#e6f5c9", "#fff2ae", "#f1e2cc", "#cccccc"],
+//     'region': ["#b3e2cd", "#fdcdac", "#cbd5e8", "#f4cae4", "#e6f5c9", "#fff2ae", "#f1e2cc", "#cccccc"]
+// }
 
 const breakdownColorsDict = {
-    'sex': ['#cbd5e8', '#f4cae4'],
-    'age': ["#b3e2cd", "#fdcdac", "#cbd5e8", "#f4cae4", "#e6f5c9", "#fff2ae", "#f1e2cc", "#cccccc"],
-    'region': ["#b3e2cd", "#fdcdac", "#cbd5e8", "#f4cae4", "#e6f5c9", "#fff2ae", "#f1e2cc", "#cccccc"]
+    'sex': ['#FDC086', '#FB9A99'],
+    'age': d3.schemeSet3.slice(0,1).concat( d3.schemeSet3.slice(2,8)),
+    'region': d3.schemeSet3.slice(0,1).concat( d3.schemeSet3.slice(2,8)).slice().reverse()
 }
 
-const smallValuesColors = d3.schemePastel1
+
+
+const smallValuesColors = d3.schemeSet2
 const boxColor = '#E9ECEF'
-const otherHighlightColor = '#05C7F2'
+const otherHighlightColor = '#FFD92F'
 const fontColor = '#4c4e4d'
 
 // Dimensions Variables
@@ -233,3 +235,8 @@ const labelsDict = {
 
 let initialConditionsFlag = true
 let numbersDisplayedFlag = false
+
+$('#scale-button').bootstrapToggle({
+    width: '4rem',
+    height: '1.8rem'
+  });
