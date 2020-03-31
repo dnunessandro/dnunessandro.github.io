@@ -183,7 +183,6 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
 
     // Add Show Pie Labels Event
     d3.selectAll('.label').on('click', function(){
-        console.log(numbersDisplayedFlag)
 
         if (numbersDisplayedFlag){
             changePieNumbersOpacity(0)
@@ -201,7 +200,6 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
 
     // Add Show Pie Labels Event
     d3.selectAll('.circle-label-group').on('click', function(){
-        console.log(numbersDisplayedFlag)
 
         if (numbersDisplayedFlag){
             changePieNumbersOpacity(0)

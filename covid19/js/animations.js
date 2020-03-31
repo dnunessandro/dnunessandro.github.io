@@ -273,9 +273,6 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                     createCircleLabels('other', circlsLabelsXFracDict['other'], configLabelsDict[currentConfig], configColorsDict[currentConfig], 0.65, -0.4, 0.05)
 
                     d3.selectAll('.pie-other-label-group, .pie-other-group').on('click', function () {
-
-                        console.log(currentConfig)
-
                         event.stopPropagation()
 
                         currentConfig = variable + '_' + c
