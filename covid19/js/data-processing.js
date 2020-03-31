@@ -470,8 +470,35 @@ function createConfigLabelsDict(configKeysDict){
 
     return configLabelsDict
 
+}
 
+function createConfigShortLabelsDict(configKeysDict){
 
+    let configLabelsDict = {}
+
+    // Add Global Labels
+    configLabelsDict['global'] = configKeysDict['global'].map(k=>shortLabelsDict[k])
+
+    // Add New Cases Breakdwon Labels
+    allVars.forEach(a=>configLabelsDict[a]=['Casos Anteriores', 'Novos Casos'])
+
+    // Add Sex Breakdwon Colors
+    allVars.forEach(a=>configLabelsDict[a + '_sex'] = 
+        configKeysDict[a + '_sex'].map( k=>shortLabelsDict[k.replace(a + '_', '')] ))
+
+    // Add Age Breakdwon Colors
+    allVars.forEach(a=>configLabelsDict[a + '_age'] = 
+        configKeysDict[a + '_age'].map(k=>shortLabelsDict[k.replace(a + '_', '')]))
+
+    // Add Region Breakdown Colors
+    allVars.forEach(a=>configLabelsDict[a + '_region'] = 
+        configKeysDict[a + '_region'].map(k=>shortLabelsDict[k.replace(a + '_', '')]))
+
+    // Add Other Breakdown Keys
+    allVars.forEach(a=>configLabelsDict[a + '_other'] = 
+        configKeysDict[a + '_other'].map(k=>shortLabelsDict[k.replace(a + '_', '')]))
+
+    return configLabelsDict
 
 }
 

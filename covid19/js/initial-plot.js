@@ -152,7 +152,7 @@ function createCircleNewCasesBreakdown(variable, previousValue, currentValue, va
         .classed('all', true)
         .text(currentValue - previousValue)
         .attr('x', variableRScale(currentValue)*0.95)
-        .attr('y', -variableRScale(currentValue)*0.95)
+        .attr('y', variableRScale(currentValue))
         .style('fill', varsColorsDict[variable+'_novos'])
 
     // Modify Breakdown Background Shapes Width and Height
@@ -177,7 +177,7 @@ function createCircleNewCasesBreakdown(variable, previousValue, currentValue, va
 
     d3.select('.new-cases-shape.all.' + variable)
         .attr('x', variableRScale(currentValue)*0.95-(textWidth+breakdownShapePad)/2)
-        .attr('y', -variableRScale(currentValue)*0.95-(textHeight+breakdownShapePad+2)/2)
+        .attr('y', variableRScale(currentValue)-(textHeight+breakdownShapePad+2)/2)
         .attr('width', textWidth+breakdownShapePad)
         .attr('height', textHeight+breakdownShapePad)
         .attr('rx', breakdownShapeRx)

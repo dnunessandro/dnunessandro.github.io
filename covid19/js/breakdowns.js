@@ -24,6 +24,7 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
     const CirclePreviousArc = d3.arc()
         .innerRadius(0)
         .outerRadius(previousOuterRadius)
+        .cornerRadius(2)
 
     const allInnerRadius = firstCategoryFlag ? 
         rScales[variable](sumArray(breakdownDataPrevious)) :
@@ -36,6 +37,7 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
     const CircleAllArc = d3.arc()
         .innerRadius(allInnerRadius)
         .outerRadius(allOuterRadius)
+        .cornerRadius(3)
 
     // Draw Inner Pie
     const piePreviousData = d3.select('.circle-group.' + variable)
@@ -306,6 +308,7 @@ function removeBreakdownPie(variable, rScales, breakdownDataAll, breakdownDataPr
     const CirclePreviousArc = d3.arc()
         .innerRadius(0)
         .outerRadius(previousOuterRadius)
+        .cornerRadius(2)
 
     const allInnerRadius = globalChartWidth * allPieInnerRadiusWidthFrac
 
@@ -314,6 +317,7 @@ function removeBreakdownPie(variable, rScales, breakdownDataAll, breakdownDataPr
     const CircleAllArc = d3.arc()
         .innerRadius(allInnerRadius)
         .outerRadius(allOuterRadius)
+        .cornerRadius(3)
 
     // Remove Inner Pie
     d3.selectAll('.previous.pie-path.' + variable)
@@ -400,6 +404,7 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
     const CircleAllArc = d3.arc()
         .innerRadius(allInnerRadius)
         .outerRadius(allOuterRadius)
+        .cornerRadius(3)
 
         // Draw Inner Pie
     const piePreviousData = d3.select('.circle-group.' + variable)
@@ -919,7 +924,7 @@ function createBreakdownTitle(variable, breakdownTitle, breakdownIcon, unavailab
 
     breakdownTitleGroup.select('.breakdown-title-icon')
         .style('font-family', 'FontAwesome')
-        .style('font-size', '2rem' )
+        .style('font-size', '1.4rem' )
         .style('fill', '#485058')
         .style('opacity',unavailableFlag ? 0.4 : 1)
         .text(d=> breakdownIcon)
@@ -927,7 +932,7 @@ function createBreakdownTitle(variable, breakdownTitle, breakdownIcon, unavailab
     breakdownTitleGroup.select('.breakdown-title-text')
         .text(d=>d)
         .style('fill', fontColor)
-        .style('font-size', '0.8rem')
+        .style('font-size', '0.7rem')
         .style('opacity', unavailableFlag ? 0.7 : 1)
 
     const textBBox = d3.select('.breakdown-title-text')
@@ -945,7 +950,7 @@ function createBreakdownTitle(variable, breakdownTitle, breakdownIcon, unavailab
     const iconHeight = iconBBox.height
 
     breakdownTitleGroup.select('.breakdown-title-icon')
-        .attr('transform', 'translate(' + (0) +','+ (-textHeight-15)+')' )
+        .attr('transform', 'translate(' + (0) +','+ (-textHeight-10)+')' )
 
     breakdownTitleGroup.select('rect')
         .attr('width', textWidth + 10)

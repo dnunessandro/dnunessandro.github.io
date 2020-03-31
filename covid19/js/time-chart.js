@@ -12,13 +12,19 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
     dataArrays = dataArrays.map(a=>a.slice(firstNonZeroIndex))
     let datesArray = unavailableFlag ? getDummyUnavailableDailyData(data)['dates'] : data.map(d=>d['data'])
     datesArray = datesArray.slice(firstNonZeroIndex)
+
+    // Get labels max length
+    let labelsMaxLen = Math.max(...labels.map(l=>l.length)) 
+    labelsMaxLen = labelsMaxLen > 15 ? 5 : labelsMaxLen 
+    console.log(labels)
+    console.log(labelsMaxLen)
  
     // Get colors
     colors = unavailableFlag ? unavailableColors : colors
 
     // Create Time Scale
     const xScale = getTimeScale(timeChartWidthFracPadLeft*timeChartWidth, 
-        (1-timeChartWidthFracPadRight)*timeChartWidth,
+        (1-timeChartWidthFracPadRight)*timeChartWidth-labelsMaxLen*4,
         ...datesArray)
 
     const yScale = getTimeChartYScale($('#scale-button').prop('checked'), 
@@ -117,6 +123,8 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
     const line = d3.line()
         .x((_, i)=>xScale(timeParse(datesArray[i])))
         .y(d=>yScale(d))
+        .curve(d3.curveBasis)
+        
 
     
 
@@ -134,6 +142,8 @@ function createLinePlot(data, dataKeys, colors, unavailableFlag, labels){
         .attr('d', line)
         .attr('id', (_,i)=> 'line' + i)
         .style('stroke', (_,i)=>colors[i])
+        .style('stroke-linecap', 'round')
+           
  
     
     animatelines()
@@ -283,7 +293,7 @@ function showNamesOnTimeChartLabels(){
 	
 function animatelines() {
 
-    d3.selectAll(".line").style("opacity","0.5");
+    d3.selectAll(".line").style("opacity","0.7");
 
     //Select All of the lines and process them one by one
     d3.selectAll(".line").each(function(d,i){
@@ -304,7 +314,7 @@ function animatelines() {
  
 } 
 
-function createOtherLinePlot(data, configKeysDict, configColorsDict, configUnavailableDict, configLabelsDict){
+function createOtherLinePlot(data, configKeysDict, configColorsDict, configUnavailableDict, configShortLabelsDict){
     event.stopPropagation()
     
     const targetVariable = d3.select('.pie-other-group').attr('class').split(' ').slice(-1)[0]
@@ -315,7 +325,7 @@ function createOtherLinePlot(data, configKeysDict, configColorsDict, configUnava
             configKeysDict[currentConfig], 
             configColorsDict[currentConfig],
             configUnavailableDict[currentConfig], 
-            configLabelsDict[currentConfig])
+            configShortLabelsDict[currentConfig])
         
 }
 

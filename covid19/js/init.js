@@ -97,7 +97,7 @@ const circlesTitlesFrac = 1.37
 const globalChartHeightExpandedFrac = 1.4
 const globalChartWidthFracPad = 0.22
 const timeChartWidthFracPadLeft = 0.07
-const timeChartWidthFracPadRight = 0.22
+const timeChartWidthFracPadRight = 0.06
 const timeChartHeightFracPadTop = 0.09
 const timeChartHeightFracPadBottom = 0.1
 const minRadiusWidthFrac = 0.01
@@ -114,7 +114,7 @@ const breakdownShapeRx = 8
 const maxRadiusThreshFrac = 0.5
 const greyedOutRadiusFrac = 0.05
 const timeLabelXOffsetFrac = 1.02
-const circleLabelsXFracArray = [0.5, 0.05, 0.35, 0.7]
+const circleLabelsXFracArray = [0.48, 0.05, 0.38, 0.7]
 const circleLabelRadius = 5
 
 // Circles Formatting
@@ -230,6 +230,33 @@ const labelsDict = {
     'acores': 'Açores',
     'madeira': 'Madeira',
     'estrangeiro': 'Estrangeiro',
+    'region_other': 'Outras'
+}
+
+const shortLabelsDict = {
+    'confirmados': 'C',
+    'recuperados': 'R',
+    'obitos': 'O',
+    'm': 'M',
+    'f': 'F',
+    '0_9': '[0-9]',
+    '10_19': '[10-19]',
+    '20_29': '[20-29]',
+    '30_39': '[30-39]',
+    '40_49': '[40-49]',
+    '50_59': '[50-59]',
+    '60_69': '[60-69]',
+    '70_79': '[70-79]',
+    '80_plus': '[80-[',
+    '0_19': '[0-19]',
+    '70_plus': '[70-[',
+    'arsnorte': 'Norte',
+    'arscentro': 'Centro',
+    'arslvt': 'LVT',
+    'arsalentejo': 'Alentejo',
+    'arsalgarve': 'Algarve',
+    'acores': 'Açores',
+    'madeira': 'Madeira',
     'region_other': 'Outras'
 }
 

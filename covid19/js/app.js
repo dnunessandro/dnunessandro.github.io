@@ -81,6 +81,7 @@ $.ajax({
         const configUnavailableDict = createConfigUnavailableDict()
         const configScalesDict = createConfigScalesDict()
         const configLabelsDict = createConfigLabelsDict(configKeysDict)
+        const configShortLabelsDict = createConfigShortLabelsDict(configKeysDict)
 
         // Create Circles Labels
         const circlsLabelsXFracDict = createCirclesLabelsFracDict(allVars, circleLabelsXFracArray)
@@ -92,12 +93,12 @@ $.ajax({
             configKeysDict[currentConfig],
             configColorsDict[currentConfig],
             configUnavailableDict[currentConfig],
-            configLabelsDict[currentConfig])
+            configShortLabelsDict[currentConfig])
 
         // Bind Animations
         bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDataPrevious, breakdownDataAll,
             rScale, rScales, cxScale, otherBreakdownPreviousData, otherBreakdownAllData,
-            data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict, configLabelsDict, circlsLabelsXFracDict)
+            data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict, configLabelsDict, configShortLabelsDict, circlsLabelsXFracDict)
 
     }
 })

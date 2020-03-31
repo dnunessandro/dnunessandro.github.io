@@ -177,12 +177,12 @@ function updateScaleSwitch(linearScaleFlag) {
 
 }
 
-function changeScale(data, configKeysDict, configColorsDict, configUnavailableDict, configLabelsDict) {
+function changeScale(data, configKeysDict, configColorsDict, configUnavailableDict, configShortLabelsDict) {
     createLinePlot(data,
         configKeysDict[currentConfig],
         configColorsDict[currentConfig],
         configUnavailableDict[currentConfig],
-        configLabelsDict[currentConfig])
+        configShortLabelsDict[currentConfig])
 
 }
 
@@ -200,10 +200,10 @@ function changePieOpacity(variable, opacityVal) {
 
 function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDataPrevious, breakdownDataAll,
     rScale, rScales, cxScale, otherBreakdownPreviousData, otherBreakdownAllData,
-    data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict, configLabelsDict, circlsLabelsXFracDict) {
+    data, configKeysDict, configColorsDict, configUnavailableDict, configScalesDict, configLabelsDict, configShortLabelsDict, circlsLabelsXFracDict) {
 
     $('#scale-button').on('change', function () {
-        changeScale(data, configKeysDict, configColorsDict, configUnavailableDict, configLabelsDict)
+        changeScale(data, configKeysDict, configColorsDict, configUnavailableDict, configShortLabelsDict)
     })
 
     d3.selectAll('.circle-group').on('click', function (d, i) {
@@ -255,7 +255,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                     createLinePlot(data, configKeysDict[currentConfig],
                         configColorsDict[currentConfig],
                         configUnavailableDict[currentConfig],
-                        configLabelsDict[currentConfig])
+                        configShortLabelsDict[currentConfig])
                     changePieOpacity(variable, 1)
 
                     smallValuesDisplayedFlag = false
@@ -282,7 +282,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                         createLinePlot(data, configKeysDict[currentConfig],
                             configColorsDict[currentConfig],
                             configUnavailableDict[currentConfig],
-                            configLabelsDict[currentConfig])
+                            configShortLabelsDict[currentConfig])
                         changePieOpacity(variable, 1)
                         smallValuesDisplayedFlag = false
 
@@ -320,7 +320,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
             createLinePlot(data, configKeysDict[currentConfig],
                 configColorsDict[currentConfig],
                 configUnavailableDict[currentConfig],
-                configLabelsDict[currentConfig])
+                configShortLabelsDict[currentConfig])
 
 
             breakdownIndex++
@@ -344,7 +344,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
                 configKeysDict[currentConfig],
                 configColorsDict[currentConfig],
                 configUnavailableDict[currentConfig],
-                configLabelsDict[currentConfig])
+                configShortLabelsDict[currentConfig])
 
             breakdownIndex = 0
 
@@ -388,7 +388,7 @@ function bindAnimations(globalDataPreviousArray, globalDataAllArray, breakdownDa
 
             updateScaleSwitch(configScalesDict[currentConfig])
             createLinePlot(data, configKeysDict[currentConfig], configColorsDict[currentConfig],
-                configUnavailableDict[currentConfig], configLabelsDict[currentConfig])
+                configUnavailableDict[currentConfig], configShortLabelsDict[currentConfig])
 
             changeUiElementsExpandedState(globalChartHeightFixed, 1)
 
