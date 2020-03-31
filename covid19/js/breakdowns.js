@@ -42,7 +42,7 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
     // Draw Inner Pie
     const piePreviousData = d3.select('.circle-group.' + variable)
         .selectAll('g.previous.pie-group.' + variable)
-        .data(pieInner(breakdownDataAll))
+        .data(pieInner(breakdownDataPrevious))
 
     const piePreviousDataPaths = piePreviousData.select('path.previous.pie-path')
 
@@ -76,7 +76,7 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
     // Draw Outer Pie
     const pieAllData = d3.select('.circle-group.' + variable)
         .selectAll('g.all.pie-group.' + variable)
-        .data(pieOuter(breakdownDataPrevious))
+        .data(pieOuter(breakdownDataAll.map((a, i) => a - breakdownDataPrevious[i])))
 
     const pieAllDataPaths = pieAllData.select('path.all.pie-path')
 
@@ -225,7 +225,9 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
     const pieAllLabelsGroup = d3.select('.circle-group.' + variable)
         .select('.all.pie-label-group.' + variable)
         .selectAll('text.all.pie-label.' + variable)
-        .data(pieOuter(breakdownDataAll))
+        .data(pieOuter(breakdownDataAll.map(function (num, idx) {
+            return num - breakdownDataPrevious[idx];
+          })))
 
     // Update Label Positions with Force Layout
     pieLabelsOutsideCoordinatePairs = pieOuter(breakdownDataAll)
@@ -409,7 +411,7 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         // Draw Inner Pie
     const piePreviousData = d3.select('.circle-group.' + variable)
         .selectAll('g.previous.pie-other-group.' + variable)
-        .data(pieInner(otherBreakdownDataAllArray))
+        .data(pieInner(otherBreakdownDataPreviousArray))
 
     const piePreviousDataPaths = piePreviousData.select('path.previous.pie-other-path')
 
@@ -451,7 +453,7 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
     // Draw Outer Pie
     const pieAllData = d3.select('.circle-group.' + variable)
         .selectAll('g.all.pie-other-group.' + variable)
-        .data(pieOuter(otherBreakdownDataPreviousArray))
+        .data(pieOuter(otherBreakdownDataAllArray.map((a, i) => a - otherBreakdownDataPreviousArray[i])))
 
     const pieAllDataPaths = pieAllData.select('path.all.pie-other-path')
 

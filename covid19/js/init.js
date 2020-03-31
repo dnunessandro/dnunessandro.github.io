@@ -77,7 +77,7 @@ const varsColorsDict = {
 const breakdownColorsDict = {
     'sex': ['#FDC086', '#FB9A99'],
     'age': d3.schemeSet3.slice(0,1).concat( d3.schemeSet3.slice(2,8)),
-    'region': d3.schemeSet3.slice(0,1).concat( d3.schemeSet3.slice(2,8)).slice().reverse()
+    'region': d3.schemeSet3.slice(0,1).concat( d3.schemeSet3.slice(2,8).concat(d3.schemeSet3.slice(9,10))).slice().reverse()
 }
 
 

@@ -28,7 +28,6 @@ $.ajax({
         data = getFormattedData(data)
         data = getDailyNewCases(data)
 
-    
 
         // Get Global Data
         const globalData = getGlobalData(data, globalVarsDict, smallCategoryValuesDict, ageBracketsDict, regionsDict)
@@ -78,7 +77,7 @@ $.ajax({
 
         // Get Configuration Dicts
         const configKeysDict = createConfigKeysDict(smallCategoryValuesDict, ageBracketsDict, regionsDict)
-        const configColorsDict = createConfigColorsDict()
+        const configColorsDict = createConfigColorsDict(configKeysDict)
         const configUnavailableDict = createConfigUnavailableDict()
         const configScalesDict = createConfigScalesDict()
         const configLabelsDict = createConfigLabelsDict(configKeysDict)
@@ -86,6 +85,8 @@ $.ajax({
 
         // Create Circles Labels
         const circlsLabelsXFracDict = createCirclesLabelsFracDict(allVars, circleLabelsXFracArray)
+        console.log(configKeysDict)
+        console.log(configColorsDict)
 
 
         // Create Line Plot

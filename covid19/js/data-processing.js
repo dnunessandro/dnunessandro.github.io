@@ -381,7 +381,7 @@ function getNewAgeBrackets(ageBrackets, newAgeBracketsDict){
     return newAgeBrackets
 }
 
-function createConfigColorsDict(){
+function createConfigColorsDict(configKeysDict){
 
     let configColorsDict = {}
 
@@ -393,18 +393,35 @@ function createConfigColorsDict(){
 
     // Add Sex Breakdwon Colors
     allVars.forEach(a=>configColorsDict[a + '_sex'] = breakdownColorsDict['sex'])
-
+    
     // Add Age Breakdwon Colors
-    allVars.forEach(a=>configColorsDict[a + '_age']= breakdownColorsDict['age'])
+    allVars.forEach(a=>configColorsDict[a + '_age'] = getIndexesOfElements(configKeysDict[a + '_age'].map(d=>d.replace(a + '_', '')), 
+        getNewAgeBrackets(ageBrackets, newAgeBracketsDict))
+        .map(i=>breakdownColorsDict['age'][i]))
 
     // Add Region Breakdown Colors
-    allVars.forEach(a=>configColorsDict[a + '_region'] = breakdownColorsDict['region'])
-    +
+    let regionsMod = regions.slice()
+    regionsMod.push('region_other')
+
+    allVars.forEach(a=>configColorsDict[a + '_region'] = getIndexesOfElements(configKeysDict[a + '_region']
+        .map(d=>d.replace(a + '_', '')), regionsMod)
+        .map(i=>breakdownColorsDict['region'][i]))
+    
     // Add Other Breakdown Keys
-    allVars.forEach(a=>configColorsDict[a + '_other'] = smallValuesColors)
+    allVars.forEach(a=>configColorsDict[a + '_other'] = getIndexesOfElements(configKeysDict[a + '_other']
+    .map(d=>d.replace(a + '_', '')), regionsMod)
+    .map(i=>smallValuesColors[i]))
     
     return configColorsDict
 }
+
+function getIndexesOfElements(shortList, completeList){
+
+    return shortList.map(e=>completeList.indexOf(e))
+
+}
+
+
 
 function createConfigUnavailableDict(){
 
