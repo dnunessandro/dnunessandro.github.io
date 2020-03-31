@@ -409,9 +409,9 @@ function createConfigColorsDict(configKeysDict){
     
     // Add Other Breakdown Keys
     allVars.forEach(a=>configColorsDict[a + '_other'] = getIndexesOfElements(configKeysDict[a + '_other']
-    .map(d=>d.replace(a + '_', '')), regionsMod)
-    .map(i=>smallValuesColors[i]))
-    
+        .map(d=>d.replace(a + '_', '')), regionsMod)
+        .map(i=>smallValuesColors[i]))
+        
     return configColorsDict
 }
 
