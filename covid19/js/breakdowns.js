@@ -230,7 +230,7 @@ function createBreakdownPie(variable, breakdownIndex, breakdownDataAll,
           })))
 
     // Update Label Positions with Force Layout
-    pieLabelsOutsideCoordinatePairs = pieOuter(breakdownDataAll)
+    pieLabelsOutsideCoordinatePairs = pieOuter(breakdownDataAll.map((d,i)=>d-breakdownDataPrevious[i]))
         .map(d=>translateLabelOutside(d, CircleAllArc, Math.max(5, allOuterRadius)))
 
     newPositions = pieLabelsOutsideCoordinatePairs.map(d => {
@@ -393,7 +393,8 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         return function(t) { return CircleAllArc(i(t)); };
         }
 
-    const otherRScale =  getRadiusScale(0, globalChartWidth*smallValuesMaxRadiusWidthFrac,sumArray(otherBreakdownDataPreviousArray), sumArray(otherBreakdownDataAllArray) )
+    const otherRScale =  getRadiusScale(0, globalChartWidth*smallValuesMaxRadiusWidthFrac,
+        sumArray(otherBreakdownDataPreviousArray), sumArray(otherBreakdownDataAllArray) )
 
     // Edges of Pies Arcs
     const previousOuterRadius = otherRScale(sumArray(otherBreakdownDataPreviousArray))
@@ -620,7 +621,7 @@ function createSmallNumbersBreakdownPie(variable, otherBreakdownDataPreviousArra
         .data(pieOuter(otherBreakdownDataAllArray))
 
     // Update Label Positions with Force Layout
-    pieLabelsOutsideCoordinatePairs = pieOuter(otherBreakdownDataAllArray)
+    pieLabelsOutsideCoordinatePairs = pieOuter(otherBreakdownDataAllArray.map((d,i)=>d-otherBreakdownDataPreviousArray[i]))
         .map(d=>translateLabelOutside(d, CircleAllArc, allOuterRadius*1.2))
 
     newPositions = pieLabelsOutsideCoordinatePairs.map(d => {
