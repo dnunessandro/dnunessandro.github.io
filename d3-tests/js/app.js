@@ -90,17 +90,26 @@ const vSpec = {
                     }
                 },
 
-                color: { field: 'parameter', legend: { title: 'Parameter', titleFontSize: 15, labelFontSize: 12 } },
+                color: { field: 'parameter', 
+                legend: { 
+                    title: 'Parameter', 
+                    titleFontSize: 15, 
+                    labelFontSize: 12,
+                    orient: 'bottom',
+                    direction: 'horizontal'
+                } },
                 size: {
                     field: 'confidence',
                     type: 'quantitative',
                     title: 'Confidence',
                     legend: {
                         titleFontSize: 15,
-                        labelFontSize: 12
+                        labelFontSize: 12,
+                        orient: 'bottom',
+                        direction: 'horizontal',
                     },
                     scale: {
-                        range: [0, 500]
+                        range: [0, 300]
                     }
                 }
             }
@@ -109,4 +118,9 @@ const vSpec = {
 }
 
 
-vegaEmbed('#vis', vSpec)
+vegaEmbed('#vis', vSpec, {renderer: "svg"}).then(()=>{
+    console.log($('.mark-group .role-legend').eq(1).first())
+    $('.mark-group .role-legend').eq(1).first().attr('transform', 'translate(10,0)')
+})
+
+
