@@ -1,44 +1,3 @@
-
-// const vSpec = {
-//     'width': 'container',
-//     'data': {
-//         'url': 'data/seattle-weather.csv'
-//     },
-//     'transform': [
-//         {
-//             'calculate': 'datum.temp_max - datum.temp_min',
-//             'as': 'temp_range'
-//         }
-//     ],
-//     'mark': 'bar',
-//     'encoding': {
-//         'x': {
-//             'field': 'date',
-//             'type': 'temporal',
-//             'timeUnit': 'month',
-//             'band': 0.5
-//         },
-//         'y': {
-//             'aggregate': 'count',
-//             'type': 'quantitative'
-//         },
-//         'color': {
-//             'field': 'weather',
-//             'scale': {
-//                 "domain": ["sun", "fog", "drizzle", "rain", "snow"],
-//                 "range": ["#e7ba52", "#c7c7c7", "#aec7e8", "#1f77b4", "#9467bd"]
-//             },
-//             'legend': {
-//                 'title': 'Weather Type'
-//             }
-//         }
-//     }
-// }
-
-// $('#vis').css('width', '100%')
-// vegaEmbed('#vis', vSpec)
-const asd = [1, 2]
-
 const vSpec = {
     'width': 'container',
     'height': 'container',
@@ -59,7 +18,8 @@ const vSpec = {
                         labelFontSize: 12,
                         tickOpacity: 0,
                         title: 'SNR',
-                        titleFontSize: 15
+                        titleFontSize: 15,
+                        domainOpacity: 0
                     }
                 },
             }
@@ -86,7 +46,9 @@ const vSpec = {
                     axis: {
                         title: 'B-Value',
                         titleFontSize: 15,
-                        labelFontSize: 12
+                        labelFontSize: 12,
+                        tickOpacity: 0,
+                        domainOpacity: 0
                     }
                 },
 
