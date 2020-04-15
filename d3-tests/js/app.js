@@ -99,7 +99,7 @@ const vSpec2 = {
                         titleFontSize: 15,
                         tickOpacity: 0,
                         domainOpacity: 0,
-                        labels: false
+                        labelFontSize: 12
                     }
                 },
                 y: {
