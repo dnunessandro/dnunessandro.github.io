@@ -94,6 +94,7 @@ const vSpec2 = {
             x: {
                 field: 'confidence',
                 type: 'quantitative',
+                scale: {domain: [-23, 36], nice: false},
                 axis: {
                     gridOpacity: 0,
                     title: 'Confidence',
@@ -136,7 +137,6 @@ const vSpec2 = {
                     direction: 'horizontal',
                 },
                 scale: {
-            
                     range: [0, 800]
                 }
             }
@@ -158,6 +158,7 @@ const vSpec3 = {
             x: {
                 field: 'confidence',
                 type: 'quantitative',
+                scale: {domain: [-23, 36], nice: false},
                 axis: {
                     gridOpacity: 0,
                     title: 'Confidence',
@@ -200,7 +201,6 @@ const vSpec3 = {
                     direction: 'horizontal',
                 },
                 scale: {
-            
                     range: [0, 1000]
                 }
             }
