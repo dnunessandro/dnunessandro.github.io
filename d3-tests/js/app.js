@@ -201,7 +201,7 @@ const vSpec3 = {
                 },
                 scale: {
             
-                    range: [0, 800]
+                    range: [0, 1000]
                 }
             }
         }
