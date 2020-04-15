@@ -1,4 +1,4 @@
-const vSpec = {
+const vSpec1 = {
     'width': 'container',
     'height': 'container',
     data: {
@@ -79,8 +79,75 @@ const vSpec = {
     ]
 }
 
+const vSpec2 = {
+    'width': 'container',
+    'height': 'container',
+    data: {
+        url: './data/challenge_17b_Sandro.json'
+    },
+    layer: [
+        {
+            mark: 'circle',
+            encoding: {
+                x: {
+                    field: 'confidence',
+                    type: 'quantitative',
+                    //scale: { domain: [3, 113], nice: false },
+                    axis: {
+                        gridOpacity: 0,
+                        title: 'Confidence',
+                        titleFontSize: 15,
+                        tickOpacity: 0,
+                        domainOpacity: 0,
+                        labels: false
+                    }
+                },
+                y: {
+                    field: 'parameter',
+                    type: 'nominal',
+                    axis: {
+                        title: 'Parameter',
+                        titleFontSize: 15,
+                        labelFontSize: 12,
+                        tickOpacity: 0,
+                        domainOpacity: 0
+                    }
+                },
+                color: { field: 'snr', 
+                type: 'quantitative',
+                legend: { 
+                    title: 'SNR', 
+                    titleFontSize: 15, 
+                    labelFontSize: 12,
+                    orient: 'bottom',
+                    direction: 'horizontal'
+                } },
+                size: {
+                    field: 'b',
+                    type: 'quantitative',
+                    title: 'B-Value',
+                    legend: {
+                        titleFontSize: 15,
+                        labelFontSize: 12,
+                        orient: 'bottom',
+                        direction: 'horizontal',
+                    },
+                    scale: {
+                        range: [0, 600]
+                    }
+                }
+            }
+        }
+    ]
+}
 
-vegaEmbed('#vis', vSpec, {renderer: "svg"}).then(()=>{
+
+vegaEmbed('#vis1', vSpec1, {renderer: "svg"}).then(()=>{
+    console.log($('.mark-group .role-legend').eq(1).first())
+    $('.mark-group .role-legend').eq(1).first().attr('transform', 'translate(10,0)')
+})
+
+vegaEmbed('#vis2', vSpec2, {renderer: "svg"}).then(()=>{
     console.log($('.mark-group .role-legend').eq(1).first())
     $('.mark-group .role-legend').eq(1).first().attr('transform', 'translate(10,0)')
 })

@@ -1,7 +1,9 @@
-#vis{
+.vis{
     width: 100%;
     max-width: 95vw;
     height: 99vh;
-    top: 0;
-    bottom: 0;
+}
+
+#vis1{
+    margin-bottom: 100px;
 }
