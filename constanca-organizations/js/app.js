@@ -3,7 +3,7 @@ const vSpec1 = {
   height: 300,
   $schema: "https://vega.github.io/schema/vega-lite/v4.json",
   data: { url: "./data/data.csv", format: { type: "dsv", delimiter: ";" } },
-
+  title: "Log X Scale", 
   layer: [
     {
       mark: { type: "tick",  color: "#e63946", opacity: 0.1 },
@@ -69,10 +69,10 @@ const vSpec2 = {
   height: 300,
   $schema: "https://vega.github.io/schema/vega-lite/v4.json",
   data: { url: "./data/data.csv", format: { type: "dsv", delimiter: ";" } },
-
+  title: "Linear X Scale", 
   layer: [
     {
-      mark: { type: "tick", color: "#e63946", opacity: 0.1, "tooltip": {"content": "data"} },
+      mark: { type: "tick",  color: "#e63946", opacity: 0.1 },
       encoding: {
         x: { field: "EU contribution (€)", type: "quantitative" },
       },
@@ -84,7 +84,7 @@ const vSpec2 = {
           bind: "scales",
         },
       },
-      mark: { type: "point", filled: true },
+      mark: { type: "point", "tooltip": {"content": "data"}, filled: true },
       encoding: {
         x: {
           field: "EU contribution (€)",
