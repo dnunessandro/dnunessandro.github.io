@@ -6,7 +6,7 @@ const vSpec1 = {
 
   layer: [
     {
-      mark: { type: "tick", color: "#e63946", opacity: 0.1 },
+      mark: { type: "tick",  color: "#e63946", opacity: 0.1 },
       encoding: {
         x: { field: "EU contribution (€)", type: "quantitative" },
       },
@@ -18,7 +18,7 @@ const vSpec1 = {
           bind: "scales",
         },
       },
-      mark: { type: "point", filled: true },
+      mark: { type: "point", "tooltip": {"content": "data"}, filled: true },
       encoding: {
         x: {
           field: "EU contribution (€)",
@@ -72,7 +72,7 @@ const vSpec2 = {
 
   layer: [
     {
-      mark: { type: "tick", color: "#e63946", opacity: 0.1 },
+      mark: { type: "tick", color: "#e63946", opacity: 0.1, "tooltip": {"content": "data"} },
       encoding: {
         x: { field: "EU contribution (€)", type: "quantitative" },
       },
