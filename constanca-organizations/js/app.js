@@ -2,7 +2,7 @@ const vSpec1 = {
   width: 800,
   height: 300,
   $schema: "https://vega.github.io/schema/vega-lite/v4.json",
-  data: { url: "./../data/data.csv", format: { type: "dsv", delimiter: ";" } },
+  data: { url: "./data/data.csv", format: { type: "dsv", delimiter: ";" } },
   mark: "point",
   encoding: {
     x: {
@@ -33,7 +33,7 @@ const vSpec2 = {
   width: 800,
   height: 300,
   $schema: "https://vega.github.io/schema/vega-lite/v4.json",
-  data: { url: "./../data/data.csv", format: { type: "dsv", delimiter: ";" } },
+  data: { url: "./data/data.csv", format: { type: "dsv", delimiter: ";" } },
   mark: "point",
   encoding: {
     x: {
